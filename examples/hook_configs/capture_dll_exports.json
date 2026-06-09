@@ -1,0 +1,67 @@
+{
+  "output_dir": "dump_data",
+  "log_file": "hook_framework.log",
+  "log_level": "trace",
+  "hooks": [
+    {
+      "module": "target_dll.dll",
+      "symbol": "math_pow",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "base", "type": "int32"},
+        {"name": "exp", "type": "int32"}
+      ],
+      "return_type": "int32"
+    },
+    {
+      "module": "target_dll.dll",
+      "symbol": "math_lerp",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "a", "type": "float64"},
+        {"name": "b", "type": "float64"},
+        {"name": "t", "type": "float64"}
+      ],
+      "return_type": "float64"
+    },
+    {
+      "module": "target_dll.dll",
+      "symbol": "string_count",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "str", "type": "cstring"},
+        {"name": "ch", "type": "int32"}
+      ],
+      "return_type": "uint64"
+    },
+    {
+      "module": "target_dll.dll",
+      "symbol": "?encode_frame@protocol@@YAHPEBE_KPEAE1@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "payload", "type": "pointer"},
+        {"name": "len", "type": "uint64"},
+        {"name": "frame", "type": "pointer"},
+        {"name": "frameCap", "type": "uint64"}
+      ],
+      "return_type": "int32"
+    },
+    {
+      "module": "target_dll.dll",
+      "symbol": "?encrypt@CryptoEngine@@QEAAKPEBE_KPEAE@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "input", "type": "pointer"},
+        {"name": "len", "type": "uint64"},
+        {"name": "output", "type": "pointer"}
+      ],
+      "return_type": "uint32"
+    }
+  ]
+}

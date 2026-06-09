@@ -109,9 +109,12 @@ do_call_original:
     add rsp, 48
 
 after_call:
-    ;; RAX = return value
+    ;; RAX = int return, XMM0 = float return
     mov rsi, rax
-    movaps xmm4, xmm0         ; float return
+
+    ;; Save float return on stack (XMM4 is volatile, can't survive call)
+    sub rsp, 16
+    movaps [rsp], xmm0
 
     ;; --- Post-hook dispatch ---
     sub rsp, 64                ; RSP: 0->0 mod16
@@ -125,9 +128,10 @@ after_call:
     call hookfw_dispatch
     add rsp, 64
 
-    ;; Restore return value
+    ;; Restore return values
+    movaps xmm0, [rsp]
+    add rsp, 16
     mov rax, rsi
-    movaps xmm0, xmm4
 
     ;; --- Epilogue ---
     add rsp, 8                 ; remove alignment pad
