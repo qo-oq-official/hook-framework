@@ -1,0 +1,2 @@
+add_executable(injector injector.cpp)
+target_compile_definitions(injector PRIVATE WIN32_LEAN_AND_MEAN)

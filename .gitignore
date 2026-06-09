@@ -1,0 +1,9 @@
+third_party/**
+build/
+dump_data/
+test_dump_*/
+*.log
+.vs/
+.opencode/
+out/
+CMakeSettings.json

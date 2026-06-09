@@ -1,0 +1,14 @@
+add_library(test_target SHARED test_target.cpp)
+target_compile_definitions(test_target PRIVATE TEST_TARGET_EXPORTS)
+
+add_executable(test_capture test_capture.cpp)
+target_link_libraries(test_capture PRIVATE hook_framework nlohmann_json)
+target_include_directories(test_capture PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+add_executable(test_replace test_replace.cpp)
+target_link_libraries(test_replace PRIVATE hook_framework)
+target_include_directories(test_replace PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+add_executable(test_injection test_injection.cpp)
+target_link_libraries(test_injection PRIVATE nlohmann_json)
+target_compile_definitions(test_injection PRIVATE WIN32_LEAN_AND_MEAN)
