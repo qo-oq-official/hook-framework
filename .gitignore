@@ -3,7 +3,11 @@ build/
 dump_data/
 test_dump_*/
 *.log
+*.raw
 .vs/
 .opencode/
 out/
 CMakeSettings.json
+hook-projects/**/dump_data/
+hook-projects/**/*.dll
+hook-projects/**/*.exe
