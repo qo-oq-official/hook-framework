@@ -1,0 +1,20 @@
+{
+  "output_dir": "dump_data",
+  "log_file": "hook_swccu.log",
+  "log_level": "trace",
+  "hooks": [
+    {
+      "module": "swccu.dll",
+      "rva": "0x2EB9A2E0",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this_ptr", "type": "pointer"},
+        {"name": "pRuntimeClass", "type": "pointer"},
+        {"name": "pUint", "type": "pointer"},
+        {"name": "pUlong", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    }
+  ]
+}
