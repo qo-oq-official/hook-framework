@@ -45,8 +45,8 @@ if (-not $sw) {
     exit 1
 }
 
-$pid = $sw[0].Id
-Write-Host "[*] Found SLDWORKS.exe PID=$pid"
+$procId = $sw[0].Id
+Write-Host "[*] Found SLDWORKS.exe PID=$procId"
 
 # Verify swccu.dll is loaded
 $swccuLoaded = $sw[0].Modules | Where-Object { $_.ModuleName -eq "swccu.dll" }
@@ -59,8 +59,8 @@ Write-Host "[*] swccu.dll loaded at base: 0x$($swccuLoaded.BaseAddress.ToString(
 
 # Inject
 Write-Host ""
-Write-Host "[*] Injecting hook_framework.dll into PID=$pid ..." -ForegroundColor Green
-& $Injector --pid $pid --dll $LocalDll
+Write-Host "[*] Injecting hook_framework.dll into PID=$procId ..." -ForegroundColor Green
+& $Injector --pid $procId --dll $LocalDll
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[!] Injection failed with code $LASTEXITCODE" -ForegroundColor Red

@@ -5,17 +5,14 @@
 
 namespace {
 
-std::string getConfigPath() {
+std::filesystem::path getDllDirectory() {
     char dllPath[MAX_PATH] = {};
     HMODULE hSelf = nullptr;
     GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
                        GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                       reinterpret_cast<LPCSTR>(&getConfigPath), &hSelf);
+                       reinterpret_cast<LPCSTR>(&getDllDirectory), &hSelf);
     GetModuleFileNameA(hSelf, dllPath, MAX_PATH);
-
-    std::filesystem::path p(dllPath);
-    auto configPath = p.parent_path() / "hooks.json";
-    return configPath.string();
+    return std::filesystem::path(dllPath).parent_path();
 }
 
 }
@@ -25,9 +22,15 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
         case DLL_PROCESS_ATTACH: {
             DisableThreadLibraryCalls(hModule);
             try {
-                std::string configPath = getConfigPath();
-                hookfw::Logger::instance().initialize();
+                auto dllDir = getDllDirectory();
+                SetCurrentDirectoryW(dllDir.wstring().c_str());
+
+                auto configPath = (dllDir / "hooks.json").string();
+                auto logPath = (dllDir / "hook_framework.log").string();
+
+                hookfw::Logger::instance().initialize(logPath);
                 LOG_INFO("=== Hook Framework DLL loaded ===");
+                LOG_INFO("DLL directory: {}", dllDir.string());
                 LOG_INFO("Config path: {}", configPath);
 
                 if (std::filesystem::exists(configPath)) {
