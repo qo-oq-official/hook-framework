@@ -15,6 +15,17 @@
         {"name": "pUlong", "type": "pointer"}
       ],
       "return_type": "pointer"
+    },
+    {
+      "module": "sldappu.dll",
+      "rva": "0x19098",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this_ptr", "type": "pointer"},
+        {"name": "lpszFileName", "type": "wstring"}
+      ],
+      "return_type": "pointer"
     }
   ]
 }
