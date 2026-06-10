@@ -16,3 +16,7 @@ target_compile_definitions(test_injection PRIVATE WIN32_LEAN_AND_MEAN)
 add_executable(test_live_inject test_live_inject.cpp)
 target_link_libraries(test_live_inject PRIVATE nlohmann_json)
 target_compile_definitions(test_live_inject PRIVATE WIN32_LEAN_AND_MEAN)
+
+add_executable(test_multi_dll test_multi_dll.cpp)
+target_link_libraries(test_multi_dll PRIVATE hook_framework nlohmann_json)
+target_include_directories(test_multi_dll PRIVATE ${CMAKE_SOURCE_DIR}/src)
