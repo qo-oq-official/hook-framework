@@ -18,7 +18,7 @@
     },
     {
       "module": "sldappu.dll",
-      "rva": "0x19098",
+      "symbol": "?OpenDocumentFile@CAmApp@@UEAAPEAVCDocument@@PEB_W@Z",
       "action": "capture",
       "collector": "typed",
       "params": [
