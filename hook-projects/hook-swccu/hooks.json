@@ -5,7 +5,7 @@
   "hooks": [
     {
       "module": "swccu.dll",
-      "rva": "0x2EB9A2E0",
+      "symbol": "?ReadClass@su_CArchive@@QEAAPEAUCRuntimeClass@@PEBU2@PEAIPEAK@Z",
       "action": "capture",
       "collector": "typed",
       "params": [
