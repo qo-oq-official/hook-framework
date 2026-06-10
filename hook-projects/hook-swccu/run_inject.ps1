@@ -48,14 +48,17 @@ if (-not $sw) {
 $procId = $sw[0].Id
 Write-Host "[*] Found SLDWORKS.exe PID=$procId"
 
-# Verify swccu.dll is loaded
-$swccuLoaded = $sw[0].Modules | Where-Object { $_.ModuleName -eq "swccu.dll" }
-if (-not $swccuLoaded) {
-    Write-Host "[!] swccu.dll not loaded in SLDWORKS.exe yet." -ForegroundColor Yellow
-    Write-Host "    Open a document or wait for SOLIDWORKS to fully load."
-    exit 1
+# Verify target DLLs are loaded
+$targetDlls = @("swccu.dll", "sldappu.dll")
+foreach ($dll in $targetDlls) {
+    $loaded = $sw[0].Modules | Where-Object { $_.ModuleName -eq $dll }
+    if (-not $loaded) {
+        Write-Host "[!] $dll not loaded in SLDWORKS.exe yet." -ForegroundColor Yellow
+        Write-Host "    Open a document or wait for SOLIDWORKS to fully load."
+        exit 1
+    }
+    Write-Host "[*] $dll loaded at base: 0x$($loaded.BaseAddress.ToString('X'))"
 }
-Write-Host "[*] swccu.dll loaded at base: 0x$($swccuLoaded.BaseAddress.ToString('X'))"
 
 # Inject
 Write-Host ""

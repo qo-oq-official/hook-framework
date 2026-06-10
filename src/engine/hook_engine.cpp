@@ -2,6 +2,7 @@
 #include "engine/hook_transaction.h"
 #include "logging/logger.h"
 #include <Windows.h>
+#include <filesystem>
 #include <format>
 
 namespace hookfw {
@@ -18,12 +19,23 @@ HookEngineCore::~HookEngineCore() {
 void* HookEngineCore::resolveAddress(const HookTarget& target) {
     HMODULE hMod = GetModuleHandleA(target.moduleName.c_str());
     if (!hMod) {
+        LOG_WARN("GetModuleHandle failed for '{}', trying LoadLibrary...", target.moduleName);
         hMod = LoadLibraryA(target.moduleName.c_str());
+    }
+    if (!hMod) {
+        char exePath[MAX_PATH] = {};
+        GetModuleFileNameA(nullptr, exePath, MAX_PATH);
+        std::filesystem::path exeDir = std::filesystem::path(exePath).parent_path();
+        auto fullPath = (exeDir / target.moduleName).string();
+        LOG_WARN("LoadLibrary failed, trying full path: {}", fullPath);
+        hMod = LoadLibraryA(fullPath.c_str());
     }
     if (!hMod) {
         LOG_ERROR("Cannot resolve module: {}, error={}", target.moduleName, GetLastError());
         return nullptr;
     }
+    LOG_INFO("Module '{}' resolved at base {:#x}", target.moduleName,
+             reinterpret_cast<uintptr_t>(hMod));
 
     void* addr = nullptr;
     if (target.useRva) {
@@ -108,6 +120,7 @@ bool HookEngineCore::installAll() {
         return false;
     }
 
+    int attached = 0;
     for (auto& hook : hooks_) {
         if (!hook->thunkSlot) continue;
 
@@ -116,9 +129,16 @@ bool HookEngineCore::installAll() {
         void* detourTarget = hook->thunkSlot->executableStub;
 
         if (!txn.attach(ppOriginal, detourTarget)) {
-            LOG_ERROR("Failed to attach hook id={}", hook->id);
-            return false;
+            LOG_ERROR("Failed to attach hook id={}, skipping", hook->id);
+            hook->thunkSlot = nullptr;
+            continue;
         }
+        attached++;
+    }
+
+    if (attached == 0) {
+        LOG_ERROR("No hooks attached successfully");
+        return false;
     }
 
     if (!txn.commit()) {
@@ -127,7 +147,7 @@ bool HookEngineCore::installAll() {
     }
 
     installed_ = true;
-    LOG_INFO("All {} hooks installed successfully", hooks_.size());
+    LOG_INFO("{}/{} hooks installed successfully", attached, hooks_.size());
     return true;
 }
 
