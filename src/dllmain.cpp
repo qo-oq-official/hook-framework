@@ -23,8 +23,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
             DisableThreadLibraryCalls(hModule);
             try {
                 auto dllDir = getDllDirectory();
-                SetCurrentDirectoryW(dllDir.wstring().c_str());
-
                 auto configPath = (dllDir / "hooks.json").string();
                 auto logPath = (dllDir / "hook_framework.log").string();
 
@@ -32,9 +30,12 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
                 LOG_INFO("=== Hook Framework DLL loaded ===");
                 LOG_INFO("DLL directory: {}", dllDir.string());
                 LOG_INFO("Config path: {}", configPath);
+                LOG_INFO("Process ID: {}", GetCurrentProcessId());
 
                 if (std::filesystem::exists(configPath)) {
+                    hookfw::HookEngine::instance().setDllDirectory(dllDir.string());
                     hookfw::initializeFramework(configPath);
+                    LOG_INFO("=== Framework initialization complete ===");
                 } else {
                     LOG_WARN("Config file not found: {}, waiting for API calls", configPath);
                     hookfw::HookEngine::instance().initialize();
@@ -44,6 +45,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
             } catch (...) {
                 OutputDebugStringA("DllMain ATTACH: unknown exception\n");
             }
+            hookfw::Logger::instance().get()->flush();
             break;
         }
         case DLL_PROCESS_DETACH: {

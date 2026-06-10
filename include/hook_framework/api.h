@@ -50,6 +50,7 @@ public:
     void uninstallAll();
 
     void setOutputDirectory(const std::string& path);
+    void setDllDirectory(const std::string& path);
 
 private:
     HookEngine();

@@ -8,6 +8,7 @@
 #include "output/file_output_writer.h"
 #include "logging/logger.h"
 #include <Windows.h>
+#include <filesystem>
 #include <format>
 #include <cstring>
 
@@ -109,6 +110,7 @@ bool HookBuilder::install() {
 
 struct HookEngine::Impl {
     std::string outputDir = "dump_data";
+    std::string dllDir;
     bool initialized = false;
 };
 
@@ -148,6 +150,9 @@ bool HookEngine::initialize(const std::string& configPath) {
             }
 
             impl_->outputDir = configOpt->outputDir;
+            if (!impl_->dllDir.empty() && std::filesystem::path(impl_->outputDir).is_relative()) {
+                impl_->outputDir = (std::filesystem::path(impl_->dllDir) / impl_->outputDir).string();
+            }
             writer = std::make_shared<FileOutputWriter>(impl_->outputDir);
             HookEngineCore::instance().setOutputWriter(writer);
 
@@ -228,6 +233,10 @@ void HookEngine::setOutputDirectory(const std::string& path) {
     impl_->outputDir = path;
     auto writer = std::make_shared<FileOutputWriter>(path);
     HookEngineCore::instance().setOutputWriter(writer);
+}
+
+void HookEngine::setDllDirectory(const std::string& path) {
+    impl_->dllDir = path;
 }
 
 // --- Global functions ---

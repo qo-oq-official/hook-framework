@@ -24,7 +24,7 @@ void Logger::initialize(const std::string& logFile, spdlog::level::level_enum le
         logger_ = std::make_shared<spdlog::logger>("hookfw", sinks.begin(), sinks.end());
         logger_->set_level(level);
         logger_->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] [tid:%t] %v");
-        logger_->flush_on(spdlog::level::warn);
+        logger_->flush_on(spdlog::level::info);
 
         spdlog::register_logger(logger_);
         logger_->info("Hook framework logger initialized, file={}", logFile);

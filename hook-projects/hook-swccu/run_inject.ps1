@@ -5,7 +5,7 @@
 .DESCRIPTION
     Injects hook_framework.dll into running SLDWORKS.exe process to capture
     su_CArchive::ReadClass(CRuntimeClass const *, uint *, ulong *) calls.
-    
+
     Output goes to: dump_data/swccu.dll/RVA_0x2eb9a2e0/
 .NOTES
     Must run as Administrator (SOLIDWORKS requires elevated injection)
