@@ -36,3 +36,4 @@ target_link_libraries(hook_framework
 )
 
 target_compile_definitions(hook_framework PRIVATE HOOKFW_EXPORTS)
+target_compile_options(hook_framework PRIVATE /EHa)

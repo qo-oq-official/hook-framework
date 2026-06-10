@@ -123,6 +123,18 @@ bool HookEngineCore::addHook(const HookDescriptor& desc,
     return true;
 }
 
+static bool safeDetourAttach(HookTransaction* txn, void** ppOriginal, void* detourTarget,
+                             uint32_t hookId, void* resolvedAddr) {
+    __try {
+        if (!txn->attach(ppOriginal, detourTarget)) {
+            return false;
+        }
+        return true;
+    } __except (EXCEPTION_EXECUTE_HANDLER) {
+        return false;
+    }
+}
+
 bool HookEngineCore::installAll() {
     std::lock_guard lock(mutex_);
 
@@ -150,8 +162,11 @@ bool HookEngineCore::installAll() {
         void** ppOriginal = &hook->thunkSlot->data.trampolineFunction;
         void* detourTarget = hook->thunkSlot->executableStub;
 
-        if (!txn.attach(ppOriginal, detourTarget)) {
-            LOG_ERROR("Failed to attach hook id={}, skipping", hook->id);
+        bool attachOk = safeDetourAttach(&txn, ppOriginal, detourTarget,
+                                         hook->id, hook->resolvedAddress);
+        if (!attachOk) {
+            LOG_ERROR("Failed to attach hook id={} (target={:#x}), skipping",
+                      hook->id, reinterpret_cast<uintptr_t>(hook->resolvedAddress));
             hook->thunkSlot = nullptr;
             continue;
         }
