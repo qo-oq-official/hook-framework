@@ -39,10 +39,32 @@ void* HookEngineCore::resolveAddress(const HookTarget& target) {
 
     void* addr = nullptr;
     if (target.useRva) {
+        auto dosHeader = reinterpret_cast<const IMAGE_DOS_HEADER*>(hMod);
+        auto ntHeaders = reinterpret_cast<const IMAGE_NT_HEADERS*>(
+            reinterpret_cast<const uint8_t*>(hMod) + dosHeader->e_lfanew);
+        DWORD imageSize = ntHeaders->OptionalHeader.SizeOfImage;
+
+        if (target.rva >= imageSize) {
+            LOG_ERROR("RVA {:#x} exceeds module '{}' image size ({:#x}). "
+                      "This address is likely an absolute VA, not an RVA. "
+                      "Correct RVA = absolute_address - module_base",
+                      target.rva, target.moduleName, imageSize);
+            return nullptr;
+        }
+
         addr = reinterpret_cast<void*>(
             reinterpret_cast<uintptr_t>(hMod) + target.rva);
-        LOG_INFO("Resolved {}+{:#x} -> {:#x}", target.moduleName, target.rva,
-                 reinterpret_cast<uintptr_t>(addr));
+
+        MEMORY_BASIC_INFORMATION mbi = {};
+        if (!VirtualQuery(addr, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT) {
+            LOG_ERROR("RVA {:#x} in '{}' resolves to inaccessible memory at {:#x}",
+                      target.rva, target.moduleName, reinterpret_cast<uintptr_t>(addr));
+            return nullptr;
+        }
+
+        LOG_INFO("Resolved {}+{:#x} -> {:#x} (image size={:#x})",
+                 target.moduleName, target.rva,
+                 reinterpret_cast<uintptr_t>(addr), imageSize);
     } else {
         addr = reinterpret_cast<void*>(
             GetProcAddress(hMod, target.symbolName.c_str()));
