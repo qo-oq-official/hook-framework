@@ -36096,7 +36096,7 @@
                                      },
                                      {
                                          "name":  "pFile",
-                                         "type":  "cfile"
+                                         "type":  "pointer"
                                      },
                                      {
                                          "name":  "nMode",
@@ -36121,6 +36121,40 @@
                                      },
                                      {
                                          "name":  "other",
+                                         "type":  "pointer"
+                                     }
+                                 ],
+                      "return_type":  "pointer"
+                  },
+                  {
+                      "module":  "sldarchiveu.dll",
+                      "symbol":  "??5@YAAEAVsu_CArchive@@AEAV0@AEAPEAVmoHeader_c@@@Z",
+                      "action":  "capture",
+                      "collector":  "typed",
+                      "params":  [
+                                     {
+                                         "name":  "archive",
+                                         "type":  "pointer"
+                                     },
+                                     {
+                                         "name":  "ppHeader",
+                                         "type":  "pointer"
+                                     }
+                                 ],
+                      "return_type":  "pointer"
+                  },
+                  {
+                      "module":  "sldarchiveu.dll",
+                      "symbol":  "??6@YAAEAVsu_CArchive@@AEAV0@AEAPEAVmoHeader_c@@@Z",
+                      "action":  "capture",
+                      "collector":  "typed",
+                      "params":  [
+                                     {
+                                         "name":  "archive",
+                                         "type":  "pointer"
+                                     },
+                                     {
+                                         "name":  "ppHeader",
                                          "type":  "pointer"
                                      }
                                  ],

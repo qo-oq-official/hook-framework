@@ -49,7 +49,7 @@ $procId = $sw[0].Id
 Write-Host "[*] Found SLDWORKS.exe PID=$procId"
 
 # Verify target DLLs are loaded
-$targetDlls = @("swccu.dll", "sldappu.dll", "sldmodu.dll")
+$targetDlls = @("swccu.dll", "sldappu.dll", "sldmodu.dll", "sldarchiveu.dll")
 foreach ($dll in $targetDlls) {
     $loaded = $sw[0].Modules | Where-Object { $_.ModuleName -eq $dll }
     if (-not $loaded) {

@@ -98,12 +98,7 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
     if (data.contains("params")) {
         for (const auto& p : data["params"]) {
             std::string key = p.value("name", "arg");
-            if (p.contains("file_path")) {
-                args[key + "_path"] = p["file_path"];
-                if (p.contains("file_size")) {
-                    args[key + "_size"] = p["file_size"];
-                }
-            } else if (p.contains("value")) {
+            if (p.contains("value")) {
                 args[key] = p["value"];
             } else if (p.contains("value_hex")) {
                 args[key] = p["value_hex"];

@@ -22,7 +22,6 @@ enum class ParamType : uint8_t {
     CString,
     WString,
     Buffer,
-    CFileInfo,
 };
 
 enum class HookAction : uint8_t {
