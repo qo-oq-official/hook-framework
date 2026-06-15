@@ -365,9 +365,19 @@ static void doDispatchBody(hookfw::ThunkData* data,
 extern "C" {
 
 static const uint32_t FLUSH_INTERVAL = 10000;
+static volatile uint64_t g_quickTraceCallCount = 0;
+static volatile bool g_quickTraceFirstLogged = false;
 
 void hookfw_quick_trace(hookfw::ThunkData* data,
                         uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
+    g_quickTraceCallCount++;
+    if (!g_quickTraceFirstLogged) {
+        g_quickTraceFirstLogged = true;
+        char buf[128];
+        wsprintfA(buf, "[hookfw] quick_trace FIRST CALL hook_id=%u\n", data->hookId);
+        crashLog(buf);
+    }
+
     hookfw::TraceRecord rec{};
     rec.hookId = data->hookId;
     rec.threadId = GetCurrentThreadId();
@@ -395,6 +405,12 @@ void hookfw_quick_trace_exit(hookfw::ThunkData* data,
     rec.arg0 = retval;
     rec.phase = 1;
     hookfw::TraceFlusher::instance().ringBuffer().push(rec);
+
+    static thread_local uint32_t t_counter = 0;
+    if (++t_counter >= FLUSH_INTERVAL) {
+        t_counter = 0;
+        hookfw::TraceFlusher::instance().syncFlush();
+    }
 }
 
 void hookfw_dispatch(hookfw::ThunkData* data,
