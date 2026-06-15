@@ -1,6 +1,7 @@
 #include "output/trace_flusher.h"
 #include "logging/logger.h"
 #include <Windows.h>
+#include <format>
 
 namespace hookfw {
 
@@ -14,23 +15,16 @@ TraceFlusher::~TraceFlusher() {
 }
 
 void TraceFlusher::start(std::shared_ptr<TraceOutputWriter> writer) {
-    if (running_) return;
     writer_ = writer;
-    running_ = true;
-    flushThread_ = std::thread(&TraceFlusher::flushLoop, this);
-    LOG_INFO("TraceFlusher started");
+    active_ = true;
+    LOG_INFO("TraceFlusher started (synchronous mode)");
 }
 
 void TraceFlusher::stop() {
-    if (!running_) return;
-    running_ = false;
-    if (flushThread_.joinable()) {
-        flushThread_.detach();
-    }
-    Sleep(500);
-    if (writer_) writer_->flush();
-    LOG_INFO("TraceFlusher stopped ({} events may remain in ring buffer)", 
-             ringBuffer_.pending());
+    if (!active_) return;
+    active_ = false;
+    syncFlush();
+    LOG_INFO("TraceFlusher stopped ({} events remaining in buffer)", ringBuffer_.pending());
 }
 
 void TraceFlusher::registerHookName(uint32_t hookId, const std::string& moduleName,
@@ -42,18 +36,19 @@ void TraceFlusher::registerHookName(uint32_t hookId, const std::string& moduleNa
     hookNames_[hookId] = std::move(info);
 }
 
-void TraceFlusher::flushLoop() {
+void TraceFlusher::syncFlush() {
+    if (!flushMutex_.try_lock()) return;
+    drainToWriter();
+    if (writer_) writer_->flush();
+    flushMutex_.unlock();
+}
+
+void TraceFlusher::drainToWriter() {
     constexpr size_t BATCH = 4096;
-    auto batch = std::make_unique<TraceRecord[]>(BATCH);
+    TraceRecord batch[BATCH];
 
-    while (true) {
-        size_t count = ringBuffer_.drain(batch.get(), BATCH);
-        if (count == 0) {
-            if (!running_) break;
-            Sleep(50);
-            continue;
-        }
-
+    size_t count;
+    while ((count = ringBuffer_.drain(batch, BATCH)) > 0) {
         std::lock_guard lock(namesMutex_);
         for (size_t i = 0; i < count; i++) {
             const auto& rec = batch[i];

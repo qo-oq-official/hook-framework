@@ -364,6 +364,8 @@ static void doDispatchBody(hookfw::ThunkData* data,
 
 extern "C" {
 
+static const uint32_t FLUSH_INTERVAL = 10000;
+
 void hookfw_quick_trace(hookfw::ThunkData* data,
                         uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
     hookfw::TraceRecord rec{};
@@ -376,6 +378,12 @@ void hookfw_quick_trace(hookfw::ThunkData* data,
     rec.arg3 = a3;
     rec.phase = 0;
     hookfw::TraceFlusher::instance().ringBuffer().push(rec);
+
+    static thread_local uint32_t t_counter = 0;
+    if (++t_counter >= FLUSH_INTERVAL) {
+        t_counter = 0;
+        hookfw::TraceFlusher::instance().syncFlush();
+    }
 }
 
 void hookfw_quick_trace_exit(hookfw::ThunkData* data,

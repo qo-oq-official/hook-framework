@@ -1,8 +1,7 @@
 #pragma once
 #include "output/ring_buffer.h"
 #include "output/trace_output_writer.h"
-#include <thread>
-#include <atomic>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 
@@ -14,6 +13,7 @@ public:
 
     void start(std::shared_ptr<TraceOutputWriter> writer);
     void stop();
+    void syncFlush();
 
     RingBuffer& ringBuffer() { return ringBuffer_; }
 
@@ -24,12 +24,12 @@ private:
     TraceFlusher() = default;
     ~TraceFlusher();
 
-    void flushLoop();
+    void drainToWriter();
 
     RingBuffer ringBuffer_;
     std::shared_ptr<TraceOutputWriter> writer_;
-    std::thread flushThread_;
-    std::atomic<bool> running_{false};
+    std::mutex flushMutex_;
+    bool active_ = false;
 
     struct HookInfo {
         std::string displayName;
