@@ -15,11 +15,14 @@ TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
     std::filesystem::create_directories(outputDir);
     traceFilePath_ = (std::filesystem::path(outputDir) / "trace.json").string();
 
-    std::ofstream file(traceFilePath_, std::ios::trunc);
-    if (file.is_open()) {
-        file << "{\"traceEvents\":[";
-        file.close();
-        headerWritten_ = true;
+    {
+        std::ofstream file(traceFilePath_, std::ios::trunc);
+        if (file.is_open()) {
+            file << "{\"traceEvents\":[]}";
+            file.flush();
+            nextWritePos_ = 16;
+            headerWritten_ = true;
+        }
     }
 
     LOG_INFO("TraceOutputWriter created, output={}", traceFilePath_);
@@ -27,14 +30,6 @@ TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
 
 TraceOutputWriter::~TraceOutputWriter() {
     flush();
-
-    try {
-        std::ofstream file(traceFilePath_, std::ios::app);
-        if (file.is_open()) {
-            file << "\n]}";
-            file.close();
-        }
-    } catch (...) {}
 }
 
 int64_t TraceOutputWriter::nowMicroseconds() {
@@ -134,11 +129,13 @@ void TraceOutputWriter::doFlush() {
     if (events_.empty()) return;
 
     try {
-        std::ofstream file(traceFilePath_, std::ios::app);
+        std::fstream file(traceFilePath_, std::ios::in | std::ios::out | std::ios::binary);
         if (!file.is_open()) {
             LOG_ERROR("Cannot open trace file: {}", traceFilePath_);
             return;
         }
+
+        file.seekp(nextWritePos_);
 
         for (const auto& ev : events_) {
             nlohmann::json j;
@@ -148,9 +145,6 @@ void TraceOutputWriter::doFlush() {
             j["ts"] = ev.timestampUs;
             j["pid"] = ev.pid;
             j["tid"] = ev.tid;
-            if (ev.phase == 'i') {
-                j["s"] = "t";
-            }
             if (!ev.args.empty()) {
                 j["args"] = ev.args;
             }
@@ -161,8 +155,10 @@ void TraceOutputWriter::doFlush() {
             eventCount_++;
         }
 
+        nextWritePos_ = file.tellp();
+        file << "\n]}";
         file.flush();
-        LOG_TRACE("Trace flushed: {} events", events_.size());
+
         events_.clear();
     } catch (const std::exception& ex) {
         LOG_ERROR("Trace flush failed: {}", ex.what());
