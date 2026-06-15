@@ -299,6 +299,10 @@ void hookfw_dispatch(hookfw::ThunkData* data,
             hook->collector->onEntry(ctx);
         } else {
             ctx.rax = a0;
+            ctx.rcx = a1;
+            ctx.rdx = a2;
+            ctx.r8 = a3;
+            ctx.r9 = origRSP;
             if (xmmPtr) {
                 memcpy(ctx.xmm0, xmmPtr, 16);
             }

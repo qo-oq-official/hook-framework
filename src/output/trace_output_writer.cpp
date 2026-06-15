@@ -108,6 +108,14 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
     if (data.contains("return_value") && data["return_value"].contains("value")) {
         args["return"] = data["return_value"]["value"];
     }
+    if (data.contains("output_params")) {
+        for (const auto& op : data["output_params"]) {
+            std::string key = op.value("name", "out") + "_out";
+            if (op.contains("deref_value")) {
+                args[key] = op["deref_value"];
+            }
+        }
+    }
 
     addTraceEvent(displayName, moduleName, ph, ts, pid, tid, args);
     return true;

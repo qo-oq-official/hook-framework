@@ -87,6 +87,10 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
                     param.name = paramJson.value("name", "");
                     param.type = parseParamType(paramJson.value("type", "int64"));
                     param.bufferSize = paramJson.value("buffer_size", 0u);
+                    if (paramJson.contains("deref_type")) {
+                        param.hasDeref = true;
+                        param.derefType = parseParamType(paramJson["deref_type"].get<std::string>());
+                    }
                     desc.params.push_back(param);
                 }
                 if (desc.collectorType == CollectorType::Raw && !desc.params.empty()) {

@@ -505,6 +505,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "int64",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -522,6 +523,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "uint64",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -539,6 +541,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "uint16",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -556,6 +559,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "int8",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -573,6 +577,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "uint8",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -590,6 +595,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "int16",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -607,6 +613,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "uint16",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -624,6 +631,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "int32",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -641,6 +649,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "uint32",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -658,6 +667,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "int32",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -675,6 +685,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "uint32",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -692,6 +703,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "float32",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -709,6 +721,7 @@
                                      },
                                      {
                                          "name":  "pValue",
+                                         "deref_type":  "float64",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -1484,12 +1497,10 @@
                       "action":  "capture",
                       "return_type":  "pointer",
                       "collector":  "typed",
-                      "params":  [
-                                     {
-                                         "name":  "allow",
-                                         "type":  "int32"
-                                     }
-                                 ],
+                      "params":  {
+                                     "name":  "allow",
+                                     "type":  "int32"
+                                 },
                       "symbol":  "?allowCorrupt@su_CArchive@@SAXH@Z",
                       "module":  "swccu.dll"
                   },
@@ -1537,7 +1548,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "pSource",
+                                         "name":  "pSrc",
                                          "type":  "pointer"
                                      },
                                      {
@@ -1575,7 +1586,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "bytesNeeded",
+                                         "name":  "bytes",
                                          "type":  "uint32"
                                      }
                                  ],
@@ -1855,11 +1866,15 @@
                                          "type":  "pointer"
                                      },
                                      {
+                                         "hasDeref":  true,
                                          "name":  "pSchema",
+                                         "deref_type":  "uint32",
                                          "type":  "pointer"
                                      },
                                      {
+                                         "hasDeref":  true,
                                          "name":  "pTag",
+                                         "deref_type":  "uint32",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -2143,7 +2158,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "pObject",
+                                         "name":  "pObj",
                                          "type":  "pointer"
                                      },
                                      {

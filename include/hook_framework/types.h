@@ -40,6 +40,8 @@ struct ParamDescriptor {
     std::string name;
     ParamType type;
     uint32_t bufferSize = 0;
+    ParamType derefType = ParamType::Pointer;
+    bool hasDeref = false;
 };
 
 struct HookTarget {

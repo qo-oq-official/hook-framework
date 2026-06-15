@@ -64,6 +64,45 @@ void TypedCollector::onExit(const HookContext& ctx) {
         j["phase"] = "exit";
         j["return_value"] = extractReturnValue(ctx);
 
+        nlohmann::json outputParams = nlohmann::json::array();
+        for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
+            if (!params_[i].hasDeref) continue;
+            auto ptr = ctx.arg<void*>(i);
+            if (!ptr || IsBadReadPtr(ptr, 8)) continue;
+
+            nlohmann::json op;
+            op["name"] = params_[i].name;
+            op["index"] = i;
+            switch (params_[i].derefType) {
+                case ParamType::Int8:
+                    op["deref_value"] = *reinterpret_cast<int8_t*>(ptr); break;
+                case ParamType::UInt8:
+                    op["deref_value"] = *reinterpret_cast<uint8_t*>(ptr); break;
+                case ParamType::Int16:
+                    op["deref_value"] = *reinterpret_cast<int16_t*>(ptr); break;
+                case ParamType::UInt16:
+                    op["deref_value"] = *reinterpret_cast<uint16_t*>(ptr); break;
+                case ParamType::Int32:
+                    op["deref_value"] = *reinterpret_cast<int32_t*>(ptr); break;
+                case ParamType::UInt32:
+                    op["deref_value"] = *reinterpret_cast<uint32_t*>(ptr); break;
+                case ParamType::Int64:
+                    op["deref_value"] = *reinterpret_cast<int64_t*>(ptr); break;
+                case ParamType::UInt64:
+                    op["deref_value"] = *reinterpret_cast<uint64_t*>(ptr); break;
+                case ParamType::Float32:
+                    op["deref_value"] = *reinterpret_cast<float*>(ptr); break;
+                case ParamType::Float64:
+                    op["deref_value"] = *reinterpret_cast<double*>(ptr); break;
+                default:
+                    op["deref_value"] = std::format("{:#x}", *reinterpret_cast<uint64_t*>(ptr)); break;
+            }
+            outputParams.push_back(op);
+        }
+        if (!outputParams.empty()) {
+            j["output_params"] = outputParams;
+        }
+
         if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "exit", j)) {
             LOG_ERROR("TypedCollector: failed to write exit JSON for {}!{}",
                       moduleName_, functionName_);

@@ -119,13 +119,14 @@ after_call:
     movaps [rsp], xmm0
 
     ;; --- Post-hook dispatch ---
+    ;; Pass original args so output references can be dereferenced
     sub rsp, 80                ; RSP: 0->0 mod16
     mov rcx, r12               ; ThunkData*
-    mov rdx, rsi               ; return value (in arg slot)
-    xor r8, r8
-    xor r9, r9
-    mov qword ptr [rsp + 32], 0
-    mov qword ptr [rsp + 40], 0
+    mov rdx, rsi               ; return value
+    mov r8, r13                ; original arg0 (this)
+    mov r9, r14                ; original arg1 (e.g. reference ptr)
+    mov qword ptr [rsp + 32], r15   ; original arg2
+    mov qword ptr [rsp + 40], rbx   ; original arg3
     mov qword ptr [rsp + 48], 1     ; phase=1 (exit)
     lea rax, [rsp + 80]            ; xmmPtr -> saved XMM0 return
     mov qword ptr [rsp + 56], rax   ; arg8 = xmmPtr
