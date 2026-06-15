@@ -360,7 +360,7 @@ extern "C" {
 
 void hookfw_quick_trace(hookfw::ThunkData* data,
                         uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    hookfw::TraceRecord rec;
+    hookfw::TraceRecord rec{};
     rec.hookId = data->hookId;
     rec.threadId = GetCurrentThreadId();
     rec.timestampUs = hookfw::RingBuffer::nowMicroseconds();
@@ -368,6 +368,18 @@ void hookfw_quick_trace(hookfw::ThunkData* data,
     rec.arg1 = a1;
     rec.arg2 = a2;
     rec.arg3 = a3;
+    rec.phase = 0;
+    hookfw::TraceFlusher::instance().ringBuffer().push(rec);
+}
+
+void hookfw_quick_trace_exit(hookfw::ThunkData* data,
+                             uint64_t retval, uint64_t, uint64_t, uint64_t) {
+    hookfw::TraceRecord rec{};
+    rec.hookId = data->hookId;
+    rec.threadId = GetCurrentThreadId();
+    rec.timestampUs = hookfw::RingBuffer::nowMicroseconds();
+    rec.arg0 = retval;
+    rec.phase = 1;
     hookfw::TraceFlusher::instance().ringBuffer().push(rec);
 }
 

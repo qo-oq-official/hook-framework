@@ -13,6 +13,8 @@ struct TraceRecord {
     uint64_t arg1;
     uint64_t arg2;
     uint64_t arg3;
+    uint8_t phase;
+    uint8_t padding[7];
 };
 
 class RingBuffer {

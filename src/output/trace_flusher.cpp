@@ -62,13 +62,20 @@ void TraceFlusher::flushLoop() {
             std::string cat = (it != hookNames_.end()) ? it->second.moduleName : "unknown";
 
             nlohmann::json args;
-            args["arg0"] = std::format("{:#x}", rec.arg0);
-            args["arg1"] = std::format("{:#x}", rec.arg1);
-            args["arg2"] = std::format("{:#x}", rec.arg2);
-            args["arg3"] = std::format("{:#x}", rec.arg3);
+            if (rec.phase == 0) {
+                args["arg0"] = std::format("{:#x}", rec.arg0);
+                args["arg1"] = std::format("{:#x}", rec.arg1);
+                args["arg2"] = std::format("{:#x}", rec.arg2);
+                args["arg3"] = std::format("{:#x}", rec.arg3);
+            } else {
+                if (rec.arg0 != 0) {
+                    args["return"] = std::format("{:#x}", rec.arg0);
+                }
+            }
 
+            char phase = (rec.phase == 0) ? 'B' : 'E';
             if (writer_) {
-                writer_->addTraceEvent(name, cat, 'i', rec.timestampUs,
+                writer_->addTraceEvent(name, cat, phase, rec.timestampUs,
                                        GetCurrentProcessId(), rec.threadId, args);
             }
         }
