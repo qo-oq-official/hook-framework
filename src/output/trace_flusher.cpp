@@ -36,11 +36,25 @@ void TraceFlusher::registerHookName(uint32_t hookId, const std::string& moduleNa
     hookNames_[hookId] = std::move(info);
 }
 
+static uint64_t g_totalFlushed = 0;
+static bool g_firstFlushLogged = false;
+
 void TraceFlusher::syncFlush() {
     if (!flushMutex_.try_lock()) return;
+    size_t before = g_totalFlushed;
     drainToWriter();
     if (writer_) writer_->flush();
+    size_t after = g_totalFlushed;
     flushMutex_.unlock();
+
+    if (after > before) {
+        if (!g_firstFlushLogged) {
+            g_firstFlushLogged = true;
+            LOG_INFO("Trace active: first flush {} events to trace.json", after);
+        } else if (after / 100000 > before / 100000) {
+            LOG_INFO("Trace progress: {} events flushed", after);
+        }
+    }
 }
 
 void TraceFlusher::drainToWriter() {
@@ -49,6 +63,7 @@ void TraceFlusher::drainToWriter() {
 
     size_t count;
     while ((count = ringBuffer_.drain(batch, BATCH)) > 0) {
+        g_totalFlushed += count;
         std::lock_guard lock(namesMutex_);
         for (size_t i = 0; i < count; i++) {
             const auto& rec = batch[i];
