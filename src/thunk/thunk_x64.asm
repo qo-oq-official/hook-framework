@@ -80,19 +80,35 @@ hookfw_thunk_entry PROC
     test edi, edi
     jnz do_call_both
 
-    ;; Only replacement (RSP is 0-mod-16, need 32 shadow, use 48 for alignment)
+    ;; Only replacement (no stack arg forwarding needed for user replacement)
     sub rsp, 48                ; RSP: 0->0 mod16
     call rax
     add rsp, 48
     jmp after_call
 
 do_call_both:
-    ;; Call original first
-    sub rsp, 48
+    ;; Call original first - forward caller's stack args
+    sub rsp, 96                ; 32 shadow + 64 for up to 8 stack params
+    mov rax, [rsi + 32]
+    mov [rsp + 32], rax
+    mov rax, [rsi + 40]
+    mov [rsp + 40], rax
+    mov rax, [rsi + 48]
+    mov [rsp + 48], rax
+    mov rax, [rsi + 56]
+    mov [rsp + 56], rax
+    mov rax, [rsi + 64]
+    mov [rsp + 64], rax
+    mov rax, [rsi + 72]
+    mov [rsp + 72], rax
+    mov rax, [rsi + 80]
+    mov [rsp + 80], rax
+    mov rax, [rsi + 88]
+    mov [rsp + 88], rax
     mov rax, [r12 + 08h]      ; trampolineFunction
     call rax
-    add rsp, 48
-    mov rsi, rax               ; save return value
+    add rsp, 96
+    mov rsi, rax               ; save return value (note: rsi now repurposed)
     ;; Restore args for replacement
     mov rcx, r13
     mov rdx, r14
@@ -105,10 +121,27 @@ do_call_both:
     jmp after_call
 
 do_call_original:
-    sub rsp, 48                ; RSP: 0->0 mod16
+    ;; Forward caller's stack args (5th+ params) from original stack
+    sub rsp, 96                ; 32 shadow + 64 for up to 8 stack params
+    mov rax, [rsi + 32]
+    mov [rsp + 32], rax
+    mov rax, [rsi + 40]
+    mov [rsp + 40], rax
+    mov rax, [rsi + 48]
+    mov [rsp + 48], rax
+    mov rax, [rsi + 56]
+    mov [rsp + 56], rax
+    mov rax, [rsi + 64]
+    mov [rsp + 64], rax
+    mov rax, [rsi + 72]
+    mov [rsp + 72], rax
+    mov rax, [rsi + 80]
+    mov [rsp + 80], rax
+    mov rax, [rsi + 88]
+    mov [rsp + 88], rax
     mov rax, [r12 + 08h]      ; trampolineFunction
     call rax
-    add rsp, 48
+    add rsp, 96
 
 after_call:
     ;; RAX = int return, XMM0 = float return

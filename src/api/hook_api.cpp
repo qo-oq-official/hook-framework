@@ -265,6 +265,33 @@ extern "C" {
 
 static thread_local bool g_inHookDispatch = false;
 
+static void crashLog(const char* msg) {
+    static HANDLE hFile = INVALID_HANDLE_VALUE;
+    if (hFile == INVALID_HANDLE_VALUE) {
+        char dllPath[MAX_PATH] = {};
+        HMODULE hSelf = nullptr;
+        GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                           GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                           reinterpret_cast<LPCSTR>(&crashLog), &hSelf);
+        GetModuleFileNameA(hSelf, dllPath, MAX_PATH);
+        std::string logPath(dllPath);
+        auto pos = logPath.rfind('\\');
+        if (pos != std::string::npos) logPath = logPath.substr(0, pos + 1);
+        logPath += "hook_crash.log";
+        hFile = CreateFileA(logPath.c_str(), GENERIC_WRITE, FILE_SHARE_READ,
+                            nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+        if (hFile != INVALID_HANDLE_VALUE) {
+            SetFilePointer(hFile, 0, nullptr, FILE_END);
+        }
+    }
+    if (hFile != INVALID_HANDLE_VALUE) {
+        DWORD written = 0;
+        WriteFile(hFile, msg, static_cast<DWORD>(strlen(msg)), &written, nullptr);
+        FlushFileBuffers(hFile);
+    }
+    OutputDebugStringA(msg);
+}
+
 void hookfw_dispatch(hookfw::ThunkData* data,
                      uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3,
                      uint64_t origRSP, uint64_t phase, void* xmmPtr) {
@@ -272,9 +299,15 @@ void hookfw_dispatch(hookfw::ThunkData* data,
     g_inHookDispatch = true;
 
     try {
+        if (!data) {
+            crashLog("[hookfw] FATAL: ThunkData* is NULL\n");
+            g_inHookDispatch = false;
+            return;
+        }
+
         auto* hook = hookfw::HookEngineCore::instance().getHookById(data->hookId);
         if (!hook || !hook->collector) {
-            LOG_ERROR("hookfw_dispatch: hook or collector null, id={}", data->hookId);
+            g_inHookDispatch = false;
             return;
         }
 
@@ -293,13 +326,10 @@ void hookfw_dispatch(hookfw::ThunkData* data,
                 memcpy(ctx.xmm2, static_cast<uint8_t*>(xmmPtr) + 32, 16);
                 memcpy(ctx.xmm3, static_cast<uint8_t*>(xmmPtr) + 48, 16);
             }
-            if (origRSP) {
+            if (origRSP && !IsBadReadPtr(reinterpret_cast<void*>(origRSP), 512)) {
                 ctx.returnAddress = *reinterpret_cast<uint64_t*>(origRSP);
-                size_t copySize = 512;
-                if (!IsBadReadPtr(reinterpret_cast<void*>(origRSP), copySize)) {
-                    memcpy(ctx.stackSnapshot, reinterpret_cast<void*>(origRSP), copySize);
-                    ctx.stackSnapshotSize = 512;
-                }
+                memcpy(ctx.stackSnapshot, reinterpret_cast<void*>(origRSP), 512);
+                ctx.stackSnapshotSize = 512;
             }
             hook->collector->onEntry(ctx);
         } else {
@@ -313,10 +343,11 @@ void hookfw_dispatch(hookfw::ThunkData* data,
             }
             hook->collector->onExit(ctx);
         }
-    } catch (const std::exception& ex) {
-        LOG_CRITICAL("hookfw_dispatch exception hook_id={}: {}", data->hookId, ex.what());
     } catch (...) {
-        LOG_CRITICAL("hookfw_dispatch unknown exception hook_id={}", data->hookId);
+        char buf[256];
+        wsprintfA(buf, "[hookfw] CRASH in dispatch hook_id=%u phase=%llu\n",
+                  data ? data->hookId : 0, phase);
+        crashLog(buf);
     }
 
     g_inHookDispatch = false;
