@@ -15,45 +15,26 @@ TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
     std::filesystem::create_directories(outputDir);
     traceFilePath_ = (std::filesystem::path(outputDir) / "trace.json").string();
 
-    {
-        std::ofstream file(traceFilePath_, std::ios::trunc);
-        if (file.is_open()) {
-            file << "{\"traceEvents\":[";
-            file.flush();
-            headerWritten_ = true;
-        }
+    file_.open(traceFilePath_, std::ios::out | std::ios::trunc);
+    if (file_.is_open()) {
+        file_ << "{\"traceEvents\":[]}";
+        file_.flush();
+        dataEndPos_ = 16;
     }
 
     LOG_INFO("TraceOutputWriter created, output={}", traceFilePath_);
 }
 
 TraceOutputWriter::~TraceOutputWriter() {
-    if (!finalized_) {
-        flush();
-        try {
-            std::ofstream file(traceFilePath_, std::ios::app);
-            if (file.is_open()) {
-                file << "\n]}";
-                file.flush();
-            }
-        } catch (...) {}
-    }
+    if (!finalized_) finalize();
+    file_.close();
 }
 
 void TraceOutputWriter::finalize() {
     if (finalized_) return;
     flush();
-    try {
-        std::ofstream file(traceFilePath_, std::ios::app);
-        if (file.is_open()) {
-            file << "\n]}";
-            file.flush();
-        }
-        finalized_ = true;
-        LOG_INFO("Trace file finalized: {} ({} events)", traceFilePath_, eventCount_);
-    } catch (const std::exception& ex) {
-        LOG_ERROR("Trace finalize failed: {}", ex.what());
-    }
+    finalized_ = true;
+    LOG_INFO("Trace file finalized: {} ({} events)", traceFilePath_, eventCount_);
 }
 
 int64_t TraceOutputWriter::nowMicroseconds() {
@@ -151,13 +132,10 @@ void TraceOutputWriter::flush() {
 
 void TraceOutputWriter::doFlush() {
     if (events_.empty()) return;
+    if (!file_.is_open()) return;
 
     try {
-        std::ofstream file(traceFilePath_, std::ios::app);
-        if (!file.is_open()) {
-            LOG_ERROR("Cannot open trace file: {}", traceFilePath_);
-            return;
-        }
+        file_.seekp(dataEndPos_);
 
         for (const auto& ev : events_) {
             nlohmann::json j;
@@ -171,13 +149,15 @@ void TraceOutputWriter::doFlush() {
                 j["args"] = ev.args;
             }
             if (eventCount_ > 0) {
-                file << ",\n";
+                file_ << ",\n";
             }
-            file << j.dump(-1, ' ', false, nlohmann::json::error_handler_t::replace);
+            file_ << j.dump(-1, ' ', false, nlohmann::json::error_handler_t::replace);
             eventCount_++;
         }
 
-        file.flush();
+        dataEndPos_ = file_.tellp();
+        file_ << "\n]}";
+        file_.flush();
         events_.clear();
     } catch (const std::exception& ex) {
         LOG_ERROR("Trace flush failed: {}", ex.what());

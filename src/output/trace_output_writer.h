@@ -2,6 +2,7 @@
 #include "output/output_writer.h"
 #include <vector>
 #include <mutex>
+#include <fstream>
 #include <string>
 #include <atomic>
 #include <cstdint>
@@ -60,9 +61,10 @@ private:
     std::mutex mutex_;
     std::atomic<uint64_t> seqCounter_{0};
     size_t flushThreshold_ = 10000;
-    bool headerWritten_ = false;
     bool finalized_ = false;
     uint64_t eventCount_ = 0;
+    std::ofstream file_;
+    std::streampos dataEndPos_ = 0;
 };
 
 }
