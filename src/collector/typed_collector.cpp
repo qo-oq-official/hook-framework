@@ -5,6 +5,44 @@
 
 namespace hookfw {
 
+static bool isLikelyWideString(const wchar_t* ptr, size_t* outLen) {
+    MEMORY_BASIC_INFORMATION mbi = {};
+    if (!VirtualQuery(ptr, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT) {
+        return false;
+    }
+    auto regionEnd = reinterpret_cast<const uint8_t*>(mbi.BaseAddress) + mbi.RegionSize;
+    size_t safeBytes = regionEnd - reinterpret_cast<const uint8_t*>(ptr);
+    size_t maxChars = safeBytes / sizeof(wchar_t);
+    if (maxChars == 0) return false;
+    if (maxChars > 256) maxChars = 256;
+
+    size_t len = wcsnlen(ptr, maxChars);
+
+    size_t checkLen = (len < 8) ? len : 8;
+    for (size_t i = 0; i < checkLen; i++) {
+        wchar_t c = ptr[i];
+        if (c >= 0xD800 && c <= 0xDFFF) return false;
+        if (c == 0xFFFE || c == 0xFFFF) return false;
+        if (c < 0x0020 && c != L'\t' && c != L'\n' && c != L'\r') return false;
+    }
+
+    *outLen = len;
+    return true;
+}
+
+static std::string wideToUtf8(const wchar_t* ptr, size_t len) {
+    if (len == 0) return "";
+    int utf8Len = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
+                                      ptr, static_cast<int>(len),
+                                      nullptr, 0, nullptr, nullptr);
+    if (utf8Len <= 0) return "";
+    std::string utf8(utf8Len, '\0');
+    WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
+                        ptr, static_cast<int>(len),
+                        utf8.data(), utf8Len, nullptr, nullptr);
+    return utf8;
+}
+
 void TypedCollector::setParamDescriptors(const std::vector<ParamDescriptor>& params) {
     params_ = params;
 }
@@ -185,20 +223,21 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             param["type"] = "wstring";
             auto ptr = ctx.arg<const wchar_t*>(index);
             try {
-                if (ptr && !IsBadReadPtr(ptr, 2)) {
-                    size_t len = wcsnlen(ptr, 512);
-                    int utf8Len = WideCharToMultiByte(CP_UTF8, 0, ptr, static_cast<int>(len),
-                                                     nullptr, 0, nullptr, nullptr);
-                    if (utf8Len > 0) {
-                        std::string utf8(utf8Len, '\0');
-                        WideCharToMultiByte(CP_UTF8, 0, ptr, static_cast<int>(len),
-                                            utf8.data(), utf8Len, nullptr, nullptr);
+                size_t len = 0;
+                if (ptr && isLikelyWideString(ptr, &len) && len > 0) {
+                    std::string utf8 = wideToUtf8(ptr, len);
+                    if (!utf8.empty()) {
                         param["value"] = utf8;
                     } else {
-                        param["value"] = "";
+                        param["value"] = std::format("<non-text@{:#x}>",
+                                                     reinterpret_cast<uint64_t>(ptr));
+                        LOG_TRACE("WString param[{}] at {:p} failed UTF-8 conversion",
+                                  index, static_cast<const void*>(ptr));
                     }
                 } else {
-                    param["value"] = nullptr;
+                    param["value"] = ptr
+                        ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(ptr))
+                        : nullptr;
                 }
             } catch (...) {
                 param["value"] = "<unreadable>";
@@ -212,20 +251,21 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             try {
                 if (pCString && !IsBadReadPtr(pCString, 8)) {
                     auto pStr = *reinterpret_cast<const wchar_t* const*>(pCString);
-                    if (pStr && !IsBadReadPtr(pStr, 2)) {
-                        size_t len = wcsnlen(pStr, 512);
-                        int utf8Len = WideCharToMultiByte(CP_UTF8, 0, pStr, static_cast<int>(len),
-                                                         nullptr, 0, nullptr, nullptr);
-                        if (utf8Len > 0) {
-                            std::string utf8(utf8Len, '\0');
-                            WideCharToMultiByte(CP_UTF8, 0, pStr, static_cast<int>(len),
-                                               utf8.data(), utf8Len, nullptr, nullptr);
+                    size_t len = 0;
+                    if (pStr && isLikelyWideString(pStr, &len) && len > 0) {
+                        std::string utf8 = wideToUtf8(pStr, len);
+                        if (!utf8.empty()) {
                             param["value"] = utf8;
                         } else {
-                            param["value"] = "";
+                            param["value"] = std::format("<non-text@{:#x}>",
+                                                         reinterpret_cast<uint64_t>(pStr));
+                            LOG_TRACE("WStringRef param[{}] deref {:p} failed UTF-8 conversion",
+                                      index, static_cast<const void*>(pStr));
                         }
                     } else {
-                        param["value"] = nullptr;
+                        param["value"] = pStr
+                            ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(pStr))
+                            : nullptr;
                     }
                 } else {
                     param["value"] = nullptr;
