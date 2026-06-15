@@ -21,6 +21,8 @@ public:
                            uint64_t seq,
                            const std::string& phase,
                            const nlohmann::json& data) = 0;
+
+    virtual void flush() {}
 };
 
 }

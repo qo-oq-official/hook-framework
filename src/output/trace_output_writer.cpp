@@ -1,0 +1,167 @@
+#include "output/trace_output_writer.h"
+#include "logging/logger.h"
+#include <Windows.h>
+#include <DbgHelp.h>
+#include <fstream>
+#include <filesystem>
+
+#pragma comment(lib, "dbghelp.lib")
+
+namespace hookfw {
+
+static int64_t g_perfFrequency = 0;
+static int64_t g_perfStart = 0;
+
+static void initPerfCounter() {
+    if (g_perfFrequency == 0) {
+        LARGE_INTEGER freq, start;
+        QueryPerformanceFrequency(&freq);
+        QueryPerformanceCounter(&start);
+        g_perfFrequency = freq.QuadPart;
+        g_perfStart = start.QuadPart;
+    }
+}
+
+TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
+    : outputDir_(outputDir) {
+    initPerfCounter();
+
+    std::filesystem::create_directories(outputDir);
+    traceFilePath_ = (std::filesystem::path(outputDir) / "trace.json").string();
+
+    std::ofstream file(traceFilePath_, std::ios::trunc);
+    if (file.is_open()) {
+        file << "{\"traceEvents\":[\n";
+        file.close();
+        headerWritten_ = true;
+    }
+
+    LOG_INFO("TraceOutputWriter created, output={}", traceFilePath_);
+}
+
+TraceOutputWriter::~TraceOutputWriter() {
+    flush();
+
+    try {
+        std::ofstream file(traceFilePath_, std::ios::app);
+        if (file.is_open()) {
+            file << "{\"name\":\"end\",\"ph\":\"M\",\"ts\":0,\"pid\":0,\"tid\":0}\n]}";
+            file.close();
+        }
+    } catch (...) {}
+}
+
+int64_t TraceOutputWriter::nowMicroseconds() {
+    initPerfCounter();
+    LARGE_INTEGER now;
+    QueryPerformanceCounter(&now);
+    return ((now.QuadPart - g_perfStart) * 1000000) / g_perfFrequency;
+}
+
+std::string TraceOutputWriter::undecorateName(const std::string& mangledName) {
+    if (mangledName.empty() || mangledName[0] != '?') {
+        return mangledName;
+    }
+    char buf[512] = {};
+    DWORD result = UnDecorateSymbolName(mangledName.c_str(), buf, sizeof(buf),
+                                        UNDNAME_NAME_ONLY);
+    if (result > 0) {
+        return std::string(buf);
+    }
+    return mangledName;
+}
+
+void TraceOutputWriter::addTraceEvent(const std::string& name,
+                                      const std::string& category,
+                                      char phase,
+                                      int64_t timestampUs,
+                                      uint32_t pid,
+                                      uint32_t tid,
+                                      const nlohmann::json& args) {
+    std::lock_guard lock(mutex_);
+    events_.push_back({name, category, phase, timestampUs, pid, tid, args});
+
+    if (events_.size() >= flushThreshold_) {
+        doFlush();
+    }
+}
+
+bool TraceOutputWriter::writeRaw(const std::string&, const std::string&,
+                                 uint64_t, const std::string&,
+                                 const uint8_t*, size_t) {
+    return true;
+}
+
+bool TraceOutputWriter::writeJson(const std::string& moduleName,
+                                  const std::string& functionName,
+                                  uint64_t,
+                                  const std::string& phase,
+                                  const nlohmann::json& data) {
+    char ph = (phase == "entry") ? 'B' : 'E';
+    int64_t ts = nowMicroseconds();
+    uint32_t pid = GetCurrentProcessId();
+    uint32_t tid = GetCurrentThreadId();
+
+    std::string displayName = undecorateName(functionName);
+
+    nlohmann::json args;
+    if (data.contains("params")) {
+        for (const auto& p : data["params"]) {
+            std::string key = p.value("name", "arg");
+            if (p.contains("value")) {
+                args[key] = p["value"];
+            } else if (p.contains("value_hex")) {
+                args[key] = p["value_hex"];
+            }
+        }
+    }
+    if (data.contains("return_value") && data["return_value"].contains("value")) {
+        args["return"] = data["return_value"]["value"];
+    }
+
+    addTraceEvent(displayName, moduleName, ph, ts, pid, tid, args);
+    return true;
+}
+
+uint64_t TraceOutputWriter::nextSeq() {
+    return ++seqCounter_;
+}
+
+void TraceOutputWriter::flush() {
+    std::lock_guard lock(mutex_);
+    doFlush();
+}
+
+void TraceOutputWriter::doFlush() {
+    if (events_.empty()) return;
+
+    try {
+        std::ofstream file(traceFilePath_, std::ios::app);
+        if (!file.is_open()) {
+            LOG_ERROR("Cannot open trace file: {}", traceFilePath_);
+            return;
+        }
+
+        for (const auto& ev : events_) {
+            nlohmann::json j;
+            j["name"] = ev.name;
+            j["cat"] = ev.category;
+            j["ph"] = std::string(1, ev.phase);
+            j["ts"] = ev.timestampUs;
+            j["pid"] = ev.pid;
+            j["tid"] = ev.tid;
+            if (!ev.args.empty()) {
+                j["args"] = ev.args;
+            }
+            file << j.dump() << ",\n";
+        }
+
+        file.flush();
+        LOG_TRACE("Trace flushed: {} events", events_.size());
+        events_.clear();
+    } catch (const std::exception& ex) {
+        LOG_ERROR("Trace flush failed: {}", ex.what());
+    }
+}
+
+}

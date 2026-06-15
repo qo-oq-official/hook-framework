@@ -193,6 +193,10 @@ void HookEngineCore::uninstallAll() {
 
     if (!installed_) return;
 
+    if (outputWriter_) {
+        outputWriter_->flush();
+    }
+
     HookTransaction txn;
     if (!txn.isValid()) {
         LOG_ERROR("Failed to start unhook transaction");

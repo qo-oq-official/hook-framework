@@ -34,6 +34,14 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
         if (root.contains("log_level")) {
             config.logLevel = root["log_level"].get<std::string>();
         }
+        if (root.contains("output_format")) {
+            std::string fmt = root["output_format"].get<std::string>();
+            if (fmt == "perfetto") {
+                config.outputFormat = OutputFormat::Perfetto;
+            } else {
+                config.outputFormat = OutputFormat::File;
+            }
+        }
 
         if (!root.contains("hooks") || !root["hooks"].is_array()) {
             LOG_ERROR("Config must contain 'hooks' array");

@@ -1,29 +1,433 @@
 {
   "output_dir": "dump_data",
-  "log_file": "hook_swccu.log",
+  "output_format": "perfetto",
   "log_level": "trace",
   "hooks": [
-    {
-      "module": "swccu.dll",
-      "symbol": "?ReadClass@su_CArchive@@QEAAPEAUCRuntimeClass@@PEBU2@PEAIPEAK@Z",
-      "action": "capture",
-      "collector": "typed",
-      "params": [
-        {"name": "this_ptr", "type": "pointer"},
-        {"name": "pRuntimeClass", "type": "pointer"},
-        {"name": "pUint", "type": "pointer"},
-        {"name": "pUlong", "type": "pointer"}
-      ],
-      "return_type": "pointer"
-    },
     {
       "module": "sldappu.dll",
       "symbol": "?OpenDocumentFile@CAmApp@@UEAAPEAVCDocument@@PEB_W@Z",
       "action": "capture",
       "collector": "typed",
       "params": [
-        {"name": "this_ptr", "type": "pointer"},
+        {"name": "this", "type": "pointer"},
         {"name": "lpszFileName", "type": "wstring"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?Read@su_CArchive@@QEAAIPEAXI@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "buffer", "type": "pointer"},
+        {"name": "count", "type": "uint32"}
+      ],
+      "return_type": "uint32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?Write@su_CArchive@@QEAAXPEBXI@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "buffer", "type": "pointer"},
+        {"name": "count", "type": "uint32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?ReadClass@su_CArchive@@QEAAPEAUCRuntimeClass@@PEBU2@PEAIPEAK@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pRuntimeClass", "type": "pointer"},
+        {"name": "pSchemaNum", "type": "pointer"},
+        {"name": "pObTag", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?ReadObject@su_CArchive@@QEAAPEAVCObject@@PEBUCRuntimeClass@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pRuntimeClass", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?WriteObject@su_CArchive@@QEAAXPEBVCObject@@PEBUCRuntimeClass@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pObject", "type": "pointer"},
+        {"name": "pRuntimeClass", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?WriteClass@su_CArchive@@QEAAXPEBUCRuntimeClass@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pRuntimeClass", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?SerializeClass@su_CArchive@@QEAAXPEBUCRuntimeClass@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pRuntimeClass", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?ReadString@su_CArchive@@QEAAPEA_WPEA_WI@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "buffer", "type": "pointer"},
+        {"name": "maxLen", "type": "uint32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?ReadString@su_CArchive@@QEAAHAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pString", "type": "pointer"}
+      ],
+      "return_type": "int32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?WriteString@su_CArchive@@QEAAXPEB_W@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "str", "type": "wstring"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?ReadCount@su_CArchive@@QEAAKXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"}
+      ],
+      "return_type": "uint32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?WriteCount@su_CArchive@@QEAAXK@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "count", "type": "uint32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?MapObject@su_CArchive@@QEAAXPEBVCObject@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pObject", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?Abort@su_CArchive@@QEAAXXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?Close@su_CArchive@@QEAAXXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?Flush@su_CArchive@@QEAAXXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?FillBuffer@su_CArchive@@QEAAXI@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "bytesNeeded", "type": "uint32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?GetFile@su_CArchive@@QEBAPEAVCFile@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?GetObjectSchema@su_CArchive@@QEAAIXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "uint32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?IsBufferEmpty@su_CArchive@@QEBAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "int32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?IsByteSwapping@su_CArchive@@QEBAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "int32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?IsDBStream@su_CArchive@@QEBAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "int32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?IsLoading@su_CArchive@@QEBAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "int32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?IsStoring@su_CArchive@@QEBAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "int32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?IsUsingMemFile@su_CArchive@@QEBAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "int32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?AddToLoadArrayDirect@su_CArchive@@QEAAXPEBVCObject@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pObject", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?AddToSaveMapDirect@su_CArchive@@QEAAXPEBVCObject@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pObject", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?SetLoadParams@su_CArchive@@QEAAXI@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "growBy", "type": "uint32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?SetObjectSchema@su_CArchive@@QEAAXI@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "schema", "type": "uint32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?SetStoreParams@su_CArchive@@QEAAXII@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "hashSize", "type": "uint32"},
+        {"name": "growBy", "type": "uint32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?allowCorrupt@su_CArchive@@SAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "allow", "type": "int32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?clearSchemaMap@su_CArchive@@QEAAXXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?copyLoadArrayStoreMapFrom@su_CArchive@@QEAAXPEAV1@H@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pSource", "type": "pointer"},
+        {"name": "flags", "type": "int32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?ensureSchemaMapExists@su_CArchive@@QEAAXXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?getLoadArray@su_CArchive@@QEAAPEAVsu_CPtrArray@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?getMapCount@su_CArchive@@QEAAIXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "uint32"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?getSchemaMap@su_CArchive@@QEAAPEAVsu_CMapPtrToPtr@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?getStoreMap@su_CArchive@@QEAAPEAVsu_CMapPtrToPtr@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?setLoadArray@su_CArchive@@QEAAXPEAVsu_CPtrArray@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pArray", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?setMapCount@su_CArchive@@QEAAXI@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "count", "type": "uint32"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?setSchemaMap@su_CArchive@@QEAAXPEAVsu_CMapPtrToPtr@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pMap", "type": "pointer"}
+      ],
+      "return_type": "pointer"
+    },
+    {
+      "module": "swccu.dll",
+      "symbol": "?setStoreMap@su_CArchive@@QEAAXPEAVsu_CMapPtrToPtr@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "this", "type": "pointer"},
+        {"name": "pMap", "type": "pointer"}
       ],
       "return_type": "pointer"
     }

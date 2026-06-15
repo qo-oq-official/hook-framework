@@ -9,6 +9,7 @@ set(HOOK_FW_SOURCES
     replacer/callback_replacer.cpp
     output/file_output_writer.cpp
     output/output_path_builder.cpp
+    output/trace_output_writer.cpp
     config/config_loader.cpp
     config/config_validator.cpp
     logging/logger.cpp
