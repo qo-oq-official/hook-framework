@@ -61,7 +61,6 @@ private:
     size_t flushThreshold_ = 10000;
     bool headerWritten_ = false;
     uint64_t eventCount_ = 0;
-    std::streampos nextWritePos_ = 0;
 };
 
 }

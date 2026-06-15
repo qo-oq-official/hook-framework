@@ -18,9 +18,8 @@ TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
     {
         std::ofstream file(traceFilePath_, std::ios::trunc);
         if (file.is_open()) {
-            file << "{\"traceEvents\":[]}";
+            file << "{\"traceEvents\":[";
             file.flush();
-            nextWritePos_ = 16;
             headerWritten_ = true;
         }
     }
@@ -30,6 +29,14 @@ TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
 
 TraceOutputWriter::~TraceOutputWriter() {
     flush();
+    try {
+        std::ofstream file(traceFilePath_, std::ios::app);
+        if (file.is_open()) {
+            file << "\n]}";
+            file.flush();
+        }
+        LOG_INFO("Trace file finalized: {} ({} events)", traceFilePath_, eventCount_);
+    } catch (...) {}
 }
 
 int64_t TraceOutputWriter::nowMicroseconds() {
@@ -129,13 +136,11 @@ void TraceOutputWriter::doFlush() {
     if (events_.empty()) return;
 
     try {
-        std::fstream file(traceFilePath_, std::ios::in | std::ios::out | std::ios::binary);
+        std::ofstream file(traceFilePath_, std::ios::app);
         if (!file.is_open()) {
             LOG_ERROR("Cannot open trace file: {}", traceFilePath_);
             return;
         }
-
-        file.seekp(nextWritePos_);
 
         for (const auto& ev : events_) {
             nlohmann::json j;
@@ -155,10 +160,7 @@ void TraceOutputWriter::doFlush() {
             eventCount_++;
         }
 
-        nextWritePos_ = file.tellp();
-        file << "\n]}";
         file.flush();
-
         events_.clear();
     } catch (const std::exception& ex) {
         LOG_ERROR("Trace flush failed: {}", ex.what());
