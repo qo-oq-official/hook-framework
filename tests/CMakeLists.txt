@@ -24,3 +24,7 @@ target_include_directories(test_multi_dll PRIVATE ${CMAKE_SOURCE_DIR}/src)
 add_executable(test_rva_hook test_rva_hook.cpp)
 target_link_libraries(test_rva_hook PRIVATE hook_framework nlohmann_json)
 target_include_directories(test_rva_hook PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+add_executable(test_deref_output test_deref_output.cpp)
+target_link_libraries(test_deref_output PRIVATE hook_framework nlohmann_json)
+target_include_directories(test_deref_output PRIVATE ${CMAKE_SOURCE_DIR}/src)

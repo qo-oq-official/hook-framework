@@ -50,4 +50,30 @@ TEST_API __declspec(noinline) int test_sum4(int a, int b, int c, int d) {
     return a + b + c + d;
 }
 
+TEST_API __declspec(noinline) int test_read_int(int* out) {
+    if (out) *out = 12345;
+    return 1;
+}
+
+TEST_API __declspec(noinline) int test_read_double(double* out) {
+    if (out) *out = 3.14159265;
+    return 1;
+}
+
+TEST_API __declspec(noinline) int test_read_pair(int* outA, int* outB) {
+    if (outA) *outA = 100;
+    if (outB) *outB = 200;
+    return 2;
+}
+
+TEST_API __declspec(noinline) int test_read_int64(int64_t* out) {
+    if (out) *out = 9876543210LL;
+    return 1;
+}
+
+TEST_API __declspec(noinline) int test_read_float(float* out) {
+    if (out) *out = 2.718f;
+    return 1;
+}
+
 }
