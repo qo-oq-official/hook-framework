@@ -261,10 +261,6 @@ void shutdownFramework() {
 
 // --- ASM dispatch (called from thunk_x64.asm) ---
 
-extern "C" {
-
-static thread_local bool g_inHookDispatch = false;
-
 static void crashLog(const char* msg) {
     static HANDLE hFile = INVALID_HANDLE_VALUE;
     if (hFile == INVALID_HANDLE_VALUE) {
@@ -289,64 +285,72 @@ static void crashLog(const char* msg) {
         WriteFile(hFile, msg, static_cast<DWORD>(strlen(msg)), &written, nullptr);
         FlushFileBuffers(hFile);
     }
-    OutputDebugStringA(msg);
 }
+
+static thread_local bool g_inHookDispatch = false;
+static volatile uint32_t g_lastHookId = 0;
+static volatile uint64_t g_lastPhase = 0;
+static volatile uint64_t g_dispatchCount = 0;
+
+static void doDispatchBody(hookfw::ThunkData* data,
+                           uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3,
+                           uint64_t origRSP, uint64_t phase, void* xmmPtr) {
+    auto* hook = hookfw::HookEngineCore::instance().getHookById(data->hookId);
+    if (!hook || !hook->collector) return;
+
+    hookfw::HookContext ctx{};
+    ctx.hookId = data->hookId;
+
+    if (phase == 0) {
+        ctx.rcx = a0;
+        ctx.rdx = a1;
+        ctx.r8 = a2;
+        ctx.r9 = a3;
+        ctx.rsp = origRSP;
+        if (xmmPtr) {
+            memcpy(ctx.xmm0, xmmPtr, 16);
+            memcpy(ctx.xmm1, static_cast<uint8_t*>(xmmPtr) + 16, 16);
+            memcpy(ctx.xmm2, static_cast<uint8_t*>(xmmPtr) + 32, 16);
+            memcpy(ctx.xmm3, static_cast<uint8_t*>(xmmPtr) + 48, 16);
+        }
+        if (origRSP && !IsBadReadPtr(reinterpret_cast<void*>(origRSP), 512)) {
+            ctx.returnAddress = *reinterpret_cast<uint64_t*>(origRSP);
+            memcpy(ctx.stackSnapshot, reinterpret_cast<void*>(origRSP), 512);
+            ctx.stackSnapshotSize = 512;
+        }
+        hook->collector->onEntry(ctx);
+    } else {
+        ctx.rax = a0;
+        ctx.rcx = a1;
+        ctx.rdx = a2;
+        ctx.r8 = a3;
+        ctx.r9 = origRSP;
+        if (xmmPtr) {
+            memcpy(ctx.xmm0, xmmPtr, 16);
+        }
+        hook->collector->onExit(ctx);
+    }
+}
+
+extern "C" {
 
 void hookfw_dispatch(hookfw::ThunkData* data,
                      uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3,
                      uint64_t origRSP, uint64_t phase, void* xmmPtr) {
     if (g_inHookDispatch) return;
+    if (!data) return;
+
+    g_lastHookId = data->hookId;
+    g_lastPhase = phase;
+    g_dispatchCount++;
     g_inHookDispatch = true;
 
-    try {
-        if (!data) {
-            crashLog("[hookfw] FATAL: ThunkData* is NULL\n");
-            g_inHookDispatch = false;
-            return;
-        }
-
-        auto* hook = hookfw::HookEngineCore::instance().getHookById(data->hookId);
-        if (!hook || !hook->collector) {
-            g_inHookDispatch = false;
-            return;
-        }
-
-        hookfw::HookContext ctx{};
-        ctx.hookId = data->hookId;
-
-        if (phase == 0) {
-            ctx.rcx = a0;
-            ctx.rdx = a1;
-            ctx.r8 = a2;
-            ctx.r9 = a3;
-            ctx.rsp = origRSP;
-            if (xmmPtr) {
-                memcpy(ctx.xmm0, xmmPtr, 16);
-                memcpy(ctx.xmm1, static_cast<uint8_t*>(xmmPtr) + 16, 16);
-                memcpy(ctx.xmm2, static_cast<uint8_t*>(xmmPtr) + 32, 16);
-                memcpy(ctx.xmm3, static_cast<uint8_t*>(xmmPtr) + 48, 16);
-            }
-            if (origRSP && !IsBadReadPtr(reinterpret_cast<void*>(origRSP), 512)) {
-                ctx.returnAddress = *reinterpret_cast<uint64_t*>(origRSP);
-                memcpy(ctx.stackSnapshot, reinterpret_cast<void*>(origRSP), 512);
-                ctx.stackSnapshotSize = 512;
-            }
-            hook->collector->onEntry(ctx);
-        } else {
-            ctx.rax = a0;
-            ctx.rcx = a1;
-            ctx.rdx = a2;
-            ctx.r8 = a3;
-            ctx.r9 = origRSP;
-            if (xmmPtr) {
-                memcpy(ctx.xmm0, xmmPtr, 16);
-            }
-            hook->collector->onExit(ctx);
-        }
-    } catch (...) {
+    __try {
+        doDispatchBody(data, a0, a1, a2, a3, origRSP, phase, xmmPtr);
+    } __except (EXCEPTION_EXECUTE_HANDLER) {
         char buf[256];
-        wsprintfA(buf, "[hookfw] CRASH in dispatch hook_id=%u phase=%llu\n",
-                  data ? data->hookId : 0, phase);
+        wsprintfA(buf, "[CRASH] hook_id=%u phase=%llu count=%llu code=0x%08X\n",
+                  g_lastHookId, g_lastPhase, g_dispatchCount, GetExceptionCode());
         crashLog(buf);
     }
 
