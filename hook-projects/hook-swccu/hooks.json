@@ -36159,6 +36159,27 @@
                                      }
                                  ],
                       "return_type":  "pointer"
+                  },
+                  {
+                      "module":  "sldmfcu.dll",
+                      "symbol":  "?loadFileStream@suFileStorage@@QEAAHAEBV?@_WV?@_WV?@_W@ATL@@@@@ATL@@0@Z",
+                      "action":  "capture",
+                      "collector":  "typed",
+                      "params":  [
+                                     {
+                                         "name":  "this",
+                                         "type":  "pointer"
+                                     },
+                                     {
+                                         "name":  "streamName",
+                                         "type":  "wstring_ref"
+                                     },
+                                     {
+                                         "name":  "storagePath",
+                                         "type":  "wstring_ref"
+                                     }
+                                 ],
+                      "return_type":  "int32"
                   }
               ],
     "output_format":  "perfetto",

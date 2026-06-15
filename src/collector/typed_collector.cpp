@@ -206,6 +206,36 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             }
             break;
         }
+        case ParamType::WStringRef: {
+            param["type"] = "wstring_ref";
+            auto pCString = ctx.arg<const void*>(index);
+            try {
+                if (pCString && !IsBadReadPtr(pCString, 8)) {
+                    auto pStr = *reinterpret_cast<const wchar_t* const*>(pCString);
+                    if (pStr && !IsBadReadPtr(pStr, 2)) {
+                        size_t len = wcsnlen(pStr, 512);
+                        int utf8Len = WideCharToMultiByte(CP_UTF8, 0, pStr, static_cast<int>(len),
+                                                         nullptr, 0, nullptr, nullptr);
+                        if (utf8Len > 0) {
+                            std::string utf8(utf8Len, '\0');
+                            WideCharToMultiByte(CP_UTF8, 0, pStr, static_cast<int>(len),
+                                               utf8.data(), utf8Len, nullptr, nullptr);
+                            param["value"] = utf8;
+                        } else {
+                            param["value"] = "";
+                        }
+                    } else {
+                        param["value"] = nullptr;
+                    }
+                } else {
+                    param["value"] = nullptr;
+                }
+            } catch (...) {
+                param["value"] = "<unreadable>";
+                LOG_WARN("Failed to read WStringRef param at index {}", index);
+            }
+            break;
+        }
         case ParamType::Buffer: {
             param["type"] = "buffer";
             auto ptr = ctx.arg<const uint8_t*>(index);
