@@ -36162,7 +36162,7 @@
                   },
                   {
                       "module":  "sldmfcu.dll",
-                      "symbol":  "?loadFileStream@suFileStorage@@QEAAHAEBV?@_WV?@_WV?@_W@ATL@@@@@ATL@@0@Z",
+                      "symbol":  "?loadFileStream@suFileStorage@@QEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@0@Z",
                       "action":  "capture",
                       "collector":  "typed",
                       "params":  [
