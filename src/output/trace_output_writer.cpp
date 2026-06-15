@@ -10,15 +10,12 @@
 namespace hookfw {
 
 static int64_t g_perfFrequency = 0;
-static int64_t g_perfStart = 0;
 
 static void initPerfCounter() {
     if (g_perfFrequency == 0) {
-        LARGE_INTEGER freq, start;
+        LARGE_INTEGER freq;
         QueryPerformanceFrequency(&freq);
-        QueryPerformanceCounter(&start);
         g_perfFrequency = freq.QuadPart;
-        g_perfStart = start.QuadPart;
     }
 }
 
@@ -55,7 +52,7 @@ int64_t TraceOutputWriter::nowMicroseconds() {
     initPerfCounter();
     LARGE_INTEGER now;
     QueryPerformanceCounter(&now);
-    return ((now.QuadPart - g_perfStart) * 1000000) / g_perfFrequency;
+    return (now.QuadPart * 1000000) / g_perfFrequency;
 }
 
 std::string TraceOutputWriter::undecorateName(const std::string& mangledName) {
