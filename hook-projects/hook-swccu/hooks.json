@@ -37725,6 +37725,430 @@
       "collector": "typed",
       "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
       "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?GetRuntimeClass@moExtObject_c@@UEBAPEAUCRuntimeClass@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?GetThisClass@moExtObject_c@@SAPEAUCRuntimeClass@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?activeExtContextFeatures@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?activePartToBaseAssyConnections@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?activeUsers@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?addConnection@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?connect@moExtObject_c@@QEAAXW4moConnectionType_e@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?connectToExtContext@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?connectToPartToBaseAssy@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?disconnect@moExtObject_c@@QEAAXW4moConnectionType_e@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?disconnectFromExtContext@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?disconnectFromPartToBaseAssy@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getBreakId@moExtObject_c@@QEBA_NXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getConfigurationIDToLoad@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getConfigurationToLoad@moExtObject_c@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getFCOwner@moExtObject_c@@QEBAPEAVmoFiledConcept_c@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getFileLastSaveStamp@moExtObject_c@@QEAA?AVsu_CTime@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getFromServer@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getIndexInRefList@moExtObject_c@@QEBA?BHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getIsExtObjReplaced@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getIsFutureVersion@moExtObject_c@@UEBAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getIsReferencedDoc@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getLastModTimestamp@moExtObject_c@@QEAA?AVsu_CTime@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getLastSaveTimestamp@moExtObject_c@@QEAA?AVsu_CTime@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getModelHelper@moExtObject_c@@QEBAPEAVmoModelHelper_c@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getNeedsResetModifiedFlag@moExtObject_c@@QEBA_NXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getOverrideSyncRefNamesWithFile@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getRunTimeHelper@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?getURI@moExtObject_c@@QEBA?BV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?hasReadAccess@moExtObject_c@@SAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?isAlive@moExtObject_c@@SAHPEAV1@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?isDefeaturedVirtualPart@moExtObject_c@@QEAA_NXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?isFileReadOnly@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?isLastModTimeStampUpdated@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?isPeFile@moExtObject_c@@SAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?isVirtualExtObj@moExtObject_c@@UEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?removeConnection@moExtObject_c@@QEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?replacePathOfExtObj@moExtObject_c@@QEAAXV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setAsDefeaturedVirtualPart@moExtObject_c@@QEAAX_N@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setBreakId@moExtObject_c@@QEAAX_N@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setConfigurationToLoad@moExtObject_c@@QEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setFromServer@moExtObject_c@@QEAAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setIndexInRefList@moExtObject_c@@QEAAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setIsExtObjReplaced@moExtObject_c@@QEAAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setIsFutureVersion@moExtObject_c@@UEAAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setIsReferencedDoc@moExtObject_c@@QEAAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setLastModTimeStamoUpdated@moExtObject_c@@QEAAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setLastModTimestamp@moExtObject_c@@QEAAXVsu_CTime@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setLastSaveTimestamp@moExtObject_c@@QEAAXVsu_CTime@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setNeedsResetModifiedFlag@moExtObject_c@@QEAAX_N@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setOverrideSyncRefNamesWithFile@moExtObject_c@@QEAAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setRunTimeHelper@moExtObject_c@@QEAAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldarchiveu.dll",
+      "symbol": "?setURI@moExtObject_c@@QEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
     }],
     "output_format":  "perfetto",
     "log_level":  "trace"
