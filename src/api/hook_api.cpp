@@ -265,7 +265,7 @@ extern "C" {
 
 void hookfw_dispatch(hookfw::ThunkData* data,
                      uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3,
-                     uint64_t origRSP, uint64_t phase) {
+                     uint64_t origRSP, uint64_t phase, void* xmmPtr) {
     try {
         auto* hook = hookfw::HookEngineCore::instance().getHookById(data->hookId);
         if (!hook || !hook->collector) {
@@ -282,6 +282,12 @@ void hookfw_dispatch(hookfw::ThunkData* data,
             ctx.r8 = a2;
             ctx.r9 = a3;
             ctx.rsp = origRSP;
+            if (xmmPtr) {
+                memcpy(ctx.xmm0, xmmPtr, 16);
+                memcpy(ctx.xmm1, static_cast<uint8_t*>(xmmPtr) + 16, 16);
+                memcpy(ctx.xmm2, static_cast<uint8_t*>(xmmPtr) + 32, 16);
+                memcpy(ctx.xmm3, static_cast<uint8_t*>(xmmPtr) + 48, 16);
+            }
             if (origRSP) {
                 ctx.returnAddress = *reinterpret_cast<uint64_t*>(origRSP);
                 size_t copySize = 512;
@@ -293,6 +299,9 @@ void hookfw_dispatch(hookfw::ThunkData* data,
             hook->collector->onEntry(ctx);
         } else {
             ctx.rax = a0;
+            if (xmmPtr) {
+                memcpy(ctx.xmm0, xmmPtr, 16);
+            }
             hook->collector->onExit(ctx);
         }
     } catch (const std::exception& ex) {

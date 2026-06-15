@@ -39,9 +39,9 @@ hookfw_thunk_entry PROC
     ;; RSP is still 0-mod-16
 
     ;; --- Pre-hook dispatch ---
-    ;; hookfw_dispatch(ThunkData*, arg0, arg1, arg2, arg3, origRSP, phase)
-    ;; Need 32 shadow + 3*8 stack args = 56 bytes. Use 64 for 16-alignment.
-    sub rsp, 64                ; RSP: 0->0 mod16
+    ;; hookfw_dispatch(ThunkData*, arg0, arg1, arg2, arg3, origRSP, phase, xmmPtr)
+    ;; Need 32 shadow + 5*8 stack args = 72 bytes. Use 80 for 16-alignment.
+    sub rsp, 80                ; RSP: 0->0 mod16
     mov rcx, r12               ; ThunkData*
     mov rdx, r13               ; arg0
     mov r8, r14                ; arg1
@@ -49,8 +49,10 @@ hookfw_thunk_entry PROC
     mov qword ptr [rsp + 32], rbx   ; arg3
     mov qword ptr [rsp + 40], rsi   ; origRSP
     mov qword ptr [rsp + 48], 0     ; phase=0 (entry)
+    lea rax, [rsp + 80]            ; xmmPtr -> XMM save area
+    mov qword ptr [rsp + 56], rax   ; arg8 = xmmPtr
     call hookfw_dispatch
-    add rsp, 64
+    add rsp, 80
 
     ;; Restore XMM args
     movaps xmm0, [rsp]
@@ -117,7 +119,7 @@ after_call:
     movaps [rsp], xmm0
 
     ;; --- Post-hook dispatch ---
-    sub rsp, 64                ; RSP: 0->0 mod16
+    sub rsp, 80                ; RSP: 0->0 mod16
     mov rcx, r12               ; ThunkData*
     mov rdx, rsi               ; return value (in arg slot)
     xor r8, r8
@@ -125,8 +127,10 @@ after_call:
     mov qword ptr [rsp + 32], 0
     mov qword ptr [rsp + 40], 0
     mov qword ptr [rsp + 48], 1     ; phase=1 (exit)
+    lea rax, [rsp + 80]            ; xmmPtr -> saved XMM0 return
+    mov qword ptr [rsp + 56], rax   ; arg8 = xmmPtr
     call hookfw_dispatch
-    add rsp, 64
+    add rsp, 80
 
     ;; Restore return values
     movaps xmm0, [rsp]

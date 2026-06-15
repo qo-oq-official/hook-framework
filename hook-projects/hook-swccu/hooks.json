@@ -504,7 +504,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -521,7 +521,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -538,7 +538,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -555,7 +555,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -572,7 +572,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -589,7 +589,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -606,7 +606,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -623,7 +623,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -640,7 +640,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -657,7 +657,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -674,7 +674,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -691,7 +691,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -708,7 +708,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -725,7 +725,7 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "pValue",
                                          "type":  "pointer"
                                      }
                                  ],
@@ -1201,8 +1201,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "int64"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@_J@Z",
@@ -1218,8 +1218,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "uint64"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@_K@Z",
@@ -1235,8 +1235,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "uint16"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@_W@Z",
@@ -1269,8 +1269,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "int8"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@D@Z",
@@ -1286,8 +1286,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "uint8"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@E@Z",
@@ -1303,8 +1303,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "int16"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@F@Z",
@@ -1320,8 +1320,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "uint16"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@G@Z",
@@ -1337,8 +1337,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "int32"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@H@Z",
@@ -1354,8 +1354,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "uint32"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@I@Z",
@@ -1371,8 +1371,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "int32"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@J@Z",
@@ -1388,8 +1388,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "uint32"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@K@Z",
@@ -1405,8 +1405,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "float32"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@M@Z",
@@ -1422,8 +1422,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "float64"
                                      }
                                  ],
                       "symbol":  "??6su_CArchive@@QEAAAEAV0@N@Z",
@@ -1486,12 +1486,8 @@
                       "collector":  "typed",
                       "params":  [
                                      {
-                                         "name":  "this",
-                                         "type":  "pointer"
-                                     },
-                                     {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "allow",
+                                         "type":  "int32"
                                      }
                                  ],
                       "symbol":  "?allowCorrupt@su_CArchive@@SAXH@Z",
@@ -1579,8 +1575,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "bytesNeeded",
+                                         "type":  "uint32"
                                      }
                                  ],
                       "symbol":  "?FillBuffer@su_CArchive@@QEAAXI@Z",
@@ -1931,8 +1927,12 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
+                                         "name":  "buffer",
                                          "type":  "pointer"
+                                     },
+                                     {
+                                         "name":  "maxLen",
+                                         "type":  "uint32"
                                      }
                                  ],
                       "symbol":  "?ReadString@su_CArchive@@QEAAPEA_WPEA_WI@Z",
@@ -1982,8 +1982,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "uint32"
                                      }
                                  ],
                       "symbol":  "?SetLoadParams@su_CArchive@@QEAAXI@Z",
@@ -1999,8 +1999,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "uint32"
                                      }
                                  ],
                       "symbol":  "?setMapCount@su_CArchive@@QEAAXI@Z",
@@ -2016,8 +2016,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "value",
+                                         "type":  "uint32"
                                      }
                                  ],
                       "symbol":  "?SetObjectSchema@su_CArchive@@QEAAXI@Z",
@@ -2126,8 +2126,8 @@
                                          "type":  "pointer"
                                      },
                                      {
-                                         "name":  "arg1",
-                                         "type":  "pointer"
+                                         "name":  "count",
+                                         "type":  "uint32"
                                      }
                                  ],
                       "symbol":  "?WriteCount@su_CArchive@@QEAAXK@Z",
