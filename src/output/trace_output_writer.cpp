@@ -4,25 +4,14 @@
 #include <DbgHelp.h>
 #include <fstream>
 #include <filesystem>
+#include <chrono>
 
 #pragma comment(lib, "dbghelp.lib")
 
 namespace hookfw {
 
-static int64_t g_perfFrequency = 0;
-
-static void initPerfCounter() {
-    if (g_perfFrequency == 0) {
-        LARGE_INTEGER freq;
-        QueryPerformanceFrequency(&freq);
-        g_perfFrequency = freq.QuadPart;
-    }
-}
-
 TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
     : outputDir_(outputDir) {
-    initPerfCounter();
-
     std::filesystem::create_directories(outputDir);
     traceFilePath_ = (std::filesystem::path(outputDir) / "trace.json").string();
 
@@ -49,10 +38,9 @@ TraceOutputWriter::~TraceOutputWriter() {
 }
 
 int64_t TraceOutputWriter::nowMicroseconds() {
-    initPerfCounter();
-    LARGE_INTEGER now;
-    QueryPerformanceCounter(&now);
-    return (now.QuadPart * 1000000) / g_perfFrequency;
+    auto now = std::chrono::high_resolution_clock::now();
+    auto us = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch());
+    return us.count();
 }
 
 std::string TraceOutputWriter::undecorateName(const std::string& mangledName) {
