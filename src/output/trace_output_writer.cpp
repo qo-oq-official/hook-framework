@@ -47,9 +47,14 @@ std::string TraceOutputWriter::undecorateName(const std::string& mangledName) {
     if (mangledName.empty() || mangledName[0] != '?') {
         return mangledName;
     }
-    char buf[512] = {};
-    DWORD result = UnDecorateSymbolName(mangledName.c_str(), buf, sizeof(buf),
-                                        UNDNAME_NAME_ONLY);
+    char buf[1024] = {};
+    DWORD flags = UNDNAME_NO_ACCESS_SPECIFIERS |
+                  UNDNAME_NO_MEMBER_TYPE |
+                  UNDNAME_NO_MS_KEYWORDS |
+                  UNDNAME_NO_RETURN_UDT_MODEL |
+                  UNDNAME_NO_THISTYPE |
+                  UNDNAME_NO_ALLOCATION_MODEL;
+    DWORD result = UnDecorateSymbolName(mangledName.c_str(), buf, sizeof(buf), flags);
     if (result > 0) {
         return std::string(buf);
     }
