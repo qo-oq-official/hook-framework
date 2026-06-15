@@ -97,6 +97,17 @@ bool HookEngineCore::addHook(const HookDescriptor& desc,
         return false;
     }
 
+    for (const auto& existing : hooks_) {
+        if (existing->resolvedAddress == hook->resolvedAddress) {
+            std::string targetName = desc.target.useRva
+                ? std::format("RVA_{:#x}", desc.target.rva) : desc.target.symbolName;
+            LOG_WARN("Skipping duplicate address {:#x} for {}!{} (already hooked by id={})",
+                     reinterpret_cast<uintptr_t>(hook->resolvedAddress),
+                     desc.target.moduleName, targetName, existing->id);
+            return true;
+        }
+    }
+
     void* replacement = nullptr;
     if (hook->replacer) {
         replacement = hook->replacer->getReplacementAddress();
