@@ -28,6 +28,20 @@ TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
 }
 
 TraceOutputWriter::~TraceOutputWriter() {
+    if (!finalized_) {
+        flush();
+        try {
+            std::ofstream file(traceFilePath_, std::ios::app);
+            if (file.is_open()) {
+                file << "\n]}";
+                file.flush();
+            }
+        } catch (...) {}
+    }
+}
+
+void TraceOutputWriter::finalize() {
+    if (finalized_) return;
     flush();
     try {
         std::ofstream file(traceFilePath_, std::ios::app);
@@ -35,8 +49,11 @@ TraceOutputWriter::~TraceOutputWriter() {
             file << "\n]}";
             file.flush();
         }
+        finalized_ = true;
         LOG_INFO("Trace file finalized: {} ({} events)", traceFilePath_, eventCount_);
-    } catch (...) {}
+    } catch (const std::exception& ex) {
+        LOG_ERROR("Trace finalize failed: {}", ex.what());
+    }
 }
 
 int64_t TraceOutputWriter::nowMicroseconds() {

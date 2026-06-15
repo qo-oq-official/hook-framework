@@ -23,6 +23,7 @@ public:
                            const nlohmann::json& data) = 0;
 
     virtual void flush() {}
+    virtual void finalize() {}
 };
 
 }

@@ -227,6 +227,12 @@ void HookEngine::shutdown() {
         LOG_INFO("HookEngine shutting down...");
         TraceFlusher::instance().stop();
         HookEngineCore::instance().uninstallAll();
+
+        auto writer = HookEngineCore::instance().getOutputWriter();
+        if (writer) {
+            writer->finalize();
+        }
+
         impl_->initialized = false;
         Logger::instance().shutdown();
     } catch (const std::exception& ex) {

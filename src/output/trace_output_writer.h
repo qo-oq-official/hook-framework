@@ -45,6 +45,7 @@ public:
                        const nlohmann::json& args);
 
     void flush();
+    void finalize() override;
     uint64_t nextSeq();
 
     static int64_t nowMicroseconds();
@@ -60,6 +61,7 @@ private:
     std::atomic<uint64_t> seqCounter_{0};
     size_t flushThreshold_ = 10000;
     bool headerWritten_ = false;
+    bool finalized_ = false;
     uint64_t eventCount_ = 0;
 };
 
