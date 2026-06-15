@@ -36083,6 +36083,48 @@
                                      }
                                  ],
                       "return_type":  "pointer"
+                  },
+                  {
+                      "module":  "swccu.dll",
+                      "symbol":  "??0su_CArchive@@QEAA@PEAVCFile@@IHPEAX@Z",
+                      "action":  "capture",
+                      "collector":  "typed",
+                      "params":  [
+                                     {
+                                         "name":  "this",
+                                         "type":  "pointer"
+                                     },
+                                     {
+                                         "name":  "pFile",
+                                         "type":  "pointer"
+                                     },
+                                     {
+                                         "name":  "nMode",
+                                         "type":  "uint32"
+                                     },
+                                     {
+                                         "name":  "nBufSize",
+                                         "type":  "int32"
+                                     }
+                                 ],
+                      "return_type":  "pointer"
+                  },
+                  {
+                      "module":  "swccu.dll",
+                      "symbol":  "??0su_CArchive@@IEAA@AEBV0@@Z",
+                      "action":  "capture",
+                      "collector":  "typed",
+                      "params":  [
+                                     {
+                                         "name":  "this",
+                                         "type":  "pointer"
+                                     },
+                                     {
+                                         "name":  "other",
+                                         "type":  "pointer"
+                                     }
+                                 ],
+                      "return_type":  "pointer"
                   }
               ],
     "output_format":  "perfetto",
