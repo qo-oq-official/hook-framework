@@ -142,6 +142,7 @@ ParamType ConfigLoader::parseParamType(const std::string& typeStr) const {
     if (typeStr == "cstring") return ParamType::CString;
     if (typeStr == "wstring") return ParamType::WString;
     if (typeStr == "wstring_ref") return ParamType::WStringRef;
+    if (typeStr == "cstring_ref") return ParamType::CStringRef;
     if (typeStr == "buffer") return ParamType::Buffer;
     LOG_WARN("Unknown param type '{}', defaulting to int64", typeStr);
     return ParamType::Int64;

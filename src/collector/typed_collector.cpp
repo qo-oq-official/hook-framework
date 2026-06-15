@@ -276,6 +276,28 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             }
             break;
         }
+        case ParamType::CStringRef: {
+            param["type"] = "cstring_ref";
+            auto pObj = ctx.arg<const void*>(index);
+            try {
+                if (pObj && !IsBadReadPtr(pObj, 8)) {
+                    auto pStr = *reinterpret_cast<const char* const*>(pObj);
+                    if (pStr && !IsBadReadPtr(pStr, 1)) {
+                        size_t len = strnlen(pStr, 256);
+                        param["value"] = std::string(pStr, len);
+                    } else {
+                        param["value"] = nullptr;
+                    }
+                } else {
+                    param["value"] = pObj
+                        ? std::format("{:#x}", reinterpret_cast<uint64_t>(pObj))
+                        : nullptr;
+                }
+            } catch (...) {
+                param["value"] = "<unreadable>";
+            }
+            break;
+        }
         case ParamType::Buffer: {
             param["type"] = "buffer";
             auto ptr = ctx.arg<const uint8_t*>(index);

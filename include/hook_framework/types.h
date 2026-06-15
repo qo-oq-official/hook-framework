@@ -22,6 +22,7 @@ enum class ParamType : uint8_t {
     CString,
     WString,
     WStringRef,
+    CStringRef,
     Buffer,
 };
 
