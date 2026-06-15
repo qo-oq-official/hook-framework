@@ -36933,6 +36933,798 @@
       "collector": "typed",
       "params": [{"name": "this", "type": "pointer"}],
       "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "??0EnsureCleanup@suFileStorage@@IEAA@PEAV1@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "??0EnsureCleanupStream@suFileStorage@@QEAA@PEAV1@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "??0EnsureCleanupStreamAndChildStorage@suFileStorage@@QEAA@PEAV1@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "??1EnsureCleanupStream@suFileStorage@@QEAA@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "??1EnsureCleanupStreamAndChildStorage@suFileStorage@@QEAA@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "??4EnsureCleanup@suFileStorage@@QEAAAEAV01@$$QEAV01@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "??4EnsureCleanup@suFileStorage@@QEAAAEAV01@AEBV01@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "??4EnsureCleanupStream@suFileStorage@@QEAAAEAV01@AEBV01@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "??4EnsureCleanupStreamAndChildStorage@suFileStorage@@QEAAAEAV01@AEBV01@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?Commit@suFileStorage@@UEAAJW4commitTarget@@K@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?GetRuntimeClass@suFileStorage@@UEBAPEAUCRuntimeClass@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?GetStreamDescription@suFileStorage@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V23@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?GetThirdPartyStgStore@suFileStorage@@UEAAPEAUIStorage@@H@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?GetThisClass@suFileStorage@@SAPEAUCRuntimeClass@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?IsCriticalStream@suFileStorage@@QEAAHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?IsSteamOrFileExist@suFileStorage@@UEAAHAEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@H@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?IsStreamFoundInDataBase@suFileStorage@@QEAAHV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?Lock@suFileStorage@@QEAAJXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?ReleaseThirdPartyStgStore@suFileStorage@@UEAAXPEAUIStorage@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?SaveThirdPartyStgStoreToFile@suFileStorage@@UEAAXPEAUIStorage@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?UnLock@suFileStorage@@QEAAJXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?askFailureCode@suFileStorage@@UEAAJXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?attachToNode@suFileStorage@@UEAAHHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HW4suStorageCompression_e@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?cleanUpAllSharedStorages@suFileStorage@@SAXXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?cleanUpNamedSharedStorage@suFileStorage@@SAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?copyChildStorage@suFileStorage@@SAHPEAV1@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@01@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?copyStgStorageToZipFile@suFileStorage@@SAHPEAUIStorage@@PEB_W@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?copyStream@suFileStorage@@SAHPEAV1@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@01@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?copyThirdPtyStorageUsingFileOnDisk@suFileStorage@@UEAA_NPEAUIStorage@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?createStorage@suFileStorage@@SAPEAV1@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HPEAVSldModelContext_c@@PEAUIStorage@@HHPEAVZipStorage@@PEAW4suStorageType_e@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?createStorage@suFileStorage@@SAPEAV1@PEAUIStorage@@PEAVSldModelContext_c@@PEAVZipStorage@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?decryptAndAttachStream@suFileStorage@@UEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEBD@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?destroyAllStreams@suFileStorage@@UEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?destroyNode@suFileStorage@@UEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?destroyStreamNode@suFileStorage@@UEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@V23@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?detachChildStorageNoRelease@suFileStorage@@UEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?enableSharedStorage@suFileStorage@@SAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?encryptAndReleaseStream@suFileStorage@@UEAAHPEBD@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?forceDestroyNode@suFileStorage@@UEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getAllConfigStreamMap@suFileStorage@@UEAAHAEAVsu_CMapStringToString@@_N1@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getArchive@suFileStorage@@QEAAPEAVsu_CArchive@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getChildStorage@suFileStorage@@UEAAPEAUIStorage@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getChildZipStorage@suFileStorage@@UEAAPEAVZipStorage@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getCompressionFlag@suFileStorage@@UEBA?AW4suStorageCompression_e@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getDefaultCompression@suFileStorage@@SA?AW4suStorageCompression_e@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getDefaultStorageType@suFileStorage@@SA?AW4suStorageType_e@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getEmbedededStorage@suFileStorage@@QEAAPEAV1@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getException@suFileStorage@@UEAAPEAVCException@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getFilePathName@suFileStorage@@UEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getLockBytes@suFileStorage@@QEBAPEAVsuFileLockBytes@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getOleStreamFile@suFileStorage@@UEAAPEAVCOleStreamFile@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getRootStorage@suFileStorage@@UEAAPEAUIStorage@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getRootZipStorage@suFileStorage@@UEAAPEAVZipStorage@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getSharedStorage@suFileStorage@@SAPEAV1@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HPEAVSldModelContext_c@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getStorageAllocated@suFileStorage@@UEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getStreamCompression@suFileStorage@@SAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getStreamNames@suFileStorage@@UEAAHAEAVCStringArray@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getSummaryInfo@suFileStorage@@UEAAPEAVCSummInfo@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?getTopStorage@suFileStorage@@UEAAPEAUIStorage@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?isNodeCompressed@suFileStorage@@UEAA?AW4suStorageCompression_e@@AEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?isSharedStorage@suFileStorage@@UEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?isSharedStorageEnabled@suFileStorage@@SAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?isStructuredStorage@suFileStorage@@UEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?isValid@suFileStorage@@UEBAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?isZipStorage@suFileStorage@@UEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?lastCompressionRatio@suFileStorage@@UEBAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?lastCompressionTime@suFileStorage@@UEBAJXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?loadDLVersion@suFileStorage@@QEBAKXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?loadDisplayName@suFileStorage@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?loadFileStream@suFileStorage@@QEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@0@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?loadVersion@suFileStorage@@QEBAKXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?modelContext@suFileStorage@@QEAAPEAVSldModelContext_c@@XZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?readClassStg@suFileStorage@@UEAAJPEAU_GUID@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?releaseChildStorage@suFileStorage@@UEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?releaseStream@suFileStorage@@UEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?renameNode@suFileStorage@@UEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@0@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?reserve@suFileStorage@@SAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?reserve@suFileStorage@@SAHPEAUIStorage@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?resetStorageAllocated@suFileStorage@@UEAAXXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?saveDisplayName@suFileStorage@@QEAAXV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?saveFileStream@suFileStorage@@QEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@0@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?setChildStorage@suFileStorage@@UEAAXPEAUIStorage@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?setChildZipStorage@suFileStorage@@UEAAXPEAVZipStorage@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?setDefaultCompression@suFileStorage@@SAXW4suStorageCompression_e@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?setDefaultStorageType@suFileStorage@@SAXW4suStorageType_e@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?setEmbedededStorage@suFileStorage@@QEAAXPEAV1@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?setIsSharedStorage@suFileStorage@@UEAAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?setStorage@EnsureCleanup@suFileStorage@@QEAAXPEAV2@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?setStorageAllocated@suFileStorage@@UEAAXXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?setStreamCompression@suFileStorage@@SAXH@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?showDetailsOfCompression@suFileStorage@@UEAAXXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?syncStreams@suFileStorage@@UEAAHAEBVsu_CStringArray@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?syncStreamsForConfigs@suFileStorage@@UEAAHAEBVsu_CMapStringToString@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?topStorageIsPresent@suFileStorage@@UEAAHXZ",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?unreserve@suFileStorage@@SAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?whoIsUsing@suFileStorage@@SAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEAV23@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?writeClassStg@suFileStorage@@UEAAJAEBU_GUID@@@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?writeDLVersion@suFileStorage@@QEAAHI@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "symbol": "?writeVersion@suFileStorage@@QEAAHI@Z",
+      "action": "capture",
+      "collector": "typed",
+      "params": [{"name": "this", "type": "pointer"}, {"name": "arg1", "type": "pointer"}],
+      "return_type": "pointer"
     }],
     "output_format":  "perfetto",
     "log_level":  "trace"
