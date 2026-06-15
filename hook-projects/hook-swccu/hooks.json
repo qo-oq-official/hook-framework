@@ -36096,7 +36096,7 @@
                                      },
                                      {
                                          "name":  "pFile",
-                                         "type":  "pointer"
+                                         "type":  "cfile"
                                      },
                                      {
                                          "name":  "nMode",

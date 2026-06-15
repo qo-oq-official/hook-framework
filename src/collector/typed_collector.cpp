@@ -228,6 +228,37 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             }
             break;
         }
+        case ParamType::CFileInfo: {
+            param["type"] = "cfile";
+            auto ptr = ctx.arg<const uint8_t*>(index);
+            param["value"] = std::format("{:#x}", ctx.arg<uint64_t>(index));
+            try {
+                if (ptr && !IsBadReadPtr(ptr, 16)) {
+                    HANDLE hFile = *reinterpret_cast<const HANDLE*>(ptr + 8);
+                    if (hFile && hFile != INVALID_HANDLE_VALUE) {
+                        wchar_t pathBuf[512] = {};
+                        DWORD pathLen = GetFinalPathNameByHandleW(hFile, pathBuf, 512, 0);
+                        if (pathLen > 0 && pathLen < 512) {
+                            int utf8Len = WideCharToMultiByte(CP_UTF8, 0, pathBuf, pathLen,
+                                                             nullptr, 0, nullptr, nullptr);
+                            if (utf8Len > 0) {
+                                std::string utf8(utf8Len, '\0');
+                                WideCharToMultiByte(CP_UTF8, 0, pathBuf, pathLen,
+                                                   utf8.data(), utf8Len, nullptr, nullptr);
+                                param["file_path"] = utf8;
+                            }
+                        }
+                        LARGE_INTEGER fileSize = {};
+                        if (GetFileSizeEx(hFile, &fileSize)) {
+                            param["file_size"] = fileSize.QuadPart;
+                        }
+                    }
+                }
+            } catch (...) {
+                LOG_WARN("Failed to read CFile info at index {}", index);
+            }
+            break;
+        }
     }
 
     return param;
