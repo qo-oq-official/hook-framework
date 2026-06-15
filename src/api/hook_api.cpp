@@ -263,9 +263,14 @@ void shutdownFramework() {
 
 extern "C" {
 
+static thread_local bool g_inHookDispatch = false;
+
 void hookfw_dispatch(hookfw::ThunkData* data,
                      uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3,
                      uint64_t origRSP, uint64_t phase, void* xmmPtr) {
+    if (g_inHookDispatch) return;
+    g_inHookDispatch = true;
+
     try {
         auto* hook = hookfw::HookEngineCore::instance().getHookById(data->hookId);
         if (!hook || !hook->collector) {
@@ -313,6 +318,8 @@ void hookfw_dispatch(hookfw::ThunkData* data,
     } catch (...) {
         LOG_CRITICAL("hookfw_dispatch unknown exception hook_id={}", data->hookId);
     }
+
+    g_inHookDispatch = false;
 }
 
 }
