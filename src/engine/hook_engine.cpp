@@ -79,9 +79,9 @@ void* HookEngineCore::resolveAddress(const HookTarget& target) {
     return addr;
 }
 
-bool HookEngineCore::addHook(const HookDescriptor& desc,
-                             std::shared_ptr<CollectorBase> collector,
-                             std::shared_ptr<ReplacerBase> replacer) {
+uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
+                                std::shared_ptr<CollectorBase> collector,
+                                std::shared_ptr<ReplacerBase> replacer) {
     std::lock_guard lock(mutex_);
 
     auto hook = std::make_unique<InstalledHook>();
@@ -94,7 +94,7 @@ bool HookEngineCore::addHook(const HookDescriptor& desc,
     if (!hook->resolvedAddress) {
         LOG_ERROR("Failed to resolve hook target: module={}, symbol={}, rva={:#x}",
                   desc.target.moduleName, desc.target.symbolName, desc.target.rva);
-        return false;
+        return 0;
     }
 
     for (const auto& existing : hooks_) {
@@ -104,34 +104,39 @@ bool HookEngineCore::addHook(const HookDescriptor& desc,
             LOG_WARN("Skipping duplicate address {:#x} for {}!{} (already hooked by id={})",
                      reinterpret_cast<uintptr_t>(hook->resolvedAddress),
                      desc.target.moduleName, targetName, existing->id);
-            return true;
+            return existing->id;
         }
     }
 
-    void* replacement = nullptr;
-    if (hook->replacer) {
-        replacement = hook->replacer->getReplacementAddress();
+    if (desc.mode == HookMode::Trace) {
+        hook->thunkSlot = ThunkManager::instance().allocateLightThunk(
+            hook->id, hook->resolvedAddress);
+    } else {
+        void* replacement = nullptr;
+        if (hook->replacer) {
+            replacement = hook->replacer->getReplacementAddress();
+        }
+        bool callOriginal = (desc.action != HookAction::Replace);
+        hook->thunkSlot = ThunkManager::instance().allocateThunk(
+            hook->id, hook->resolvedAddress, replacement, callOriginal);
     }
-
-    bool callOriginal = (desc.action != HookAction::Replace);
-    hook->thunkSlot = ThunkManager::instance().allocateThunk(
-        hook->id, hook->resolvedAddress, replacement, callOriginal);
 
     if (!hook->thunkSlot) {
         LOG_ERROR("Failed to allocate thunk for hook id={}", hook->id);
-        return false;
+        return 0;
     }
 
+    uint32_t hookId = hook->id;
     std::string targetName = desc.target.useRva
         ? std::format("RVA_{:#x}", desc.target.rva)
         : desc.target.symbolName;
 
-    LOG_INFO("Hook added: id={}, module={}, target={}, action={}",
-             hook->id, desc.target.moduleName, targetName,
-             static_cast<int>(desc.action));
+    LOG_INFO("Hook added: id={}, module={}, target={}, mode={}",
+             hookId, desc.target.moduleName, targetName,
+             desc.mode == HookMode::Trace ? "trace" : "capture");
 
     hooks_.push_back(std::move(hook));
-    return true;
+    return hookId;
 }
 
 static bool safeDetourAttach(HookTransaction* txn, void** ppOriginal, void* detourTarget,

@@ -22,6 +22,8 @@ public:
                              void* replacementFunc,
                              bool callOriginal);
 
+    ThunkSlot* allocateLightThunk(uint32_t hookId, void* originalFunc);
+
     void freeThunk(ThunkSlot* slot);
     void freeAll();
 

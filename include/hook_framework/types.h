@@ -37,6 +37,11 @@ enum class CollectorType : uint8_t {
     Custom,
 };
 
+enum class HookMode : uint8_t {
+    Trace,
+    Capture,
+};
+
 struct ParamDescriptor {
     std::string name;
     ParamType type;
@@ -55,6 +60,7 @@ struct HookTarget {
 struct HookDescriptor {
     HookTarget target;
     HookAction action = HookAction::Capture;
+    HookMode mode = HookMode::Capture;
     CollectorType collectorType = CollectorType::Raw;
     std::vector<ParamDescriptor> params;
     ParamType returnType = ParamType::Int64;

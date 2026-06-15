@@ -7,6 +7,8 @@
 #include "replacer/callback_replacer.h"
 #include "output/file_output_writer.h"
 #include "output/trace_output_writer.h"
+#include "output/trace_flusher.h"
+#include "output/ring_buffer.h"
 #include "logging/logger.h"
 #include <Windows.h>
 #include <filesystem>
@@ -100,7 +102,7 @@ bool HookBuilder::install() {
                 impl_->desc.replacerModule, impl_->desc.replacerSymbol);
         }
 
-        return HookEngineCore::instance().addHook(impl_->desc, collector, replacer);
+        return HookEngineCore::instance().addHook(impl_->desc, collector, replacer) != 0;
     } catch (const std::exception& ex) {
         LOG_ERROR("HookBuilder::install exception: {}", ex.what());
         return false;
@@ -163,30 +165,49 @@ bool HookEngine::initialize(const std::string& configPath) {
             }
             HookEngineCore::instance().setOutputWriter(writer);
 
+            int traceCount = 0, captureCount = 0;
             for (const auto& hookDesc : configOpt->hooks) {
-                auto collector = CollectorFactory::create(hookDesc);
-                if (collector) {
-                    collector->setOutputWriter(writer);
-                    collector->setModuleName(hookDesc.target.moduleName);
+                std::string funcName = hookDesc.target.useRva
+                    ? std::format("RVA_{:#x}", hookDesc.target.rva)
+                    : hookDesc.target.symbolName;
 
-                    std::string funcName = hookDesc.target.useRva
-                        ? std::format("RVA_{:#x}", hookDesc.target.rva)
-                        : hookDesc.target.symbolName;
-                    collector->setFunctionName(funcName);
-                }
-
+                std::shared_ptr<CollectorBase> collector;
                 std::shared_ptr<ReplacerBase> replacer;
-                if (!hookDesc.replacerModule.empty()) {
-                    replacer = std::make_shared<DllReplacer>(
-                        hookDesc.replacerModule, hookDesc.replacerSymbol);
+
+                if (hookDesc.mode == HookMode::Capture) {
+                    collector = CollectorFactory::create(hookDesc);
+                    if (collector) {
+                        collector->setOutputWriter(writer);
+                        collector->setModuleName(hookDesc.target.moduleName);
+                        collector->setFunctionName(funcName);
+                    }
+                    if (!hookDesc.replacerModule.empty()) {
+                        replacer = std::make_shared<DllReplacer>(
+                            hookDesc.replacerModule, hookDesc.replacerSymbol);
+                    }
                 }
 
-                if (!HookEngineCore::instance().addHook(hookDesc, collector, replacer)) {
-                    std::string targetName = hookDesc.target.useRva
-                        ? std::format("RVA_{:#x}", hookDesc.target.rva)
-                        : hookDesc.target.symbolName;
-                    LOG_ERROR("Failed to add hook from config: {}!{}",
-                              hookDesc.target.moduleName, targetName);
+                uint32_t hookId = HookEngineCore::instance().addHook(hookDesc, collector, replacer);
+                if (hookId == 0) {
+                    LOG_ERROR("Failed to add hook: {}!{}",
+                              hookDesc.target.moduleName, funcName);
+                    continue;
+                }
+
+                if (hookDesc.mode == HookMode::Trace) {
+                    TraceFlusher::instance().registerHookName(
+                        hookId, hookDesc.target.moduleName, funcName);
+                    traceCount++;
+                } else {
+                    captureCount++;
+                }
+            }
+            LOG_INFO("Hooks registered: {} trace, {} capture", traceCount, captureCount);
+
+            if (configOpt->outputFormat == OutputFormat::Perfetto) {
+                auto traceWriter = std::dynamic_pointer_cast<TraceOutputWriter>(writer);
+                if (traceWriter) {
+                    TraceFlusher::instance().start(traceWriter);
                 }
             }
         }
@@ -204,6 +225,7 @@ void HookEngine::shutdown() {
     try {
         if (!impl_->initialized) return;
         LOG_INFO("HookEngine shutting down...");
+        TraceFlusher::instance().stop();
         HookEngineCore::instance().uninstallAll();
         impl_->initialized = false;
         Logger::instance().shutdown();
@@ -288,9 +310,11 @@ static void crashLog(const char* msg) {
 }
 
 static thread_local bool g_inHookDispatch = false;
+static thread_local int g_hookDepth = 0;
 static volatile uint32_t g_lastHookId = 0;
 static volatile uint64_t g_lastPhase = 0;
 static volatile uint64_t g_dispatchCount = 0;
+static const int MAX_HOOK_DEPTH = 64;
 
 static void doDispatchBody(hookfw::ThunkData* data,
                            uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3,
@@ -333,6 +357,19 @@ static void doDispatchBody(hookfw::ThunkData* data,
 }
 
 extern "C" {
+
+void hookfw_quick_trace(hookfw::ThunkData* data,
+                        uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
+    hookfw::TraceRecord rec;
+    rec.hookId = data->hookId;
+    rec.threadId = GetCurrentThreadId();
+    rec.timestampUs = hookfw::RingBuffer::nowMicroseconds();
+    rec.arg0 = a0;
+    rec.arg1 = a1;
+    rec.arg2 = a2;
+    rec.arg3 = a3;
+    hookfw::TraceFlusher::instance().ringBuffer().push(rec);
+}
 
 void hookfw_dispatch(hookfw::ThunkData* data,
                      uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3,

@@ -73,6 +73,13 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
                 desc.action = parseAction(hookJson["action"].get<std::string>());
             }
 
+            if (hookJson.contains("mode")) {
+                std::string m = hookJson["mode"].get<std::string>();
+                desc.mode = (m == "capture") ? HookMode::Capture : HookMode::Trace;
+            } else if (config.outputFormat == OutputFormat::Perfetto) {
+                desc.mode = HookMode::Trace;
+            }
+
             if (hookJson.contains("collector")) {
                 desc.collectorType = parseCollectorType(hookJson["collector"].get<std::string>());
             }

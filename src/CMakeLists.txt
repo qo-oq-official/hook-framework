@@ -10,6 +10,7 @@ set(HOOK_FW_SOURCES
     output/file_output_writer.cpp
     output/output_path_builder.cpp
     output/trace_output_writer.cpp
+    output/trace_flusher.cpp
     config/config_loader.cpp
     config/config_validator.cpp
     logging/logger.cpp
@@ -18,6 +19,7 @@ set(HOOK_FW_SOURCES
 
 set(HOOK_FW_ASM_SOURCES
     thunk/thunk_x64.asm
+    thunk/light_thunk_x64.asm
 )
 
 add_library(hook_framework SHARED ${HOOK_FW_SOURCES} ${HOOK_FW_ASM_SOURCES})

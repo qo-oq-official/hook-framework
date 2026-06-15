@@ -24,14 +24,15 @@ class HookEngineCore {
 public:
     static HookEngineCore& instance();
 
-    bool addHook(const HookDescriptor& desc,
-                 std::shared_ptr<CollectorBase> collector,
-                 std::shared_ptr<ReplacerBase> replacer);
+    uint32_t addHook(const HookDescriptor& desc,
+                     std::shared_ptr<CollectorBase> collector,
+                     std::shared_ptr<ReplacerBase> replacer);
 
     bool installAll();
     void uninstallAll();
 
     InstalledHook* getHookById(uint32_t id);
+    uint32_t lastHookId() const { return nextId_ - 1; }
     void setOutputWriter(std::shared_ptr<OutputWriter> writer);
     std::shared_ptr<OutputWriter> getOutputWriter();
 

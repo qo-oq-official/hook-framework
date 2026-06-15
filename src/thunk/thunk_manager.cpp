@@ -3,6 +3,7 @@
 #include <Windows.h>
 
 extern "C" void hookfw_thunk_entry();
+extern "C" void hookfw_light_entry();
 
 namespace hookfw {
 
@@ -92,6 +93,44 @@ void ThunkManager::freeThunk(ThunkSlot* slot) {
         }
     }
     LOG_WARN("Attempted to free unknown thunk slot");
+}
+
+ThunkManager::ThunkSlot* ThunkManager::allocateLightThunk(uint32_t hookId, void* originalFunc) {
+    std::lock_guard lock(mutex_);
+
+    auto slot = std::make_unique<ThunkSlot>();
+    slot->id = hookId;
+    slot->data.hookId = hookId;
+    slot->data.padding0 = 0;
+    slot->data.originalFunction = originalFunc;
+    slot->data.trampolineFunction = originalFunc;
+    slot->data.replacementFunction = nullptr;
+    slot->data.callOriginal = 1;
+    slot->data.preCallback = nullptr;
+    slot->data.postCallback = nullptr;
+    std::memset(slot->data.padding1, 0, sizeof(slot->data.padding1));
+
+    constexpr size_t stubSize = 64;
+    void* mem = VirtualAlloc(nullptr, stubSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    if (!mem) {
+        LOG_ERROR("VirtualAlloc failed for light stub, error={}", GetLastError());
+        return nullptr;
+    }
+
+    uint8_t* code = static_cast<uint8_t*>(mem);
+    code[0] = 0x48; code[1] = 0xB8;
+    *reinterpret_cast<uint64_t*>(code + 2) = reinterpret_cast<uint64_t>(&slot->data);
+    code[10] = 0xFF; code[11] = 0x25;
+    *reinterpret_cast<uint32_t*>(code + 12) = 0;
+    *reinterpret_cast<uint64_t*>(code + 16) = reinterpret_cast<uint64_t>(&hookfw_light_entry);
+
+    DWORD oldProtect;
+    VirtualProtect(mem, stubSize, PAGE_EXECUTE_READ, &oldProtect);
+
+    slot->executableStub = mem;
+    auto* ptr = slot.get();
+    slots_.push_back(std::move(slot));
+    return ptr;
 }
 
 void ThunkManager::freeAll() {
