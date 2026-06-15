@@ -151,7 +151,7 @@ void TraceOutputWriter::doFlush() {
             if (!ev.args.empty()) {
                 j["args"] = ev.args;
             }
-            file << j.dump() << ",\n";
+            file << j.dump(-1, ' ', false, nlohmann::json::error_handler_t::replace) << ",\n";
         }
 
         file.flush();
