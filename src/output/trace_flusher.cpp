@@ -68,7 +68,7 @@ void TraceFlusher::flushLoop() {
             args["arg3"] = std::format("{:#x}", rec.arg3);
 
             if (writer_) {
-                writer_->addTraceEvent(name, cat, 'X', rec.timestampUs,
+                writer_->addTraceEvent(name, cat, 'i', rec.timestampUs,
                                        GetCurrentProcessId(), rec.threadId, args);
             }
         }

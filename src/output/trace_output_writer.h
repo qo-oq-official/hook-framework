@@ -60,6 +60,7 @@ private:
     std::atomic<uint64_t> seqCounter_{0};
     size_t flushThreshold_ = 10000;
     bool headerWritten_ = false;
+    uint64_t eventCount_ = 0;
 };
 
 }

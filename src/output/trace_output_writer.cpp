@@ -17,7 +17,7 @@ TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
 
     std::ofstream file(traceFilePath_, std::ios::trunc);
     if (file.is_open()) {
-        file << "{\"traceEvents\":[\n";
+        file << "{\"traceEvents\":[";
         file.close();
         headerWritten_ = true;
     }
@@ -31,7 +31,7 @@ TraceOutputWriter::~TraceOutputWriter() {
     try {
         std::ofstream file(traceFilePath_, std::ios::app);
         if (file.is_open()) {
-            file << "{\"name\":\"end\",\"ph\":\"M\",\"ts\":0,\"pid\":0,\"tid\":0}\n]}";
+            file << "\n]}";
             file.close();
         }
     } catch (...) {}
@@ -148,10 +148,17 @@ void TraceOutputWriter::doFlush() {
             j["ts"] = ev.timestampUs;
             j["pid"] = ev.pid;
             j["tid"] = ev.tid;
+            if (ev.phase == 'i') {
+                j["s"] = "t";
+            }
             if (!ev.args.empty()) {
                 j["args"] = ev.args;
             }
-            file << j.dump(-1, ' ', false, nlohmann::json::error_handler_t::replace) << ",\n";
+            if (eventCount_ > 0) {
+                file << ",\n";
+            }
+            file << j.dump(-1, ' ', false, nlohmann::json::error_handler_t::replace);
+            eventCount_++;
         }
 
         file.flush();
