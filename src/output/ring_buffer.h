@@ -50,6 +50,10 @@ public:
         return available;
     }
 
+    uint64_t pending() const {
+        return commitPos_.load(std::memory_order_relaxed) - readPos_;
+    }
+
     static int64_t nowMicroseconds() {
         auto now = std::chrono::high_resolution_clock::now();
         return std::chrono::duration_cast<std::chrono::microseconds>(

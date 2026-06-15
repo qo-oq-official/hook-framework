@@ -27,10 +27,10 @@ void TraceFlusher::stop() {
     if (flushThread_.joinable()) {
         flushThread_.detach();
     }
-    Sleep(200);
-    flushLoop();
+    Sleep(500);
     if (writer_) writer_->flush();
-    LOG_INFO("TraceFlusher stopped");
+    LOG_INFO("TraceFlusher stopped ({} events may remain in ring buffer)", 
+             ringBuffer_.pending());
 }
 
 void TraceFlusher::registerHookName(uint32_t hookId, const std::string& moduleName,
