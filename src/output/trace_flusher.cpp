@@ -25,8 +25,9 @@ void TraceFlusher::stop() {
     if (!running_) return;
     running_ = false;
     if (flushThread_.joinable()) {
-        flushThread_.join();
+        flushThread_.detach();
     }
+    Sleep(200);
     flushLoop();
     if (writer_) writer_->flush();
     LOG_INFO("TraceFlusher stopped");
