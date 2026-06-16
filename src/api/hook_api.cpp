@@ -381,7 +381,7 @@ void hookfw_quick_trace(hookfw::ThunkData* data,
     hookfw::TraceRecord rec{};
     rec.hookId = data->hookId;
     rec.threadId = GetCurrentThreadId();
-    rec.timestampNs = hookfw::RingBuffer::nowNanoseconds();
+    rec.timestampUs = hookfw::RingBuffer::nowMicroseconds();
     rec.arg0 = a0;
     rec.arg1 = a1;
     rec.arg2 = a2;
@@ -401,7 +401,7 @@ void hookfw_quick_trace_exit(hookfw::ThunkData* data,
     hookfw::TraceRecord rec{};
     rec.hookId = data->hookId;
     rec.threadId = GetCurrentThreadId();
-    rec.timestampNs = hookfw::RingBuffer::nowNanoseconds();
+    rec.timestampUs = hookfw::RingBuffer::nowMicroseconds();
     rec.arg0 = retval;
     rec.phase = 1;
     hookfw::TraceFlusher::instance().ringBuffer().push(rec);

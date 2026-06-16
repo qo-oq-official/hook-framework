@@ -13,7 +13,7 @@ struct TraceEvent {
     std::string name;
     std::string category;
     char phase;
-    int64_t timestampNs;
+    int64_t timestampUs;
     uint32_t pid;
     uint32_t tid;
     nlohmann::json args;
@@ -49,7 +49,7 @@ public:
     void finalize() override;
     uint64_t nextSeq();
 
-    static int64_t nowNanoseconds();
+    static int64_t nowMicroseconds();
     static std::string undecorateName(const std::string& mangledName);
 
 private:

@@ -37,9 +37,9 @@ void TraceOutputWriter::finalize() {
     LOG_INFO("Trace file finalized: {} ({} events)", traceFilePath_, eventCount_);
 }
 
-int64_t TraceOutputWriter::nowNanoseconds() {
+int64_t TraceOutputWriter::nowMicroseconds() {
     auto now = std::chrono::high_resolution_clock::now();
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(
+    return std::chrono::duration_cast<std::chrono::microseconds>(
         now.time_since_epoch()).count();
 }
 
@@ -88,7 +88,7 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                                   const std::string& phase,
                                   const nlohmann::json& data) {
     char ph = (phase == "entry") ? 'B' : 'E';
-    int64_t ts = nowNanoseconds();
+    int64_t ts = nowMicroseconds();
     uint32_t pid = GetCurrentProcessId();
     uint32_t tid = GetCurrentThreadId();
 
@@ -142,7 +142,7 @@ void TraceOutputWriter::doFlush() {
             j["name"] = ev.name;
             j["cat"] = ev.category;
             j["ph"] = std::string(1, ev.phase);
-            j["ts"] = ev.timestampNs;
+            j["ts"] = ev.timestampUs;
             j["pid"] = ev.pid;
             j["tid"] = ev.tid;
             if (!ev.args.empty()) {
