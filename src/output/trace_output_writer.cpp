@@ -64,16 +64,12 @@ std::string TraceOutputWriter::undecorateName(const std::string& mangledName) {
 void TraceOutputWriter::addTraceEvent(const std::string& name,
                                       const std::string& category,
                                       char phase,
-                                       double timestampUs,
+                                      double timestampUs,
                                       uint32_t pid,
                                       uint32_t tid,
                                       const nlohmann::json& args) {
     std::lock_guard lock(mutex_);
     events_.push_back({name, category, phase, timestampUs, pid, tid, args});
-
-    if (events_.size() >= flushThreshold_) {
-        doFlush();
-    }
 }
 
 bool TraceOutputWriter::writeRaw(const std::string&, const std::string&,
