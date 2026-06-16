@@ -19,7 +19,7 @@ struct TraceRecord {
 
 class RingBuffer {
 public:
-    static constexpr size_t CAPACITY = 1024 * 1024;
+    static constexpr size_t CAPACITY = 10000000;
 
     RingBuffer() : buffer_(new TraceRecord[CAPACITY]) {}
     ~RingBuffer() { delete[] buffer_; }
