@@ -368,13 +368,13 @@ extern "C" {
 
 static volatile uint64_t g_quickTraceCallCount = 0;
 static volatile bool g_quickTraceFirstLogged = false;
-static const uint32_t FLUSH_INTERVAL = 500000;
+static const uint32_t FLUSH_INTERVAL = 50000;
 
 void hookfw_quick_trace(hookfw::ThunkData* data,
                         uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
     static volatile uint64_t diagCount = 0;
     diagCount++;
-    if (diagCount <= 5 || diagCount % 10000 == 0) {
+    if (diagCount <= 5 || diagCount % 50000 == 0) {
         char buf[128];
         wsprintfA(buf, "[hookfw] trace call #%llu hook_id=%u\n", diagCount, data->hookId);
         crashLog(buf);

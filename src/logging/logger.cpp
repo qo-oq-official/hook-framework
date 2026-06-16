@@ -17,7 +17,7 @@ void Logger::initialize(const std::string& logFile, spdlog::level::level_enum le
 
     try {
         auto fileSink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-            logFile, 10 * 1024 * 1024, 5);
+            logFile, 50 * 1024 * 1024, 5);
         auto msvcSink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
 
         std::vector<spdlog::sink_ptr> sinks{fileSink, msvcSink};
