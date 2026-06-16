@@ -2277,5 +2277,7 @@
     {"module":"swccu.dll","symbol":"?Serialize@su_CObList@@UEAAXAEAVsu_CArchive@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"}],"return_type":"pointer"},
     {"module":"swccu.dll","symbol":"??0ScopedObjContext@@QEAA@PEAVsu_CArchive@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEBVsu_CObject@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"},{"name":"name","type":"wstring_ref"},{"name":"pObj","type":"pointer"}],"return_type":"pointer"},
     {"module":"swccu.dll","symbol":"??1ScopedObjContext@@QEAA@XZ","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"}
-  ]
+  ,
+    {"module":"swccu.dll","symbol":"??0su_DBKey@@QEAA@$$QEAV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"key","type":"wstring_ref"}],"return_type":"pointer"},
+    {"module":"swccu.dll","symbol":"??1su_DBKey@@QEAA@XZ","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"}]
 }
