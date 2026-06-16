@@ -83,7 +83,7 @@ void TraceFlusher::drainToWriter() {
 
                 char phase = (rec.phase == 0) ? 'B' : 'E';
                 if (writer_) {
-                    writer_->addTraceEvent(name, cat, phase, rec.timestampUs,
+                    writer_->addTraceEvent(name, cat, phase, rec.timestampNs,
                                            GetCurrentProcessId(), rec.threadId, args);
                 }
             } catch (...) {}
