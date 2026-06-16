@@ -328,6 +328,8 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             }
             try {
                 if (ptr && !IsBadReadPtr(ptr, size) && size > 0) {
+                    LOG_TRACE("Buffer exit: ptr={:#x} size={} idx={}", 
+                              reinterpret_cast<uint64_t>(ptr), size, index);
                     bool displayed = false;
                     if (size % 2 == 0 && size >= 2) {
                         auto wptr = reinterpret_cast<const wchar_t*>(ptr);
