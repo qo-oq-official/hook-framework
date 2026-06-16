@@ -2275,7 +2275,7 @@
     {"module":"sldmodu.dll","symbol":"?SerializeLWData@moConcept_c@@UEAAXAEAVsu_CArchive@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"}],"return_type":"pointer"},
     {"module":"sldmodu.dll","symbol":"?SerializeLWData@moAssembly_c@@UEAAXAEAVsu_CArchive@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"}],"return_type":"pointer"},
     {"module":"swccu.dll","symbol":"?Serialize@su_CObList@@UEAAXAEAVsu_CArchive@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"}],"return_type":"pointer"},
-    {"module":"swccu.dll","symbol":"??0ScopedObjContext@@QEAA@PEAVsu_CArchive@@V?@_WV?@_WV?@_W@ATL@@@@@ATL@@PEBVsu_CObject@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"},{"name":"name","type":"wstring_ref"},{"name":"pObj","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","symbol":"??0ScopedObjContext@@QEAA@PEAVsu_CArchive@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEBVsu_CObject@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"},{"name":"name","type":"wstring_ref"},{"name":"pObj","type":"pointer"}],"return_type":"pointer"},
     {"module":"swccu.dll","symbol":"??1ScopedObjContext@@QEAA@XZ","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"}
   ]
 }
