@@ -2270,6 +2270,10 @@
     {"module":"sldarchiveu.dll","symbol":"?setNeedsResetModifiedFlag@moExtObject_c@@QEAAX_N@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"arg1","type":"pointer"}],"return_type":"pointer"},
     {"module":"sldarchiveu.dll","symbol":"?setOverrideSyncRefNamesWithFile@moExtObject_c@@QEAAXH@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"arg1","type":"pointer"}],"return_type":"pointer"},
     {"module":"sldarchiveu.dll","symbol":"?setRunTimeHelper@moExtObject_c@@QEAAXH@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"arg1","type":"pointer"}],"return_type":"pointer"},
-    {"module":"sldarchiveu.dll","symbol":"?setURI@moExtObject_c@@QEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"arg1","type":"pointer"}],"return_type":"pointer"}
+    {"module":"sldarchiveu.dll","symbol":"?setURI@moExtObject_c@@QEAAXAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"arg1","type":"pointer"}],"return_type":"pointer"},
+    {"module":"sldmodu.dll","symbol":"?SerializeLWData@moNode_c@@UEAAXAEAVsu_CArchive@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"}],"return_type":"pointer"},
+    {"module":"sldmodu.dll","symbol":"?SerializeLWData@moConcept_c@@UEAAXAEAVsu_CArchive@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"}],"return_type":"pointer"},
+    {"module":"sldmodu.dll","symbol":"?SerializeLWData@moAssembly_c@@UEAAXAEAVsu_CArchive@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","symbol":"?Serialize@su_CObList@@UEAAXAEAVsu_CArchive@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"archive","type":"pointer"}],"return_type":"pointer"}
   ]
 }
