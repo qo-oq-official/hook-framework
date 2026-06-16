@@ -278,7 +278,9 @@ void HookEngine::setDllDirectory(const std::string& path) {
 
 void initializeFramework(const std::string& configPath) {
     HookEngine::instance().initialize(configPath);
-    HookEngine::instance().installAll();
+    if (!HookEngine::instance().installAll()) {
+        LOG_CRITICAL("Hook installation FAILED - no hooks will be active!");
+    }
 }
 
 void shutdownFramework() {
@@ -370,6 +372,14 @@ static const uint32_t FLUSH_INTERVAL = 500000;
 
 void hookfw_quick_trace(hookfw::ThunkData* data,
                         uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
+    static volatile uint64_t diagCount = 0;
+    diagCount++;
+    if (diagCount <= 5 || diagCount % 10000 == 0) {
+        char buf[128];
+        wsprintfA(buf, "[hookfw] trace call #%llu hook_id=%u\n", diagCount, data->hookId);
+        crashLog(buf);
+    }
+
     g_quickTraceCallCount++;
     if (!g_quickTraceFirstLogged) {
         g_quickTraceFirstLogged = true;

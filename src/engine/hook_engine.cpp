@@ -139,13 +139,11 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
     return hookId;
 }
 
-static bool safeDetourAttach(HookTransaction* txn, void** ppOriginal, void* detourTarget,
+static bool safeDetourAttach(void** ppOriginal, void* detourTarget,
                              uint32_t hookId, void* resolvedAddr) {
     __try {
-        if (!txn->attach(ppOriginal, detourTarget)) {
-            return false;
-        }
-        return true;
+        LONG r = DetourAttach(ppOriginal, detourTarget);
+        return (r == NO_ERROR);
     } __except (EXCEPTION_EXECUTE_HANDLER) {
         return false;
     }
@@ -164,13 +162,20 @@ bool HookEngineCore::installAll() {
         return true;
     }
 
-    HookTransaction txn;
-    if (!txn.isValid()) {
-        LOG_ERROR("Failed to start hook transaction");
-        return false;
-    }
-
     int attached = 0;
+    int failed = 0;
+    bool hasActiveTxn = false;
+
+    auto flushTxn = [&]() {
+        if (!hasActiveTxn) return;
+        DetourTransactionCommit();
+        hasActiveTxn = false;
+    };
+
+    DetourTransactionBegin();
+    DetourUpdateThread(GetCurrentThread());
+    hasActiveTxn = true;
+
     for (auto& hook : hooks_) {
         if (!hook->thunkSlot) continue;
 
@@ -178,30 +183,47 @@ bool HookEngineCore::installAll() {
         void** ppOriginal = &hook->thunkSlot->data.trampolineFunction;
         void* detourTarget = hook->thunkSlot->executableStub;
 
-        bool attachOk = safeDetourAttach(&txn, ppOriginal, detourTarget,
-                                         hook->id, hook->resolvedAddress);
+        bool attachOk = safeDetourAttach(ppOriginal, detourTarget, hook->id, hook->resolvedAddress);
         if (!attachOk) {
             LOG_ERROR("Failed to attach hook id={} (target={:#x}), skipping",
                       hook->id, reinterpret_cast<uintptr_t>(hook->resolvedAddress));
             hook->thunkSlot = nullptr;
+            failed++;
             continue;
         }
         attached++;
+
+        if (attached % 500 == 0) {
+            LONG r = DetourTransactionCommit();
+            if (r == NO_ERROR) {
+                DetourTransactionBegin();
+                DetourUpdateThread(GetCurrentThread());
+            } else {
+                LOG_ERROR("Mid-transaction commit failed at hook id={}, error={}", hook->id, r);
+                hasActiveTxn = false;
+                break;
+            }
+        }
+    }
+
+    if (hasActiveTxn && attached > 0) {
+        LONG r = DetourTransactionCommit();
+        if (r != NO_ERROR) {
+            LOG_ERROR("Final commit failed, error={}", r);
+        }
     }
 
     if (attached == 0) {
-        LOG_ERROR("No hooks attached successfully");
-        return false;
-    }
-
-    if (!txn.commit()) {
-        LOG_ERROR("Failed to commit hook transaction");
+        LOG_CRITICAL("NO hooks were installed! All {} hooks failed.", hooks_.size());
         return false;
     }
 
     installed_ = true;
-    LOG_INFO("{}/{} hooks installed successfully", attached, hooks_.size());
-    return true;
+    LOG_INFO("{} hooks installed, {} failed (total configured: {})", attached, failed, hooks_.size());
+    if (failed > 0) {
+        LOG_WARN("{} hooks could not be attached (functions too short?)", failed);
+    }
+    return attached > 0;
 }
 
 void HookEngineCore::uninstallAll() {

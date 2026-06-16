@@ -2664,7 +2664,6 @@
     {"module":"SPAAcisDs.dll","symbol":"?serialize_triangles@af_internal_mesh_impl@@UEBAHPEAH@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
     {"module":"SPAAcisDs.dll","symbol":"?serialize_uv_data@SEQUENTIAL_MESH@@UEBAXPEAMH@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
     {"module":"SPAAcisDs.dll","symbol":"?serialize_uv_data@SEQUENTIAL_MESH@@UEBAXPEANH@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
-    {"module":"SPAAcisDs.dll","symbol":"?serialize_uv_data@af_internal_mesh_impl@@UEBAXPEAMH@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
-    {"module":"SPAAcisDs.dll","symbol":"?serialize_uv_data@af_internal_mesh_impl@@UEBAXPEANH@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"}
+    {"module":"SPAAcisDs.dll","symbol":"?serialize_uv_data@af_internal_mesh_impl@@UEBAXPEAMH@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"}
   ]
 }
