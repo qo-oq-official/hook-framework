@@ -112,6 +112,16 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
             }
         }
     }
+    if (data.contains("exit_params")) {
+        for (const auto& p : data["exit_params"]) {
+            std::string key = p.value("name", "arg");
+            if (p.contains("value")) {
+                args[key] = p["value"];
+            } else if (p.contains("value_hex")) {
+                args[key] = p["value_hex"];
+            }
+        }
+    }
 
     addTraceEvent(displayName, moduleName, ph, ts, pid, tid, args);
     return true;

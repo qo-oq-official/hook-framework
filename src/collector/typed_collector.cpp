@@ -102,6 +102,16 @@ void TypedCollector::onExit(const HookContext& ctx) {
         j["phase"] = "exit";
         j["return_value"] = extractReturnValue(ctx);
 
+        nlohmann::json exitParams = nlohmann::json::array();
+        for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
+            if (params_[i].captureOnExit) {
+                exitParams.push_back(extractParam(ctx, i, params_[i]));
+            }
+        }
+        if (!exitParams.empty()) {
+            j["exit_params"] = exitParams;
+        }
+
         nlohmann::json outputParams = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             if (!params_[i].hasDeref) continue;
@@ -309,21 +319,43 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             param["type"] = "buffer";
             auto ptr = ctx.arg<const uint8_t*>(index);
             uint32_t size = desc.bufferSize > 0 ? desc.bufferSize : 64;
+            if (desc.bufferSize == 0 && index + 1 < static_cast<int>(params_.size())) {
+                auto nextType = params_[index + 1].type;
+                if (nextType == ParamType::UInt32 || nextType == ParamType::Int32) {
+                    size = ctx.arg<uint32_t>(index + 1);
+                    if (size > 2048) size = 256;
+                }
+            }
             try {
                 if (ptr && !IsBadReadPtr(ptr, size)) {
-                    std::string hex;
-                    for (uint32_t i = 0; i < size; ++i) {
-                        hex += std::format("{:02x}", ptr[i]);
-                        if (i + 1 < size) hex += ' ';
+                    bool asWide = (size % 2 == 0 && size >= 2 && size <= 1024);
+                    if (asWide) {
+                        auto wptr = reinterpret_cast<const wchar_t*>(ptr);
+                        size_t wlen = size / 2;
+                        int utf8Len = WideCharToMultiByte(CP_UTF8, 0, wptr, static_cast<int>(wlen),
+                                                         nullptr, 0, nullptr, nullptr);
+                        if (utf8Len > 0 && utf8Len < 4096) {
+                            std::string utf8(utf8Len, '\0');
+                            WideCharToMultiByte(CP_UTF8, 0, wptr, static_cast<int>(wlen),
+                                               utf8.data(), utf8Len, nullptr, nullptr);
+                            param["value"] = utf8;
+                            param["type"] = "wstring_from_buffer";
+                        }
                     }
-                    param["value_hex"] = hex;
-                    param["size"] = size;
+                    if (!param.contains("value")) {
+                        std::string hex;
+                        for (uint32_t i = 0; i < size && i < 64; ++i) {
+                            hex += std::format("{:02x}", ptr[i]);
+                            if (i + 1 < size && i + 1 < 64) hex += ' ';
+                        }
+                        param["value_hex"] = hex;
+                        param["size"] = size;
+                    }
                 } else {
                     param["value_hex"] = nullptr;
                 }
             } catch (...) {
                 param["value_hex"] = "<unreadable>";
-                LOG_WARN("Failed to read Buffer param at index {}", index);
             }
             break;
         }

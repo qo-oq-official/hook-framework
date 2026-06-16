@@ -98,6 +98,9 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
                         param.hasDeref = true;
                         param.derefType = parseParamType(paramJson["deref_type"].get<std::string>());
                     }
+                    if (paramJson.contains("capture_on_exit")) {
+                        param.captureOnExit = paramJson["capture_on_exit"].get<bool>();
+                    }
                     desc.params.push_back(param);
                 }
                 if (desc.collectorType == CollectorType::Raw && !desc.params.empty()) {
