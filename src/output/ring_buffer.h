@@ -8,7 +8,7 @@ namespace hookfw {
 struct TraceRecord {
     uint32_t hookId;
     uint32_t threadId;
-    int64_t timestampUs;
+    double timestampUs;
     uint64_t arg0;
     uint64_t arg1;
     uint64_t arg2;
@@ -54,10 +54,10 @@ public:
         return commitPos_.load(std::memory_order_relaxed) - readPos_;
     }
 
-    static int64_t nowMicroseconds() {
+    static double nowMicroseconds() {
         auto now = std::chrono::high_resolution_clock::now();
-        return std::chrono::duration_cast<std::chrono::microseconds>(
-            now.time_since_epoch()).count();
+        return std::chrono::duration_cast<std::chrono::nanoseconds>(
+            now.time_since_epoch()).count() / 1000.0;
     }
 
 private:
