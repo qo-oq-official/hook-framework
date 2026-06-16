@@ -280,21 +280,28 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             param["type"] = "cstring_ref";
             auto pObj = ctx.arg<const void*>(index);
             try {
-                if (pObj && !IsBadReadPtr(pObj, 8)) {
-                    auto pStr = *reinterpret_cast<const char* const*>(pObj);
-                    if (pStr && !IsBadReadPtr(pStr, 1)) {
-                        size_t len = strnlen(pStr, 256);
-                        param["value"] = std::string(pStr, len);
-                    } else {
-                        param["value"] = nullptr;
-                    }
-                } else {
+                if (!pObj || IsBadReadPtr(pObj, 8)) {
                     param["value"] = pObj
                         ? std::format("{:#x}", reinterpret_cast<uint64_t>(pObj))
                         : nullptr;
+                    break;
                 }
+                auto pStr = *reinterpret_cast<const char* const*>(pObj);
+                if (!pStr) { param["value"] = nullptr; break; }
+
+                MEMORY_BASIC_INFORMATION mbi = {};
+                if (!VirtualQuery(pStr, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT) {
+                    param["value"] = std::format("<badptr@{:#x}>", reinterpret_cast<uint64_t>(pStr));
+                    break;
+                }
+                auto regionEnd = reinterpret_cast<const uint8_t*>(mbi.BaseAddress) + mbi.RegionSize;
+                size_t safeBytes = regionEnd - reinterpret_cast<const uint8_t*>(pStr);
+                size_t maxLen = (safeBytes > 256) ? 256 : safeBytes;
+                size_t len = strnlen(pStr, maxLen);
+                param["value"] = std::string(pStr, len);
             } catch (...) {
                 param["value"] = "<unreadable>";
+                LOG_TRACE("CStringRef: AV for hook_id={} index={}", ctx.hookId, index);
             }
             break;
         }
