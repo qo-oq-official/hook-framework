@@ -328,28 +328,9 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             }
             try {
                 if (ptr && !IsBadReadPtr(ptr, size) && size > 0) {
-                    LOG_TRACE("Buffer exit: ptr={:#x} size={} idx={}", 
-                              reinterpret_cast<uint64_t>(ptr), size, index);
-                    bool displayed = false;
-                    if (size % 2 == 0 && size >= 2) {
-                        auto wptr = reinterpret_cast<const wchar_t*>(ptr);
-                        size_t wlen = size / 2;
-                        int utf8Len = WideCharToMultiByte(CP_UTF8, 0, wptr, static_cast<int>(wlen),
-                                                         nullptr, 0, nullptr, nullptr);
-                        if (utf8Len > 0 && utf8Len < 4096) {
-                            std::string utf8(utf8Len, '\0');
-                            WideCharToMultiByte(CP_UTF8, 0, wptr, static_cast<int>(wlen),
-                                               utf8.data(), utf8Len, nullptr, nullptr);
-                            param["value"] = utf8;
-                            param["type"] = "buffer_as_wstring";
-                            displayed = true;
-                        }
-                    }
-                    if (!displayed) {
-                        size_t len = strnlen(reinterpret_cast<const char*>(ptr), size);
-                        param["value"] = std::string(reinterpret_cast<const char*>(ptr), len);
-                        param["type"] = "buffer_as_ansi";
-                    }
+                    size_t len = strnlen(reinterpret_cast<const char*>(ptr), size);
+                    param["value"] = std::string(reinterpret_cast<const char*>(ptr), len);
+                    param["type"] = "buffer_as_string";
                 } else {
                     param["value"] = nullptr;
                 }
