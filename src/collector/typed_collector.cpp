@@ -327,9 +327,9 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                 }
             }
             try {
-                if (ptr && !IsBadReadPtr(ptr, size)) {
-                    bool asWide = (size % 2 == 0 && size >= 2 && size <= 1024);
-                    if (asWide) {
+                if (ptr && !IsBadReadPtr(ptr, size) && size > 0) {
+                    bool displayed = false;
+                    if (size % 2 == 0 && size >= 2) {
                         auto wptr = reinterpret_cast<const wchar_t*>(ptr);
                         size_t wlen = size / 2;
                         int utf8Len = WideCharToMultiByte(CP_UTF8, 0, wptr, static_cast<int>(wlen),
@@ -339,23 +339,20 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                             WideCharToMultiByte(CP_UTF8, 0, wptr, static_cast<int>(wlen),
                                                utf8.data(), utf8Len, nullptr, nullptr);
                             param["value"] = utf8;
-                            param["type"] = "wstring_from_buffer";
+                            param["type"] = "buffer_as_wstring";
+                            displayed = true;
                         }
                     }
-                    if (!param.contains("value")) {
-                        std::string hex;
-                        for (uint32_t i = 0; i < size && i < 64; ++i) {
-                            hex += std::format("{:02x}", ptr[i]);
-                            if (i + 1 < size && i + 1 < 64) hex += ' ';
-                        }
-                        param["value_hex"] = hex;
-                        param["size"] = size;
+                    if (!displayed) {
+                        size_t len = strnlen(reinterpret_cast<const char*>(ptr), size);
+                        param["value"] = std::string(reinterpret_cast<const char*>(ptr), len);
+                        param["type"] = "buffer_as_ansi";
                     }
                 } else {
-                    param["value_hex"] = nullptr;
+                    param["value"] = nullptr;
                 }
             } catch (...) {
-                param["value_hex"] = "<unreadable>";
+                param["value"] = "<unreadable>";
             }
             break;
         }
