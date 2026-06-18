@@ -60,11 +60,25 @@ void TraceFlusher::drainToWriter() {
     size_t count;
     while ((count = ringBuffer_.drain(batch, BATCH)) > 0) {
         g_totalFlushed += count;
+        uint64_t pending = ringBuffer_.pending();
+        if (pending > RingBuffer::CAPACITY * 2 / 3) {
+            static uint64_t lastWarnPending = 0;
+            if (pending > lastWarnPending + 100000) {
+                lastWarnPending = pending;
+                LOG_WARN("Ring buffer approaching capacity: {} pending / {} total ({} total flushed)",
+                         pending, RingBuffer::CAPACITY, g_totalFlushed);
+            }
+        }
+
         std::lock_guard lock(namesMutex_);
         for (size_t i = 0; i < count; i++) {
             try {
                 const auto& rec = batch[i];
                 auto it = hookNames_.find(rec.hookId);
+                if (it == hookNames_.end()) {
+                    LOG_WARN("Unknown hook_id {} in ring buffer (not registered with flusher)",
+                             rec.hookId);
+                }
                 std::string name = (it != hookNames_.end()) ? it->second.displayName
                                                              : std::to_string(rec.hookId);
                 std::string cat = (it != hookNames_.end()) ? it->second.moduleName : "unknown";
@@ -86,7 +100,13 @@ void TraceFlusher::drainToWriter() {
                     writer_->addTraceEvent(name, cat, phase, rec.timestampUs,
                                            GetCurrentProcessId(), rec.threadId, args);
                 }
-            } catch (...) {}
+            } catch (const std::exception& ex) {
+                LOG_WARN("Failed to serialize event for hook_id={} in drainToWriter: {}",
+                         batch[i].hookId, ex.what());
+            } catch (...) {
+                LOG_WARN("Unknown exception serializing hook_id={} in drainToWriter",
+                         batch[i].hookId);
+            }
         }
     }
 }

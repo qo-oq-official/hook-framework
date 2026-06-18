@@ -31,17 +31,20 @@ public:
         return true;
     }
 
-    size_t drain(TraceRecord* out, size_t maxCount) {
+    size_t drain(TraceRecord* out, size_t maxCount, uint64_t* outOverflow = nullptr) {
         uint64_t committed = commitPos_.load(std::memory_order_acquire);
         uint64_t read = readPos_;
         size_t available = static_cast<size_t>(committed - read);
         if (available == 0) return 0;
         if (available > maxCount) available = maxCount;
         if (available > CAPACITY) {
+            if (outOverflow) *outOverflow = available - CAPACITY;
             readPos_ = committed - CAPACITY;
             read = readPos_;
             available = static_cast<size_t>(committed - read);
             if (available > maxCount) available = maxCount;
+        } else if (outOverflow) {
+            *outOverflow = 0;
         }
         for (size_t i = 0; i < available; i++) {
             out[i] = buffer_[(read + i) % CAPACITY];

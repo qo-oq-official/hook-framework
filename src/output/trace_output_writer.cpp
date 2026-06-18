@@ -70,6 +70,9 @@ void TraceOutputWriter::addTraceEvent(const std::string& name,
                                       const nlohmann::json& args) {
     std::lock_guard lock(mutex_);
     events_.push_back({name, category, phase, timestampUs, pid, tid, args});
+    if (events_.size() >= 200000) {
+        LOG_WARN("TraceOutputWriter: {} events queued without flush, risk of OOM", events_.size());
+    }
 }
 
 bool TraceOutputWriter::writeRaw(const std::string&, const std::string&,

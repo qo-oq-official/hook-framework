@@ -372,6 +372,8 @@ static const uint32_t FLUSH_INTERVAL = 50000;
 
 void hookfw_quick_trace(hookfw::ThunkData* data,
                         uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
+    if (!data) return;
+
     static volatile uint64_t diagCount = 0;
     diagCount++;
     if (diagCount <= 5 || diagCount % 50000 == 0) {
@@ -408,6 +410,7 @@ void hookfw_quick_trace(hookfw::ThunkData* data,
 
 void hookfw_quick_trace_exit(hookfw::ThunkData* data,
                              uint64_t retval, uint64_t, uint64_t, uint64_t) {
+    if (!data) return;
     hookfw::TraceRecord rec{};
     rec.hookId = data->hookId;
     rec.threadId = GetCurrentThreadId();
