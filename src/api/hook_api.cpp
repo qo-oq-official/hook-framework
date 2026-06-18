@@ -194,18 +194,23 @@ bool HookEngine::initialize(const std::string& configPath) {
                     continue;
                 }
 
+                auto* ih = HookEngineCore::instance().getHookById(hookId);
+                uint64_t rva = 0;
+                if (ih && ih->moduleBase > 0) {
+                    rva = reinterpret_cast<uintptr_t>(ih->resolvedAddress) - ih->moduleBase;
+                } else if (hookDesc.target.useRva) {
+                    rva = hookDesc.target.rva;
+                }
+
                 if (hookDesc.mode == HookMode::Trace) {
-                    auto* ih = HookEngineCore::instance().getHookById(hookId);
-                    uint64_t rva = 0;
-                    if (ih && ih->moduleBase > 0) {
-                        rva = reinterpret_cast<uintptr_t>(ih->resolvedAddress) - ih->moduleBase;
-                    } else if (hookDesc.target.useRva) {
-                        rva = hookDesc.target.rva;
-                    }
                     TraceFlusher::instance().registerHookName(
                         hookId, hookDesc.target.moduleName, funcName, rva);
                     traceCount++;
                 } else {
+                    if (collector && rva > 0) {
+                        std::string nameWithRva = funcName + std::format(" @RVA_{:#x}", rva);
+                        collector->setFunctionName(nameWithRva);
+                    }
                     captureCount++;
                 }
             }
