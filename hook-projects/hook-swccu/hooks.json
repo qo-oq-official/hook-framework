@@ -7245,5 +7245,6 @@
     {"module":"sldmodu.dll","symbol":"??0visDSNameLangIndependentHelper_c@@QEAA@$$QEAV0@@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
     {"module":"sldmodu.dll","symbol":"??0visDSNameLangIndependentHelper_c@@QEAA@AEBV0@@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
     {"module":"sldmodu.dll","symbol":"??0visDSNameLangIndependentHelper_c@@QEAA@PEB_W@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
-    {"module":"sldmodu.dll","symbol":"??0xxxLoftSynch_c@@QEAA@H@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"}]
+    {"module":"sldmodu.dll","symbol":"??0xxxLoftSynch_c@@QEAA@H@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"sldmodu.dll","symbol":"?addNode@moNodeList_c@@QEAAPEAU__POSITION@@PEAVmoNode_c@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"pNode","type":"pointer"}],"return_type":"pointer"}]
 }
