@@ -32,3 +32,7 @@ target_include_directories(test_deref_output PRIVATE ${CMAKE_SOURCE_DIR}/src)
 add_executable(test_rva_display test_rva_display.cpp)
 target_link_libraries(test_rva_display PRIVATE hook_framework nlohmann_json)
 target_include_directories(test_rva_display PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+add_executable(test_rva_integration test_rva_integration.cpp)
+target_link_libraries(test_rva_integration PRIVATE nlohmann_json)
+target_compile_definitions(test_rva_integration PRIVATE WIN32_LEAN_AND_MEAN)
