@@ -69,7 +69,16 @@ void TypedCollector::onEntry(const HookContext& ctx) {
 
         nlohmann::json paramsJson = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
-            paramsJson.push_back(extractParam(ctx, i, params_[i]));
+            try {
+                paramsJson.push_back(extractParam(ctx, i, params_[i]));
+            } catch (...) {
+                nlohmann::json err;
+                err["name"] = params_[i].name;
+                err["error"] = "extract_failed";
+                paramsJson.push_back(err);
+                LOG_WARN("extractParam[{}] hook_id={} failed for '{}', B event preserved",
+                         i, ctx.hookId, params_[i].name);
+            }
         }
         j["params"] = paramsJson;
 
@@ -105,7 +114,16 @@ void TypedCollector::onExit(const HookContext& ctx) {
         nlohmann::json exitParams = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             if (params_[i].captureOnExit) {
-                exitParams.push_back(extractParam(ctx, i, params_[i]));
+                try {
+                    exitParams.push_back(extractParam(ctx, i, params_[i]));
+                } catch (...) {
+                    nlohmann::json err;
+                    err["name"] = params_[i].name;
+                    err["error"] = "extract_failed";
+                    exitParams.push_back(err);
+                    LOG_WARN("extractParam[{}] hook_id={} (exit) failed, E event preserved",
+                             i, ctx.hookId);
+                }
             }
         }
         if (!exitParams.empty()) {
@@ -115,42 +133,46 @@ void TypedCollector::onExit(const HookContext& ctx) {
         nlohmann::json outputParams = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             if (!params_[i].hasDeref) continue;
-            auto ptr = ctx.arg<void*>(i);
-            if (!ptr) continue;
-            if (IsBadReadPtr(ptr, 8)) {
-                LOG_WARN("deref param[{}] hook_id={}: unreadable at {:p}",
-                         i, ctx.hookId, static_cast<const void*>(ptr));
-                continue;
-            }
+            try {
+                auto ptr = ctx.arg<void*>(i);
+                if (!ptr) continue;
+                if (IsBadReadPtr(ptr, 8)) {
+                    LOG_WARN("deref param[{}] hook_id={}: unreadable at {:p}",
+                             i, ctx.hookId, static_cast<const void*>(ptr));
+                    continue;
+                }
 
-            nlohmann::json op;
-            op["name"] = params_[i].name;
-            op["index"] = i;
-            switch (params_[i].derefType) {
-                case ParamType::Int8:
-                    op["deref_value"] = *reinterpret_cast<int8_t*>(ptr); break;
-                case ParamType::UInt8:
-                    op["deref_value"] = *reinterpret_cast<uint8_t*>(ptr); break;
-                case ParamType::Int16:
-                    op["deref_value"] = *reinterpret_cast<int16_t*>(ptr); break;
-                case ParamType::UInt16:
-                    op["deref_value"] = *reinterpret_cast<uint16_t*>(ptr); break;
-                case ParamType::Int32:
-                    op["deref_value"] = *reinterpret_cast<int32_t*>(ptr); break;
-                case ParamType::UInt32:
-                    op["deref_value"] = *reinterpret_cast<uint32_t*>(ptr); break;
-                case ParamType::Int64:
-                    op["deref_value"] = *reinterpret_cast<int64_t*>(ptr); break;
-                case ParamType::UInt64:
-                    op["deref_value"] = *reinterpret_cast<uint64_t*>(ptr); break;
-                case ParamType::Float32:
-                    op["deref_value"] = *reinterpret_cast<float*>(ptr); break;
-                case ParamType::Float64:
-                    op["deref_value"] = *reinterpret_cast<double*>(ptr); break;
-                default:
-                    op["deref_value"] = std::format("{:#x}", *reinterpret_cast<uint64_t*>(ptr)); break;
+                nlohmann::json op;
+                op["name"] = params_[i].name;
+                op["index"] = i;
+                switch (params_[i].derefType) {
+                    case ParamType::Int8:
+                        op["deref_value"] = *reinterpret_cast<int8_t*>(ptr); break;
+                    case ParamType::UInt8:
+                        op["deref_value"] = *reinterpret_cast<uint8_t*>(ptr); break;
+                    case ParamType::Int16:
+                        op["deref_value"] = *reinterpret_cast<int16_t*>(ptr); break;
+                    case ParamType::UInt16:
+                        op["deref_value"] = *reinterpret_cast<uint16_t*>(ptr); break;
+                    case ParamType::Int32:
+                        op["deref_value"] = *reinterpret_cast<int32_t*>(ptr); break;
+                    case ParamType::UInt32:
+                        op["deref_value"] = *reinterpret_cast<uint32_t*>(ptr); break;
+                    case ParamType::Int64:
+                        op["deref_value"] = *reinterpret_cast<int64_t*>(ptr); break;
+                    case ParamType::UInt64:
+                        op["deref_value"] = *reinterpret_cast<uint64_t*>(ptr); break;
+                    case ParamType::Float32:
+                        op["deref_value"] = *reinterpret_cast<float*>(ptr); break;
+                    case ParamType::Float64:
+                        op["deref_value"] = *reinterpret_cast<double*>(ptr); break;
+                    default:
+                        op["deref_value"] = std::format("{:#x}", *reinterpret_cast<uint64_t*>(ptr)); break;
+                }
+                outputParams.push_back(op);
+            } catch (...) {
+                LOG_WARN("deref param[{}] hook_id={}: AV, E event preserved", i, ctx.hookId);
             }
-            outputParams.push_back(op);
         }
         if (!outputParams.empty()) {
             j["output_params"] = outputParams;
