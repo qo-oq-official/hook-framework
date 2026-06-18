@@ -275,14 +275,25 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                         LOG_WARN("WString param[{}] hook_id={}: UTF-8 conversion failed at {:p}",
                                  index, ctx.hookId, static_cast<const void*>(ptr));
                     }
+                } else if (ptr && !IsBadReadPtr(ptr, 1)) {
+                    auto charPtr = reinterpret_cast<const char*>(ptr);
+                    size_t slen = strnlen(charPtr, 256);
+                    if (slen > 0) {
+                        param["value"] = std::string(charPtr, slen);
+                        param["type"] = "string_fallback";
+                    } else {
+                        param["value"] = ptr
+                            ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(ptr))
+                            : nullptr;
+                        if (ptr) {
+                            LOG_WARN("WString param[{}] hook_id={}: not a valid wide string or string at {:p}",
+                                     index, ctx.hookId, static_cast<const void*>(ptr));
+                        }
+                    }
                 } else {
                     param["value"] = ptr
                         ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(ptr))
                         : nullptr;
-                    if (ptr) {
-                        LOG_WARN("WString param[{}] hook_id={}: not a valid wide string at {:p}",
-                                 index, ctx.hookId, static_cast<const void*>(ptr));
-                    }
                 }
             } catch (...) {
                 param["value"] = "<unreadable>";
@@ -307,14 +318,25 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                             LOG_WARN("WStringRef param[{}] hook_id={}: UTF-8 conversion failed at {:p}",
                                      index, ctx.hookId, static_cast<const void*>(pStr));
                         }
+                    } else if (pStr && !IsBadReadPtr(pStr, 1)) {
+                        auto charPtr = reinterpret_cast<const char*>(pStr);
+                        size_t slen = strnlen(charPtr, 256);
+                        if (slen > 0) {
+                            param["value"] = std::string(charPtr, slen);
+                            param["type"] = "string_fallback";
+                        } else {
+                            param["value"] = pStr
+                                ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(pStr))
+                                : nullptr;
+                            if (pStr) {
+                                LOG_WARN("WStringRef param[{}] hook_id={}: invalid wide string at {:p}",
+                                         index, ctx.hookId, static_cast<const void*>(pStr));
+                            }
+                        }
                     } else {
                         param["value"] = pStr
                             ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(pStr))
                             : nullptr;
-                        if (pStr) {
-                            LOG_WARN("WStringRef param[{}] hook_id={}: invalid wide string at {:p}",
-                                     index, ctx.hookId, static_cast<const void*>(pStr));
-                        }
                     }
                 } else {
                     param["value"] = nullptr;
