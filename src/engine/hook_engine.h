@@ -18,6 +18,7 @@ struct InstalledHook {
     std::shared_ptr<CollectorBase> collector;
     std::shared_ptr<ReplacerBase> replacer;
     void* resolvedAddress = nullptr;
+    uintptr_t moduleBase = 0;
 };
 
 class HookEngineCore {

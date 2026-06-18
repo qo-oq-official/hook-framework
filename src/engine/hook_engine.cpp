@@ -97,6 +97,9 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
         return 0;
     }
 
+    HMODULE hMod = GetModuleHandleA(desc.target.moduleName.c_str());
+    hook->moduleBase = reinterpret_cast<uintptr_t>(hMod);
+
     for (const auto& existing : hooks_) {
         if (existing->resolvedAddress == hook->resolvedAddress) {
             std::string targetName = desc.target.useRva
