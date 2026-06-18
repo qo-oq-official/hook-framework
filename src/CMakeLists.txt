@@ -29,6 +29,7 @@ target_include_directories(hook_framework
         ${CMAKE_SOURCE_DIR}/include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_BINARY_DIR}/generated
 )
 
 target_link_libraries(hook_framework
@@ -40,3 +41,4 @@ target_link_libraries(hook_framework
 
 target_compile_definitions(hook_framework PRIVATE HOOKFW_EXPORTS)
 target_compile_options(hook_framework PRIVATE /EHa)
+add_dependencies(hook_framework git_hash)

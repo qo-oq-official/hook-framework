@@ -1,5 +1,6 @@
 #include "api/hook_api.h"
 #include "logging/logger.h"
+#include "git_hash.h"
 #include <Windows.h>
 #include <filesystem>
 
@@ -52,10 +53,11 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
                 auto configPath = (dllDir / "hooks.json").string();
                 auto logPath = (dllDir / "hook_framework.log").string();
 
-                hookfw::Logger::instance().initialize(logPath);
-                earlyLog("[3] Logger initialized\n");
-                LOG_INFO("=== Hook Framework DLL loaded ===");
-                LOG_INFO("DLL directory: {}", dllDir.string());
+            hookfw::Logger::instance().initialize(logPath);
+            earlyLog("[3] Logger initialized\n");
+            LOG_INFO("=== Hook Framework DLL loaded ===");
+            LOG_INFO("Git hash: {}", HOOKFW_GIT_HASH);
+            LOG_INFO("DLL directory: {}", dllDir.string());
                 LOG_INFO("Config path: {}", configPath);
                 LOG_INFO("Process ID: {}", GetCurrentProcessId());
 
