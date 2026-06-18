@@ -28,3 +28,7 @@ target_include_directories(test_rva_hook PRIVATE ${CMAKE_SOURCE_DIR}/src)
 add_executable(test_deref_output test_deref_output.cpp)
 target_link_libraries(test_deref_output PRIVATE hook_framework nlohmann_json)
 target_include_directories(test_deref_output PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+add_executable(test_rva_display test_rva_display.cpp)
+target_link_libraries(test_rva_display PRIVATE hook_framework nlohmann_json)
+target_include_directories(test_rva_display PRIVATE ${CMAKE_SOURCE_DIR}/src)
