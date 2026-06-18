@@ -18,7 +18,7 @@ public:
     RingBuffer& ringBuffer() { return ringBuffer_; }
 
     void registerHookName(uint32_t hookId, const std::string& moduleName,
-                          const std::string& functionName);
+                          const std::string& functionName, uint64_t rva = 0);
 
 private:
     TraceFlusher() = default;
@@ -34,6 +34,7 @@ private:
     struct HookInfo {
         std::string displayName;
         std::string moduleName;
+        uint64_t rva = 0;
     };
     std::unordered_map<uint32_t, HookInfo> hookNames_;
     std::mutex namesMutex_;

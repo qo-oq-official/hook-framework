@@ -195,8 +195,9 @@ bool HookEngine::initialize(const std::string& configPath) {
                 }
 
                 if (hookDesc.mode == HookMode::Trace) {
+                    uint64_t rva = hookDesc.target.useRva ? hookDesc.target.rva : 0;
                     TraceFlusher::instance().registerHookName(
-                        hookId, hookDesc.target.moduleName, funcName);
+                        hookId, hookDesc.target.moduleName, funcName, rva);
                     traceCount++;
                 } else {
                     captureCount++;

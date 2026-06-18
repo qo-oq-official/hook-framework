@@ -28,11 +28,12 @@ void TraceFlusher::stop() {
 }
 
 void TraceFlusher::registerHookName(uint32_t hookId, const std::string& moduleName,
-                                     const std::string& functionName) {
+                                     const std::string& functionName, uint64_t rva) {
     std::lock_guard lock(namesMutex_);
     HookInfo info;
     info.moduleName = moduleName;
     info.displayName = TraceOutputWriter::undecorateName(functionName);
+    info.rva = rva;
     hookNames_[hookId] = std::move(info);
 }
 
@@ -79,8 +80,11 @@ void TraceFlusher::drainToWriter() {
                     LOG_WARN("Unknown hook_id {} in ring buffer (not registered with flusher)",
                              rec.hookId);
                 }
-                std::string name = (it != hookNames_.end()) ? it->second.displayName
-                                                             : std::to_string(rec.hookId);
+                std::string name = (it != hookNames_.end())
+                    ? (it->second.rva > 0
+                        ? it->second.displayName + std::format(" @RVA_{:#x}", it->second.rva)
+                        : it->second.displayName)
+                    : std::to_string(rec.hookId);
                 std::string cat = (it != hookNames_.end()) ? it->second.moduleName : "unknown";
 
                 nlohmann::json args;
