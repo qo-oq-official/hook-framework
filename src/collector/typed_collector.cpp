@@ -116,7 +116,12 @@ void TypedCollector::onExit(const HookContext& ctx) {
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             if (!params_[i].hasDeref) continue;
             auto ptr = ctx.arg<void*>(i);
-            if (!ptr || IsBadReadPtr(ptr, 8)) continue;
+            if (!ptr) continue;
+            if (IsBadReadPtr(ptr, 8)) {
+                LOG_WARN("deref param[{}] hook_id={}: unreadable at {:p}",
+                         i, ctx.hookId, static_cast<const void*>(ptr));
+                continue;
+            }
 
             nlohmann::json op;
             op["name"] = params_[i].name;
@@ -222,10 +227,14 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                     param["value"] = std::string(ptr, strnlen(ptr, 1024));
                 } else {
                     param["value"] = nullptr;
+                    if (ptr) {
+                        LOG_WARN("CString param[{}] hook_id={}: unreadable ptr {:p}",
+                                 index, ctx.hookId, static_cast<const void*>(ptr));
+                    }
                 }
             } catch (...) {
                 param["value"] = "<unreadable>";
-                LOG_WARN("Failed to read CString param at index {}", index);
+                LOG_WARN("CString param[{}] hook_id={}: AV", index, ctx.hookId);
             }
             break;
         }
@@ -241,17 +250,21 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                     } else {
                         param["value"] = std::format("<non-text@{:#x}>",
                                                      reinterpret_cast<uint64_t>(ptr));
-                        LOG_TRACE("WString param[{}] at {:p} failed UTF-8 conversion",
-                                  index, static_cast<const void*>(ptr));
+                        LOG_WARN("WString param[{}] hook_id={}: UTF-8 conversion failed at {:p}",
+                                 index, ctx.hookId, static_cast<const void*>(ptr));
                     }
                 } else {
                     param["value"] = ptr
                         ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(ptr))
                         : nullptr;
+                    if (ptr) {
+                        LOG_WARN("WString param[{}] hook_id={}: not a valid wide string at {:p}",
+                                 index, ctx.hookId, static_cast<const void*>(ptr));
+                    }
                 }
             } catch (...) {
                 param["value"] = "<unreadable>";
-                LOG_WARN("Failed to read WString param at index {}", index);
+                LOG_WARN("WString param[{}] hook_id={}: AV", index, ctx.hookId);
             }
             break;
         }
@@ -269,20 +282,28 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                         } else {
                             param["value"] = std::format("<non-text@{:#x}>",
                                                          reinterpret_cast<uint64_t>(pStr));
-                            LOG_TRACE("WStringRef param[{}] deref {:p} failed UTF-8 conversion",
-                                      index, static_cast<const void*>(pStr));
+                            LOG_WARN("WStringRef param[{}] hook_id={}: UTF-8 conversion failed at {:p}",
+                                     index, ctx.hookId, static_cast<const void*>(pStr));
                         }
                     } else {
                         param["value"] = pStr
                             ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(pStr))
                             : nullptr;
+                        if (pStr) {
+                            LOG_WARN("WStringRef param[{}] hook_id={}: invalid wide string at {:p}",
+                                     index, ctx.hookId, static_cast<const void*>(pStr));
+                        }
                     }
                 } else {
                     param["value"] = nullptr;
+                    if (pCString) {
+                        LOG_WARN("WStringRef param[{}] hook_id={}: unreadable CString ref at {:p}",
+                                 index, ctx.hookId, static_cast<const void*>(pCString));
+                    }
                 }
             } catch (...) {
                 param["value"] = "<unreadable>";
-                LOG_WARN("Failed to read WStringRef param at index {}", index);
+                LOG_WARN("WStringRef param[{}] hook_id={}: AV", index, ctx.hookId);
             }
             break;
         }
@@ -294,6 +315,10 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                     param["value"] = pObj
                         ? std::format("{:#x}", reinterpret_cast<uint64_t>(pObj))
                         : nullptr;
+                    if (pObj) {
+                        LOG_WARN("CStringRef param[{}] hook_id={}: unreadable object at {:p}",
+                                 index, ctx.hookId, static_cast<const void*>(pObj));
+                    }
                     break;
                 }
                 auto pStr = *reinterpret_cast<const char* const*>(pObj);
@@ -302,6 +327,8 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                 MEMORY_BASIC_INFORMATION mbi = {};
                 if (!VirtualQuery(pStr, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT) {
                     param["value"] = std::format("<badptr@{:#x}>", reinterpret_cast<uint64_t>(pStr));
+                    LOG_WARN("CStringRef param[{}] hook_id={}: invalid string ptr at {:p}",
+                             index, ctx.hookId, static_cast<const void*>(pStr));
                     break;
                 }
                 auto regionEnd = reinterpret_cast<const uint8_t*>(mbi.BaseAddress) + mbi.RegionSize;
@@ -311,7 +338,7 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                 param["value"] = std::string(pStr, len);
             } catch (...) {
                 param["value"] = "<unreadable>";
-                LOG_TRACE("CStringRef: AV for hook_id={} index={}", ctx.hookId, index);
+                LOG_WARN("CStringRef param[{}] hook_id={}: AV", index, ctx.hookId);
             }
             break;
         }
@@ -333,9 +360,14 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                     param["type"] = "buffer_as_string";
                 } else {
                     param["value"] = nullptr;
+                    if (ptr) {
+                        LOG_WARN("Buffer param[{}] hook_id={}: unreadable at {:p} size={}",
+                                 index, ctx.hookId, static_cast<const void*>(ptr), size);
+                    }
                 }
             } catch (...) {
                 param["value"] = "<unreadable>";
+                LOG_WARN("Buffer param[{}] hook_id={}: AV", index, ctx.hookId);
             }
             break;
         }
