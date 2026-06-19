@@ -8,6 +8,8 @@ $config = @{
     hooks = @(
         @{module="target_app.exe"; symbol="add_numbers"; action="capture"; params=@(@{name="a";type="int32"},@{name="b";type="int32"}); return_type="int32"}
         @{module="target_app.exe"; symbol="multiply_numbers"; action="capture"; params=@(@{name="a";type="int32"},@{name="b";type="int32"}); return_type="int32"}
+        # RVA hook with display_name - non-exported internal function
+        @{module="target_app.exe"; rva="0x2100"; display_name="internal_calculate"; action="capture"; params=@(@{name="x";type="int32"},@{name="y";type="int32"},@{name="op";type="int32"}); return_type="int32"}
     )
 }
 $config | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $WorkDir "hooks.json")
@@ -45,10 +47,13 @@ if (Test-Path $trace) {
     $c = Get-Content $trace -Raw
     Check ($c -match "@RVA_") "contains @RVA_ suffix"
     $cnt = ([regex]::Matches($c, "@RVA_")).Count
-    Check ($cnt -ge 4) "at least 4 @RVA_ occurrences, got $cnt"
+    Check ($cnt -ge 6) "at least 6 @RVA_ occurrences, got $cnt"
+    # Verify display_name for RVA hook
+    Check ($c -match "internal_calculate @RVA_") "RVA hook uses display_name 'internal_calculate' not 'RVA_0x2100'"
+    Check ($c -notmatch "`"name`":`"RVA_0x2100`"") "no raw RVA_0x2100 name when display_name is set"
     # Print sample names
     $j = $c | ConvertFrom-Json
-    foreach ($ev in $j.traceEvents | Select-Object -First 4) { Write-Host "  $($ev.ph) $($ev.name)" }
+    foreach ($ev in $j.traceEvents | Select-Object -First 6) { Write-Host "  $($ev.ph) $($ev.name)" }
 }
 
 Remove-Item $WorkDir -Recurse -Force -ErrorAction SilentlyContinue
