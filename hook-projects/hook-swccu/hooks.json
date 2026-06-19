@@ -7246,5 +7246,17 @@
     {"module":"sldmodu.dll","symbol":"??0visDSNameLangIndependentHelper_c@@QEAA@AEBV0@@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
     {"module":"sldmodu.dll","symbol":"??0visDSNameLangIndependentHelper_c@@QEAA@PEB_W@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
     {"module":"sldmodu.dll","symbol":"??0xxxLoftSynch_c@@QEAA@H@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
-    {"module":"sldmodu.dll","symbol":"?addNode@moNodeList_c@@QEAAPEAU__POSITION@@PEAVmoNode_c@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"pNode","type":"pointer"}],"return_type":"pointer"}]
+    {"module":"sldmodu.dll","symbol":"?addNode@moNodeList_c@@QEAAPEAU__POSITION@@PEAVmoNode_c@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"pNode","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0xAA00","display_name":"su_CByteArray::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0xB0A0","display_name":"su_CDWordArray::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0xB780","display_name":"su_CGUIDArray::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0xC000","display_name":"su_CObArray::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0xD1D0","display_name":"su_CWordArray::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0xDC50","display_name":"su_CObject::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0x16130","display_name":"su_CMapDWORDToOb::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0x17120","display_name":"su_CMapIntToOb::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0x17870","display_name":"su_CMapObToDWORD::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0x17B60","display_name":"su_CMapObToInt::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0x195E0","display_name":"su_CMapStringToOb::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","rva":"0x19E70","display_name":"su_CMapWordToOb::Serialize","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"}]
 }

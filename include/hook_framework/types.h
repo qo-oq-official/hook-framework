@@ -69,6 +69,7 @@ struct HookDescriptor {
     std::string replacerModule;
     std::string replacerSymbol;
     std::string customCollectorName;
+    std::string displayName;
 };
 
 }

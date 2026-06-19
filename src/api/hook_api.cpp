@@ -167,9 +167,14 @@ bool HookEngine::initialize(const std::string& configPath) {
 
             int traceCount = 0, captureCount = 0;
             for (const auto& hookDesc : configOpt->hooks) {
-                std::string funcName = hookDesc.target.useRva
-                    ? std::format("RVA_{:#x}", hookDesc.target.rva)
-                    : hookDesc.target.symbolName;
+                std::string funcName;
+                if (!hookDesc.displayName.empty()) {
+                    funcName = hookDesc.displayName;
+                } else if (hookDesc.target.useRva) {
+                    funcName = std::format("RVA_{:#x}", hookDesc.target.rva);
+                } else {
+                    funcName = hookDesc.target.symbolName;
+                }
 
                 std::shared_ptr<CollectorBase> collector;
                 std::shared_ptr<ReplacerBase> replacer;

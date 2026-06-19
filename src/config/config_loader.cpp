@@ -118,6 +118,9 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
             if (hookJson.contains("replace_symbol")) {
                 desc.replacerSymbol = hookJson["replace_symbol"].get<std::string>();
             }
+            if (hookJson.contains("display_name")) {
+                desc.displayName = hookJson["display_name"].get<std::string>();
+            }
 
             config.hooks.push_back(std::move(desc));
         }
