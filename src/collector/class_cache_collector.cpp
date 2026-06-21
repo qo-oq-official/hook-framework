@@ -1,8 +1,6 @@
 #include "collector/class_cache_collector.h"
-#include "collector/collector_base.h"
+#include "collector/typed_collector.h"
 #include "logging/logger.h"
-#include "output/file_output_writer.h"
-#include "output/trace_output_writer.h"
 #include <nlohmann/json.hpp>
 #include <format>
 #include <Windows.h>
@@ -17,7 +15,7 @@ static bool isReadableMemory(const void* addr, size_t size) {
     if (!VirtualQuery(addr, &mbi, sizeof(mbi))) return false;
     if (mbi.State != MEM_COMMIT) return false;
     if (mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) return false;
-    return reinterpret_cast<uintptr_t>(addr) + size <= 
+    return reinterpret_cast<uintptr_t>(addr) + size <=
            reinterpret_cast<uintptr_t>(mbi.BaseAddress) + mbi.RegionSize;
 }
 
@@ -28,38 +26,53 @@ static std::string readClassName(void* crt) {
     return namePtr;
 }
 
+static nlohmann::json buildClassCacheEntry(void* archive) {
+    nlohmann::json cc;
+    if (isReadableMemory(archive, 0x60)) {
+        uint32_t counter = *reinterpret_cast<uint32_t*>(
+            static_cast<uint8_t*>(archive) + 0x50);
+        cc["counter"] = counter;
+    }
+    return cc;
+}
+
 void ClassCacheCollector::onEntry(const HookContext& ctx) {
-    auto* archive = ctx.arg<void*>(0);
-    if (!isReadableMemory(archive, 0x60)) return;
-
-    uint32_t counter = *reinterpret_cast<uint32_t*>(static_cast<uint8_t*>(archive) + 0x50);
-
     nlohmann::json j;
-    j["archive"] = std::format("{:#x}", reinterpret_cast<uintptr_t>(archive));
-    j["phase"] = "entry";
-    j["counter"] = counter;
+
+    nlohmann::json params = nlohmann::json::array();
+    for (size_t i = 0; i < params_.size(); i++) {
+        params.push_back(extractParam(ctx, static_cast<int>(i), params_[i]));
+    }
+    j["params"] = params;
+
+    auto* archive = ctx.arg<void*>(0);
+    j["class_cache"] = buildClassCacheEntry(archive);
 
     outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", j);
 }
 
 void ClassCacheCollector::onExit(const HookContext& ctx) {
+    nlohmann::json j;
+
+    j["return_value"] = extractReturnValue(ctx);
+
+    nlohmann::json params = nlohmann::json::array();
+    for (size_t i = 0; i < params_.size(); i++) {
+        params.push_back(extractParam(ctx, static_cast<int>(i), params_[i]));
+    }
+    j["params"] = params;
+
     auto* archive = ctx.arg<void*>(0);
-    if (!isReadableMemory(archive, 0x60)) return;
-
-    uint32_t counter = *reinterpret_cast<uint32_t*>(static_cast<uint8_t*>(archive) + 0x50);
-
-    auto* crtFromParam = ctx.arg<void*>(1);
     auto* crtFromRet = ctx.returnValue<void*>();
+    auto* crtFromParam = ctx.arg<void*>(1);
 
     std::string clsName = readClassName(crtFromRet);
     if (clsName.empty() && crtFromParam)
         clsName = readClassName(crtFromParam);
 
-    nlohmann::json j;
-    j["archive"] = std::format("{:#x}", reinterpret_cast<uintptr_t>(archive));
-    j["phase"] = "exit";
-    j["counter_post"] = counter;
-    j["class"] = clsName.empty() ? "<null>" : clsName;
+    nlohmann::json cc = buildClassCacheEntry(archive);
+    cc["class"] = clsName.empty() ? "<null>" : clsName;
+    j["class_cache"] = cc;
 
     outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", j);
 }

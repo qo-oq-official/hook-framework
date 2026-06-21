@@ -17,7 +17,7 @@ public:
     void onEntry(const HookContext& ctx) override;
     void onExit(const HookContext& ctx) override;
 
-private:
+protected:
     nlohmann::json extractParam(const HookContext& ctx, int index,
                                 const ParamDescriptor& desc) const;
     nlohmann::json extractReturnValue(const HookContext& ctx) const;
