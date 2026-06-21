@@ -2,6 +2,7 @@
 #include "logging/logger.h"
 #include <Windows.h>
 #include <format>
+#include <atomic>
 
 namespace hookfw {
 
@@ -37,8 +38,8 @@ void TraceFlusher::registerHookName(uint32_t hookId, const std::string& moduleNa
     hookNames_[hookId] = std::move(info);
 }
 
-static uint64_t g_totalFlushed = 0;
-static bool g_firstFlushLogged = false;
+static std::atomic<uint64_t> g_totalFlushed{0};
+static std::atomic<bool> g_firstFlushLogged{false};
 
 void TraceFlusher::syncFlush() {
     std::unique_lock lock(flushMutex_, std::try_to_lock);
@@ -67,7 +68,7 @@ void TraceFlusher::drainToWriter() {
             if (pending > lastWarnPending + 100000) {
                 lastWarnPending = pending;
                 LOG_WARN("Ring buffer approaching capacity: {} pending / {} total ({} total flushed)",
-                         pending, RingBuffer::CAPACITY, g_totalFlushed);
+                         pending, RingBuffer::CAPACITY, g_totalFlushed.load());
             }
         }
 
@@ -82,7 +83,7 @@ void TraceFlusher::drainToWriter() {
                 }
                 std::string name = (it != hookNames_.end())
                     ? (it->second.rva > 0
-                        ? it->second.displayName + std::format(" @RVA_{:#x}", it->second.rva)
+                        ? it->second.displayName + std::format(" @RVA_0x{:08x}", it->second.rva)
                         : it->second.displayName)
                     : std::to_string(rec.hookId);
                 std::string cat = (it != hookNames_.end()) ? it->second.moduleName : "unknown";

@@ -37,7 +37,9 @@ $p.WaitForExit(15000) | Out-Null
 
 Start-Sleep 2
 
-$trace = Join-Path $WorkDir "dump_data\trace.json"
+$traceDir = Join-Path $WorkDir "dump_data"
+$trace = Get-ChildItem $traceDir -Filter "trace_*.json" | Sort-Object Name -Descending | Select-Object -First 1 -ExpandProperty FullName
+if (-not $trace) { $trace = Join-Path $traceDir "trace.json" }
 $ok = 0; $bad = 0
 function Check($c, $n) { if ($c) { Write-Host "  [PASS] $n"; $global:ok++ } else { Write-Host "  [FAIL] $n"; $global:bad++ } }
 

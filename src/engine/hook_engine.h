@@ -1,5 +1,6 @@
 #pragma once
 #include "hook_framework/types.h"
+#include "hook_framework/injector_base.h"
 #include "thunk/thunk_manager.h"
 #include "collector/collector_base.h"
 #include "replacer/replacer_base.h"
@@ -17,6 +18,7 @@ struct InstalledHook {
     ThunkManager::ThunkSlot* thunkSlot = nullptr;
     std::shared_ptr<CollectorBase> collector;
     std::shared_ptr<ReplacerBase> replacer;
+    std::shared_ptr<InjectorBase> injector;
     void* resolvedAddress = nullptr;
     uintptr_t moduleBase = 0;
 };

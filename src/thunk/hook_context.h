@@ -63,6 +63,31 @@ struct HookContext {
         return result;
     }
 
+    template<typename T>
+    void setArg(int index, T value) {
+        static_assert(sizeof(T) <= 8, "setArg<T> only supports types <= 8 bytes");
+        uint64_t val = 0;
+        std::memcpy(&val, &value, sizeof(T));
+        switch (index) {
+            case 0: rcx = val; break;
+            case 1: rdx = val; break;
+            case 2: r8  = val; break;
+            case 3: r9  = val; break;
+            default: {
+                int stackOffset = (index - 4) * 8 + 32;
+                if (stackOffset + 8 <= static_cast<int>(stackSnapshotSize)) {
+                    std::memcpy(stackSnapshot + stackOffset, &val, 8);
+                }
+                break;
+            }
+        }
+    }
+
+    template<typename T>
+    void setReturnValue(T value) {
+        std::memcpy(&rax, &value, sizeof(T));
+    }
+
     float argFloat(int index) const {
         float val = 0.0f;
         const uint8_t* xmmSlot = nullptr;

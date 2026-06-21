@@ -63,7 +63,7 @@ int main() {
     auto rvaMul = reinterpret_cast<uintptr_t>(fnMul) - base;
     FreeLibrary(hTarget);
 
-    std::string expectedAddRva = std::format("@RVA_{:#x}", rvaAdd);
+    std::string expectedAddRva = std::format("@RVA_0x{:08x}", rvaAdd);
     std::cout << "  Expected RVA suffix: " << expectedAddRva << "\n\n";
 
     // Write hooks.json with perfetto output (triggers config path with RVA registration)

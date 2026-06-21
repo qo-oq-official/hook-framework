@@ -31,7 +31,7 @@ private:
     ThunkManager() = default;
     ~ThunkManager();
 
-    void* generateStub(ThunkData* data);
+    void* generateStub(ThunkData* data, void* entryFunc);
 
     std::mutex mutex_;
     std::vector<std::unique_ptr<ThunkSlot>> slots_;

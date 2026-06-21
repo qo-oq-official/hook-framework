@@ -27,6 +27,8 @@ public:
     HookBuilder& collector(CollectorType type);
     HookBuilder& onEntry(PreHookCallback cb);
     HookBuilder& onExit(PostHookCallback cb);
+    HookBuilder& injector(const std::string& name);
+    HookBuilder& injectorMode(InjectorMode mode);
     HookBuilder& replace(void* replacementFunc);
     HookBuilder& replaceFromDll(const std::string& dllPath, const std::string& funcName);
     bool install();

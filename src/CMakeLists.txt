@@ -1,10 +1,16 @@
 set(HOOK_FW_SOURCES
     dllmain.cpp
     engine/hook_engine.cpp
+    injector/injector_registry.cpp
+    injector/test_read_injector.cpp
+    injector/test_mode_injectors.cpp
+    injector/test_struct_injectors.cpp
     thunk/thunk_manager.cpp
+    thunk/dispatch.cpp
     collector/raw_collector.cpp
     collector/typed_collector.cpp
     collector/collector_factory.cpp
+    collector/class_cache_collector.cpp
     replacer/dll_replacer.cpp
     replacer/callback_replacer.cpp
     output/file_output_writer.cpp
@@ -30,6 +36,7 @@ target_include_directories(hook_framework
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_BINARY_DIR}/generated
+        ${CMAKE_SOURCE_DIR}/tests
 )
 
 target_link_libraries(hook_framework
@@ -37,6 +44,7 @@ target_link_libraries(hook_framework
         detours
         nlohmann_json
         spdlog
+        dbghelp
 )
 
 target_compile_definitions(hook_framework PRIVATE HOOKFW_EXPORTS)

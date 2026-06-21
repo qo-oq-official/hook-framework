@@ -1,5 +1,6 @@
 #include "collector/collector_factory.h"
 #include "logging/logger.h"
+#include "output/rva_format.h"
 #include <format>
 
 namespace hookfw {
@@ -25,7 +26,7 @@ std::shared_ptr<CollectorBase> CollectorRegistry::create(const std::string& name
 
 std::shared_ptr<CollectorBase> CollectorFactory::create(const HookDescriptor& desc) {
     std::string targetName = desc.target.useRva
-        ? std::format("RVA_{:#x}", desc.target.rva)
+        ? formatRvaName(desc.target.rva)
         : desc.target.symbolName;
 
     switch (desc.collectorType) {

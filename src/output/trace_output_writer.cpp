@@ -5,15 +5,45 @@
 #include <fstream>
 #include <filesystem>
 #include <chrono>
+#include <iomanip>
+#include <sstream>
+#include <ctime>
+#include <vector>
+#include <algorithm>
 
 #pragma comment(lib, "dbghelp.lib")
 
 namespace hookfw {
 
+static void rotateTraceFiles(const std::string& dir, int keep) {
+    namespace fs = std::filesystem;
+    std::vector<fs::path> files;
+    std::error_code ec;
+    for (const auto& e : fs::directory_iterator(dir, ec)) {
+        auto name = e.path().filename().string();
+        if (name.starts_with("trace_") && name.ends_with(".json")) {
+            files.push_back(e.path());
+        }
+    }
+    if (ec) return;
+    std::sort(files.begin(), files.end());
+    while (static_cast<int>(files.size()) > keep) {
+        fs::remove(files.front(), ec);
+        files.erase(files.begin());
+    }
+}
+
 TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
     : outputDir_(outputDir) {
     std::filesystem::create_directories(outputDir);
-    traceFilePath_ = (std::filesystem::path(outputDir) / "trace.json").string();
+
+    auto now = std::chrono::system_clock::now();
+    auto tt = std::chrono::system_clock::to_time_t(now);
+    std::tm tm{};
+    localtime_s(&tm, &tt);
+    std::ostringstream oss;
+    oss << "trace_" << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".json";
+    traceFilePath_ = (std::filesystem::path(outputDir) / oss.str()).string();
 
     file_.open(traceFilePath_, std::ios::out | std::ios::trunc);
     if (file_.is_open()) {
@@ -21,6 +51,8 @@ TraceOutputWriter::TraceOutputWriter(const std::string& outputDir)
         file_.flush();
         dataEndPos_ = 16;
     }
+
+    rotateTraceFiles(outputDir, 5);
 
     LOG_INFO("TraceOutputWriter created, output={}", traceFilePath_);
 }
@@ -58,6 +90,7 @@ std::string TraceOutputWriter::undecorateName(const std::string& mangledName) {
     if (result > 0) {
         return std::string(buf);
     }
+    LOG_WARN("UnDecorateSymbolName failed (err=0x{:08X}), keeping raw: {}", GetLastError(), mangledName);
     return mangledName;
 }
 

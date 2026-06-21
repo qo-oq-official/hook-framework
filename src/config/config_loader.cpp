@@ -2,6 +2,8 @@
 #include "logging/logger.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <unordered_map>
+#include <string_view>
 
 namespace hookfw {
 
@@ -88,6 +90,14 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
                 desc.customCollectorName = hookJson["custom_collector_name"].get<std::string>();
             }
 
+            if (hookJson.contains("injector")) {
+                desc.injectorName = hookJson["injector"].get<std::string>();
+            }
+            if (hookJson.contains("injector_mode")) {
+                std::string m = hookJson["injector_mode"].get<std::string>();
+                desc.injectorMode = (m == "post") ? InjectorMode::Post : InjectorMode::Pre;
+            }
+
             if (hookJson.contains("params") && hookJson["params"].is_array()) {
                 for (const auto& paramJson : hookJson["params"]) {
                     ParamDescriptor param;
@@ -134,38 +144,43 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
 }
 
 ParamType ConfigLoader::parseParamType(const std::string& typeStr) const {
-    if (typeStr == "int8") return ParamType::Int8;
-    if (typeStr == "int16") return ParamType::Int16;
-    if (typeStr == "int32") return ParamType::Int32;
-    if (typeStr == "int64") return ParamType::Int64;
-    if (typeStr == "uint8") return ParamType::UInt8;
-    if (typeStr == "uint16") return ParamType::UInt16;
-    if (typeStr == "uint32") return ParamType::UInt32;
-    if (typeStr == "uint64") return ParamType::UInt64;
-    if (typeStr == "float32") return ParamType::Float32;
-    if (typeStr == "float64") return ParamType::Float64;
-    if (typeStr == "pointer") return ParamType::Pointer;
-    if (typeStr == "cstring") return ParamType::CString;
-    if (typeStr == "wstring") return ParamType::WString;
-    if (typeStr == "wstring_ref") return ParamType::WStringRef;
-    if (typeStr == "cstring_ref") return ParamType::CStringRef;
-    if (typeStr == "buffer") return ParamType::Buffer;
+    static const std::unordered_map<std::string_view, ParamType> kMap = {
+        {"int8", ParamType::Int8},   {"int16", ParamType::Int16},
+        {"int32", ParamType::Int32}, {"int64", ParamType::Int64},
+        {"uint8", ParamType::UInt8}, {"uint16", ParamType::UInt16},
+        {"uint32", ParamType::UInt32}, {"uint64", ParamType::UInt64},
+        {"float32", ParamType::Float32}, {"float64", ParamType::Float64},
+        {"pointer", ParamType::Pointer},
+        {"cstring", ParamType::CString}, {"wstring", ParamType::WString},
+        {"wstring_ref", ParamType::WStringRef}, {"cstring_ref", ParamType::CStringRef},
+        {"buffer", ParamType::Buffer},
+    };
+    auto it = kMap.find(typeStr);
+    if (it != kMap.end()) return it->second;
     LOG_WARN("Unknown param type '{}', defaulting to int64", typeStr);
     return ParamType::Int64;
 }
 
 HookAction ConfigLoader::parseAction(const std::string& actionStr) const {
-    if (actionStr == "capture") return HookAction::Capture;
-    if (actionStr == "replace") return HookAction::Replace;
-    if (actionStr == "capture_and_replace") return HookAction::CaptureAndReplace;
+    static const std::unordered_map<std::string_view, HookAction> kMap = {
+        {"capture", HookAction::Capture},
+        {"replace", HookAction::Replace},
+        {"capture_and_replace", HookAction::CaptureAndReplace},
+    };
+    auto it = kMap.find(actionStr);
+    if (it != kMap.end()) return it->second;
     LOG_WARN("Unknown action '{}', defaulting to capture", actionStr);
     return HookAction::Capture;
 }
 
 CollectorType ConfigLoader::parseCollectorType(const std::string& typeStr) const {
-    if (typeStr == "raw") return CollectorType::Raw;
-    if (typeStr == "typed") return CollectorType::Typed;
-    if (typeStr == "custom") return CollectorType::Custom;
+    static const std::unordered_map<std::string_view, CollectorType> kMap = {
+        {"raw", CollectorType::Raw},
+        {"typed", CollectorType::Typed},
+        {"custom", CollectorType::Custom},
+    };
+    auto it = kMap.find(typeStr);
+    if (it != kMap.end()) return it->second;
     LOG_WARN("Unknown collector type '{}', defaulting to raw", typeStr);
     return CollectorType::Raw;
 }

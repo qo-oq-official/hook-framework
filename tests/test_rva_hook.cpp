@@ -146,8 +146,8 @@ int main() {
     engine.uninstallAll();
 
     fs::path dumpPath(DUMP_DIR);
-    fs::path addDir = dumpPath / "test_target.dll" / ("RVA_" + std::format("{:#x}", rvaAdd));
-    fs::path subDir = dumpPath / "test_target.dll" / ("RVA_" + std::format("{:#x}", rvaSub));
+    fs::path addDir = dumpPath / "test_target.dll" / ("RVA_0x" + std::format("{:08x}", rvaAdd));
+    fs::path subDir = dumpPath / "test_target.dll" / ("RVA_0x" + std::format("{:08x}", rvaSub));
 
     check(fs::exists(dumpPath), "dump_data directory created");
     check(fs::exists(addDir), "RVA add function capture directory exists");

@@ -1,6 +1,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdint>
+#include "test_struct_target.h"
 
 #ifdef TEST_TARGET_EXPORTS
 #define TEST_API __declspec(dllexport)
@@ -74,6 +75,22 @@ TEST_API __declspec(noinline) int test_read_int64(int64_t* out) {
 TEST_API __declspec(noinline) int test_read_float(float* out) {
     if (out) *out = 2.718f;
     return 1;
+}
+
+TEST_API __declspec(noinline) void test_modify_object(TestObjectA* obj) {
+    obj->x     = 42;
+    obj->y     = 3.14;
+    obj->flag  = 'Z';
+    obj->name  = "modified";
+    obj->wname = L"\u5df2\u4fee\u6539";
+}
+
+TEST_API __declspec(noinline) void test_modify_object2(TestObjectA* obj) {
+    obj->x     = 99;
+    obj->y     = 6.28;
+    obj->flag  = 'X';
+    obj->name  = "modified2";
+    obj->wname = L"\u4fee\u65392";
 }
 
 }

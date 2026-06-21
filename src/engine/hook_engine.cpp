@@ -1,9 +1,11 @@
 #include "engine/hook_engine.h"
 #include "engine/hook_transaction.h"
 #include "logging/logger.h"
+#include "output/rva_format.h"
 #include <Windows.h>
 #include <filesystem>
 #include <format>
+#include <cstdio>
 
 namespace hookfw {
 
@@ -103,7 +105,7 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
     for (const auto& existing : hooks_) {
         if (existing->resolvedAddress == hook->resolvedAddress) {
             std::string targetName = desc.target.useRva
-                ? std::format("RVA_{:#x}", desc.target.rva) : desc.target.symbolName;
+                ? formatRvaName(desc.target.rva) : desc.target.symbolName;
             LOG_WARN("Skipping duplicate address {:#x} for {}!{} (already hooked by id={})",
                      reinterpret_cast<uintptr_t>(hook->resolvedAddress),
                      desc.target.moduleName, targetName, existing->id);
@@ -124,6 +126,14 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
             hook->id, hook->resolvedAddress, replacement, callOriginal);
     }
 
+    if (!desc.injectorName.empty()) {
+        hook->injector = InjectorRegistry::instance().create(desc.injectorName);
+        if (!hook->injector) {
+            LOG_WARN("Injector '{}' not found for hook id={}, continuing without injector",
+                     desc.injectorName, hook->id);
+        }
+    }
+
     if (!hook->thunkSlot) {
         LOG_ERROR("Failed to allocate thunk for hook id={}", hook->id);
         return 0;
@@ -131,7 +141,7 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
 
     uint32_t hookId = hook->id;
     std::string targetName = desc.target.useRva
-        ? std::format("RVA_{:#x}", desc.target.rva)
+        ? formatRvaName(desc.target.rva)
         : desc.target.symbolName;
 
     LOG_INFO("Hook added: id={}, module={}, target={}, mode={}",
@@ -144,12 +154,35 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
 
 static bool safeDetourAttach(void** ppOriginal, void* detourTarget,
                              uint32_t hookId, void* resolvedAddr) {
+    LONG r = ERROR_INVALID_BLOCK;
+    DWORD sehCode = 0;
     __try {
-        LONG r = DetourAttach(ppOriginal, detourTarget);
-        return (r == NO_ERROR);
+        r = DetourAttach(ppOriginal, detourTarget);
     } __except (EXCEPTION_EXECUTE_HANDLER) {
-        return false;
+        sehCode = GetExceptionCode();
+        r = ERROR_INVALID_BLOCK;
     }
+    if (r != NO_ERROR) {
+        static FILE* s_f = nullptr;
+        if (!s_f) {
+            char buf[MAX_PATH] = {};
+            HMODULE hSelf = nullptr;
+            GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                               GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                               reinterpret_cast<LPCSTR>(&safeDetourAttach), &hSelf);
+            GetModuleFileNameA(hSelf, buf, MAX_PATH);
+            char* slash = strrchr(buf, '\\');
+            if (slash) *(slash + 1) = '\0';
+            strcat_s(buf, "hook_attach_err.log");
+            fopen_s(&s_f, buf, "a");
+        }
+        if (s_f) {
+            fprintf(s_f, "DetourAttach FAIL hook_id=%u addr=0x%p error=%ld SEH=0x%08lX\n",
+                    hookId, resolvedAddr, r, sehCode);
+            fflush(s_f);
+        }
+    }
+    return (r == NO_ERROR);
 }
 
 bool HookEngineCore::installAll() {
@@ -260,6 +293,7 @@ void HookEngineCore::uninstallAll() {
     }
 
     ThunkManager::instance().freeAll();
+    hooks_.clear();
     installed_ = false;
     LOG_INFO("All hooks uninstalled");
 }

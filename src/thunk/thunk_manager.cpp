@@ -33,7 +33,7 @@ ThunkManager::ThunkSlot* ThunkManager::allocateThunk(
     slot->data.postCallback = nullptr;
     std::memset(slot->data.padding1, 0, sizeof(slot->data.padding1));
 
-    slot->executableStub = generateStub(&slot->data);
+    slot->executableStub = generateStub(&slot->data, &hookfw_thunk_entry);
     if (!slot->executableStub) {
         LOG_ERROR("Failed to generate executable stub for hook {}", hookId);
         return nullptr;
@@ -47,13 +47,7 @@ ThunkManager::ThunkSlot* ThunkManager::allocateThunk(
     return ptr;
 }
 
-void* ThunkManager::generateStub(ThunkData* data) {
-    // Generate:
-    //   mov rax, <ThunkData*>         ; 48 B8 <8 bytes>     = 10 bytes
-    //   jmp [rip+0]                   ; FF 25 00 00 00 00   = 6 bytes
-    //   <address of thunk_entry>      ; 8 bytes
-    // Total: 24 bytes
-
+void* ThunkManager::generateStub(ThunkData* data, void* entryFunc) {
     constexpr size_t stubSize = 64;
     void* mem = VirtualAlloc(nullptr, stubSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
     if (!mem) {
@@ -63,16 +57,14 @@ void* ThunkManager::generateStub(ThunkData* data) {
 
     uint8_t* code = static_cast<uint8_t*>(mem);
 
-    // mov rax, imm64
     code[0] = 0x48;
     code[1] = 0xB8;
     *reinterpret_cast<uint64_t*>(code + 2) = reinterpret_cast<uint64_t>(data);
 
-    // jmp [rip+0]
     code[10] = 0xFF;
     code[11] = 0x25;
     *reinterpret_cast<uint32_t*>(code + 12) = 0;
-    *reinterpret_cast<uint64_t*>(code + 16) = reinterpret_cast<uint64_t>(&hookfw_thunk_entry);
+    *reinterpret_cast<uint64_t*>(code + 16) = reinterpret_cast<uint64_t>(entryFunc);
 
     DWORD oldProtect;
     VirtualProtect(mem, stubSize, PAGE_EXECUTE_READ, &oldProtect);
@@ -110,24 +102,12 @@ ThunkManager::ThunkSlot* ThunkManager::allocateLightThunk(uint32_t hookId, void*
     slot->data.postCallback = nullptr;
     std::memset(slot->data.padding1, 0, sizeof(slot->data.padding1));
 
-    constexpr size_t stubSize = 64;
-    void* mem = VirtualAlloc(nullptr, stubSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-    if (!mem) {
-        LOG_ERROR("VirtualAlloc failed for light stub, error={}", GetLastError());
+    slot->executableStub = generateStub(&slot->data, &hookfw_light_entry);
+    if (!slot->executableStub) {
+        LOG_ERROR("Failed to generate light stub for hook {}", hookId);
         return nullptr;
     }
 
-    uint8_t* code = static_cast<uint8_t*>(mem);
-    code[0] = 0x48; code[1] = 0xB8;
-    *reinterpret_cast<uint64_t*>(code + 2) = reinterpret_cast<uint64_t>(&slot->data);
-    code[10] = 0xFF; code[11] = 0x25;
-    *reinterpret_cast<uint32_t*>(code + 12) = 0;
-    *reinterpret_cast<uint64_t*>(code + 16) = reinterpret_cast<uint64_t>(&hookfw_light_entry);
-
-    DWORD oldProtect;
-    VirtualProtect(mem, stubSize, PAGE_EXECUTE_READ, &oldProtect);
-
-    slot->executableStub = mem;
     auto* ptr = slot.get();
     slots_.push_back(std::move(slot));
     return ptr;
