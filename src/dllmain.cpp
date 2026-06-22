@@ -35,6 +35,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
                 auto configPath = (dllDir / "hooks.json").string();
                 auto logPath = (dllDir / "hook_framework.log").string();
 
+            hookfw::crash_log::write(("dllDir: " + dllDir.string() + "\n").c_str());
+            hookfw::crash_log::write(("Git hash: " + std::string(HOOKFW_GIT_HASH) + "\n").c_str());
             hookfw::Logger::instance().initialize(logPath);
             hookfw::crash_log::write("[3] Logger initialized\n");
             LOG_INFO("=== Hook Framework DLL loaded ===");

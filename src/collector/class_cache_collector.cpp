@@ -5,10 +5,12 @@
 #include <nlohmann/json.hpp>
 #include <format>
 #include <Windows.h>
+#include <unordered_map>
+#include <mutex>
 
 namespace hookfw {
 
-REGISTER_COLLECTOR("class_cache", ClassCacheCollector);
+// ── helpers ──────────────────────────────────────────────────────────
 
 static bool isReadableMemory(const void* addr, size_t size) {
     if (!addr) return false;
@@ -27,53 +29,161 @@ static std::string readClassName(void* crt) {
     return namePtr;
 }
 
-static nlohmann::json buildClassCacheEntry(void* archive) {
+// su_CPtrArray — swccu.dll, 0x20 bytes
+struct su_CPtrArray {
+    void*  __vftable;     // +0x00
+    void** m_pData;       // +0x08
+    int    m_nSize;       // +0x10
+    int    m_nMaxSize;    // +0x14
+    int    m_nGrowBy;     // +0x18
+};
+
+static nlohmann::json dumpClassList(void* archive) {
+    nlohmann::json arr = nlohmann::json::array();
+    if (!archive) { arr.push_back({{"error", "null_archive"}}); return arr; }
+    if (!isReadableMemory(archive, 0x60)) {
+        arr.push_back({{"error", std::format("unreadable_archive@{:#x}", (uint64_t)archive)}});
+        return arr;
+    }
+    auto* map = reinterpret_cast<su_CPtrArray*>(
+        *reinterpret_cast<void**>((uint8_t*)archive + 0x58));
+    if (!map) { arr.push_back({{"error", "null_map_ptr"}}); return arr; }
+    if (!isReadableMemory(map, sizeof(su_CPtrArray))) {
+        arr.push_back({{"error", std::format("unreadable_map@{:#x}", (uint64_t)map)}});
+        return arr;
+    }
+    bool isStoring = (*(uint8_t*)((uint8_t*)archive + 0x20) & 1) != 0;
+    if (!isStoring) {
+        arr.push_back({{"note", "loading_mode"}});
+        return arr;
+    }
+    if (map->m_nSize > 0x10000) {
+        arr.push_back({{"error", std::format("size_too_large:{}", map->m_nSize)}});
+        return arr;
+    }
+    if (!isReadableMemory(map->m_pData, map->m_nSize * sizeof(void*))) {
+        arr.push_back({{"error", std::format("unreadable_data@{:#x}", (uint64_t)map->m_pData)}});
+        return arr;
+    }
+    for (int i = 0; i < map->m_nSize; i++) {
+        auto* crt = map->m_pData[i];
+        arr.push_back({{"idx", i}, {"class", crt ? readClassName(crt) : "(null)"}});
+    }
+    return arr;
+}
+
+static nlohmann::json counterInfo(void* archive) {
     nlohmann::json cc;
     if (isReadableMemory(archive, 0x60)) {
-        uint32_t counter = *reinterpret_cast<uint32_t*>(
-            static_cast<uint8_t*>(archive) + 0x50);
-        cc["counter"] = counter;
+        cc["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
+        cc["class_list"] = dumpClassList(archive);
+    } else {
+        cc["error"] = archive
+            ? std::format("unreadable@{:#x}", (uint64_t)archive)
+            : "null";
     }
     return cc;
 }
 
-void ClassCacheCollector::onEntry(const HookContext& ctx) {
-    nlohmann::json args;
+// ── ReadClassCollector ───────────────────────────────────────────────
 
-    if (!params_.empty()) {
-        ParamSerializer::addConfigEntry(args, ctx, params_);
-    } else {
-        ParamSerializer::addDefaultEntry(args, ctx);
-    }
+REGISTER_COLLECTOR("ReadClass", ReadClassCollector);
+
+void ReadClassCollector::onEntry(const HookContext& ctx) {
+    nlohmann::json args;
+    ParamSerializer::addDefaultEntry(args, ctx);
+    ParamSerializer::addConfigEntry(args, ctx, params_);
 
     auto* archive = ctx.arg<void*>(0);
-    args["class_cache"] = buildClassCacheEntry(archive);
-
     outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
+    LOG_TRACE("ReadClass entry archive={:p}", static_cast<void*>(archive));
 }
 
-void ClassCacheCollector::onExit(const HookContext& ctx) {
+void ReadClassCollector::onExit(const HookContext& ctx) {
     nlohmann::json args;
-
-    if (!params_.empty()) {
-        ParamSerializer::addConfigExit(args, ctx, params_, returnType_);
-    } else {
-        ParamSerializer::addDefaultExit(args, ctx);
-    }
-
+    ParamSerializer::addDefaultExit(args, ctx);
+    ParamSerializer::addConfigExit(args, ctx, params_, returnType_);
     auto* archive = ctx.arg<void*>(0);
     auto* crtFromRet = ctx.returnValue<void*>();
-    auto* crtFromParam = ctx.arg<void*>(1);
-
-    std::string clsName = readClassName(crtFromRet);
-    if (clsName.empty() && crtFromParam)
-        clsName = readClassName(crtFromParam);
-
-    nlohmann::json cc = buildClassCacheEntry(archive);
-    cc["class"] = clsName.empty() ? "<null>" : clsName;
-    args["class_cache"] = cc;
-
+    std::string clsName = crtFromRet ? readClassName(crtFromRet) : "<?>";
+    auto cc = counterInfo(archive);
+    cc["class"] = clsName;
+    args["class_cache_after"] = cc;
     outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
+    LOG_TRACE("ReadClass exit archive={:p} class={}", static_cast<void*>(archive), clsName);
+}
+
+// ── CopyLoadArrayStoreMapFromCollector ───────────────────────────────
+
+REGISTER_COLLECTOR("copyLoadArrayStoreMapFrom", CopyLoadArrayStoreMapFromCollector);
+
+void CopyLoadArrayStoreMapFromCollector::onEntry(const HookContext& ctx) {
+    auto* src = ctx.arg<void*>(0);
+    auto* dst = ctx.arg<void*>(1);
+    nlohmann::json args;
+    args["phase"] = "entry";
+    args["src"] = counterInfo(src);
+    args["dst"] = counterInfo(dst);
+    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
+    LOG_TRACE("copyLoadArrayStoreMapFrom entry src={:p} dst={:p}", static_cast<void*>(src), static_cast<void*>(dst));
+}
+
+void CopyLoadArrayStoreMapFromCollector::onExit(const HookContext& ctx) {
+    auto* src = ctx.arg<void*>(0);
+    auto* dst = ctx.arg<void*>(1);
+    nlohmann::json args;
+    args["phase"] = "exit";
+    args["src"] = counterInfo(src);
+    args["dst"] = counterInfo(dst);
+    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
+}
+
+// ── UseCacheArchiveCollector ─────────────────────────────────────────
+
+REGISTER_COLLECTOR("useCacheArchive_c", UseCacheArchiveCollector);
+
+// Destructor has no archive param — remember from constructor entry.
+static std::mutex s_ucaMutex;
+static std::unordered_map<uint64_t, void*> s_ucaArchiveMap;
+
+void UseCacheArchiveCollector::onEntry(const HookContext& ctx) {
+    auto* self = ctx.arg<void*>(0);   // this
+    auto* archive = ctx.arg<void*>(2);
+    uint32_t mode = ctx.arg<uint32_t>(3);
+
+    {
+        std::lock_guard lock(s_ucaMutex);
+        s_ucaArchiveMap[(uint64_t)self] = archive;
+    }
+
+    nlohmann::json args;
+    args["phase"] = "entry";
+    args["archive_before"] = counterInfo(archive);
+    args["mode"] = mode;
+    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
+    LOG_TRACE("useCacheArchive_c ENTER self={:p} archive={:p} mode={}",
+              static_cast<void*>(self), static_cast<void*>(archive), mode);
+}
+
+void UseCacheArchiveCollector::onExit(const HookContext& ctx) {
+    auto* self = ctx.arg<void*>(0);
+    void* archive = nullptr;
+
+    {
+        std::lock_guard lock(s_ucaMutex);
+        auto it = s_ucaArchiveMap.find((uint64_t)self);
+        if (it != s_ucaArchiveMap.end()) {
+            archive = it->second;
+            s_ucaArchiveMap.erase(it);
+        }
+    }
+
+    nlohmann::json args;
+    args["phase"] = "exit";
+    args["archive_after"] = counterInfo(archive);
+    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
+    LOG_TRACE("useCacheArchive_c EXIT self={:p} archive={:p}",
+              static_cast<void*>(self), static_cast<void*>(archive));
 }
 
 }
