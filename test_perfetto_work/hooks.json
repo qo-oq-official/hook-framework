@@ -1,0 +1,29 @@
+{
+  "output_dir": "dump_data",
+  "output_format": "perfetto",
+  "log_level": "trace",
+  "hooks": [
+    {
+      "module": "test_target.dll",
+      "symbol": "test_add",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "a", "type": "int32"},
+        {"name": "b", "type": "int32"}
+      ],
+      "return_type": "int32"
+    },
+    {
+      "module": "test_target.dll",
+      "symbol": "test_sub",
+      "action": "capture",
+      "collector": "typed",
+      "params": [
+        {"name": "x", "type": "int32"},
+        {"name": "y", "type": "int32"}
+      ],
+      "return_type": "int32"
+    }
+  ]
+}

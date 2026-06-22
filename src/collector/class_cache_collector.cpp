@@ -1,5 +1,6 @@
 #include "collector/class_cache_collector.h"
 #include "collector/typed_collector.h"
+#include "collector/param_serializer.h"
 #include "logging/logger.h"
 #include <nlohmann/json.hpp>
 #include <format>
@@ -37,39 +38,27 @@ static nlohmann::json buildClassCacheEntry(void* archive) {
 }
 
 void ClassCacheCollector::onEntry(const HookContext& ctx) {
-    nlohmann::json j;
+    nlohmann::json args;
 
-    for (size_t i = 0; i < params_.size(); i++) {
-        auto p = extractParam(ctx, static_cast<int>(i), params_[i]);
-        std::string key = p.value("name",
-            std::string("arg") + std::to_string(i));
-        if (p.contains("value"))
-            j[key] = p["value"];
-        else if (p.contains("value_hex"))
-            j[key] = p["value_hex"];
+    if (!params_.empty()) {
+        ParamSerializer::addConfigEntry(args, ctx, params_);
+    } else {
+        ParamSerializer::addDefaultEntry(args, ctx);
     }
 
     auto* archive = ctx.arg<void*>(0);
-    j["class_cache"] = buildClassCacheEntry(archive);
+    args["class_cache"] = buildClassCacheEntry(archive);
 
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", j);
+    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
 }
 
 void ClassCacheCollector::onExit(const HookContext& ctx) {
-    nlohmann::json j;
+    nlohmann::json args;
 
-    auto ret = extractReturnValue(ctx);
-    if (ret.contains("value"))
-        j["return"] = ret["value"];
-
-    for (size_t i = 0; i < params_.size(); i++) {
-        auto p = extractParam(ctx, static_cast<int>(i), params_[i]);
-        std::string key = p.value("name",
-            std::string("arg") + std::to_string(i));
-        if (p.contains("value"))
-            j[key] = p["value"];
-        else if (p.contains("value_hex"))
-            j[key] = p["value_hex"];
+    if (!params_.empty()) {
+        ParamSerializer::addConfigExit(args, ctx, params_, returnType_);
+    } else {
+        ParamSerializer::addDefaultExit(args, ctx);
     }
 
     auto* archive = ctx.arg<void*>(0);
@@ -82,9 +71,9 @@ void ClassCacheCollector::onExit(const HookContext& ctx) {
 
     nlohmann::json cc = buildClassCacheEntry(archive);
     cc["class"] = clsName.empty() ? "<null>" : clsName;
-    j["class_cache"] = cc;
+    args["class_cache"] = cc;
 
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", j);
+    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
 }
 
 }
