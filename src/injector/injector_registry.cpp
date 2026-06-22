@@ -11,7 +11,6 @@ InjectorRegistry& InjectorRegistry::instance() {
 void InjectorRegistry::registerCreator(const std::string& name, InjectorCreator creator) {
     std::lock_guard lock(mutex_);
     creators_[name] = std::move(creator);
-    LOG_INFO("Injector registered: {}", name);
 }
 
 std::shared_ptr<InjectorBase> InjectorRegistry::create(const std::string& name) {

@@ -13,7 +13,6 @@ CollectorRegistry& CollectorRegistry::instance() {
 
 void CollectorRegistry::registerCreator(const std::string& name, CollectorCreator creator) {
     creators_[name] = std::move(creator);
-    LOG_INFO("Custom collector registered: {}", name);
 }
 
 std::shared_ptr<CollectorBase> CollectorRegistry::create(const std::string& name) {
