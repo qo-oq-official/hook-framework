@@ -1,4 +1,5 @@
 #include "collector/collector_factory.h"
+#include "collector/typed_collector.h"
 #include "logging/logger.h"
 #include "output/rva_format.h"
 #include <format>
@@ -46,6 +47,10 @@ std::shared_ptr<CollectorBase> CollectorFactory::create(const HookDescriptor& de
             if (!collector) {
                 LOG_ERROR("Falling back to RawCollector for custom: {}", desc.customCollectorName);
                 return std::make_shared<RawCollector>();
+            }
+            if (auto* typed = dynamic_cast<TypedCollector*>(collector.get())) {
+                typed->setParamDescriptors(desc.params);
+                typed->setReturnType(desc.returnType);
             }
             return collector;
         }
