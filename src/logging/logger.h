@@ -20,7 +20,7 @@ public:
 private:
     Logger() = default;
     ~Logger() = default;
-    std::shared_ptr<spdlog::logger> logger_;
+    std::shared_ptr<spdlog::logger> logger_ = nullptr;
 };
 
 }

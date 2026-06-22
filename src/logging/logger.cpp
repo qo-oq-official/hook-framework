@@ -18,7 +18,9 @@ Logger& Logger::instance() {
 
 void Logger::initialize(const std::string& logFile, spdlog::level::level_enum level) {
     if (logger_) {
-        return;
+        logDiag("Logger: re-initializing (replacing previous instance)\n");
+        spdlog::drop("hookfw");
+        logger_.reset();
     }
 
     logDiag(("Logger: initializing file=" + logFile + "\n").c_str());
