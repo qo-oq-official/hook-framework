@@ -39,11 +39,15 @@ static nlohmann::json buildClassCacheEntry(void* archive) {
 void ClassCacheCollector::onEntry(const HookContext& ctx) {
     nlohmann::json j;
 
-    nlohmann::json params = nlohmann::json::array();
     for (size_t i = 0; i < params_.size(); i++) {
-        params.push_back(extractParam(ctx, static_cast<int>(i), params_[i]));
+        auto p = extractParam(ctx, static_cast<int>(i), params_[i]);
+        std::string key = p.value("name",
+            std::string("arg") + std::to_string(i));
+        if (p.contains("value"))
+            j[key] = p["value"];
+        else if (p.contains("value_hex"))
+            j[key] = p["value_hex"];
     }
-    j["params"] = params;
 
     auto* archive = ctx.arg<void*>(0);
     j["class_cache"] = buildClassCacheEntry(archive);
@@ -54,13 +58,19 @@ void ClassCacheCollector::onEntry(const HookContext& ctx) {
 void ClassCacheCollector::onExit(const HookContext& ctx) {
     nlohmann::json j;
 
-    j["return_value"] = extractReturnValue(ctx);
+    auto ret = extractReturnValue(ctx);
+    if (ret.contains("value"))
+        j["return"] = ret["value"];
 
-    nlohmann::json params = nlohmann::json::array();
     for (size_t i = 0; i < params_.size(); i++) {
-        params.push_back(extractParam(ctx, static_cast<int>(i), params_[i]));
+        auto p = extractParam(ctx, static_cast<int>(i), params_[i]);
+        std::string key = p.value("name",
+            std::string("arg") + std::to_string(i));
+        if (p.contains("value"))
+            j[key] = p["value"];
+        else if (p.contains("value_hex"))
+            j[key] = p["value_hex"];
     }
-    j["params"] = params;
 
     auto* archive = ctx.arg<void*>(0);
     auto* crtFromRet = ctx.returnValue<void*>();
