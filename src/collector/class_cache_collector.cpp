@@ -5,8 +5,6 @@
 #include <nlohmann/json.hpp>
 #include <format>
 #include <Windows.h>
-#include <unordered_map>
-#include <mutex>
 
 namespace hookfw {
 
@@ -118,17 +116,17 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
 REGISTER_COLLECTOR("copyLoadArrayStoreMapFrom", CopyLoadArrayStoreMapFromCollector);
 
 void CopyLoadArrayStoreMapFromCollector::onEntry(const HookContext& ctx) {
-    // after-only: no entry output
+    nlohmann::json args;
+    ParamSerializer::addConfigEntry(args, ctx, params_);
+    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
     LOG_TRACE("copyLoadArrayStoreMapFrom entry");
 }
 
 void CopyLoadArrayStoreMapFromCollector::onExit(const HookContext& ctx) {
     auto* src = ctx.arg<void*>(0);
-    auto* dst = ctx.arg<void*>(1);
     nlohmann::json args;
     args["phase"] = "exit";
     args["src"] = counterInfo(src);
-    args["dst"] = counterInfo(dst);
     outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
 }
 
@@ -136,21 +134,13 @@ void CopyLoadArrayStoreMapFromCollector::onExit(const HookContext& ctx) {
 
 REGISTER_COLLECTOR("useCacheArchive_c", UseCacheArchiveCollector);
 
-// Destructor has no archive param — remember from constructor entry.
-static std::mutex s_ucaMutex;
-static std::unordered_map<uint64_t, void*> s_ucaArchiveMap;
-
 void UseCacheArchiveCollector::onEntry(const HookContext& ctx) {
     auto* self = ctx.arg<void*>(0);   // this
-    auto* archive = ctx.arg<void*>(2);
-    uint32_t mode = ctx.arg<uint32_t>(3);
-
-    {
-        std::lock_guard lock(s_ucaMutex);
-        s_ucaArchiveMap[(uint64_t)self] = archive;
-    }
-
+    auto* archive = ctx.arg<void*>(1);
+    uint32_t mode = ctx.arg<uint32_t>(2);
     nlohmann::json args;
+
+    ParamSerializer::addConfigEntry(args, ctx, params_);
     args["phase"] = "entry";
     args["mode"] = mode;
     outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
@@ -160,17 +150,7 @@ void UseCacheArchiveCollector::onEntry(const HookContext& ctx) {
 
 void UseCacheArchiveCollector::onExit(const HookContext& ctx) {
     auto* self = ctx.arg<void*>(0);
-    void* archive = nullptr;
-
-    {
-        std::lock_guard lock(s_ucaMutex);
-        auto it = s_ucaArchiveMap.find((uint64_t)self);
-        if (it != s_ucaArchiveMap.end()) {
-            archive = it->second;
-            s_ucaArchiveMap.erase(it);
-        }
-    }
-
+    auto* archive = ctx.arg<void*>(1);
     nlohmann::json args;
     args["phase"] = "exit";
     args["archive_after"] = counterInfo(archive);
