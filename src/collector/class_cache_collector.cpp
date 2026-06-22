@@ -118,14 +118,8 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
 REGISTER_COLLECTOR("copyLoadArrayStoreMapFrom", CopyLoadArrayStoreMapFromCollector);
 
 void CopyLoadArrayStoreMapFromCollector::onEntry(const HookContext& ctx) {
-    auto* src = ctx.arg<void*>(0);
-    auto* dst = ctx.arg<void*>(1);
-    nlohmann::json args;
-    args["phase"] = "entry";
-    args["src"] = counterInfo(src);
-    args["dst"] = counterInfo(dst);
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
-    LOG_TRACE("copyLoadArrayStoreMapFrom entry src={:p} dst={:p}", static_cast<void*>(src), static_cast<void*>(dst));
+    // after-only: no entry output
+    LOG_TRACE("copyLoadArrayStoreMapFrom entry");
 }
 
 void CopyLoadArrayStoreMapFromCollector::onExit(const HookContext& ctx) {
@@ -158,7 +152,6 @@ void UseCacheArchiveCollector::onEntry(const HookContext& ctx) {
 
     nlohmann::json args;
     args["phase"] = "entry";
-    args["archive_before"] = counterInfo(archive);
     args["mode"] = mode;
     outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
     LOG_TRACE("useCacheArchive_c ENTER self={:p} archive={:p} mode={}",
