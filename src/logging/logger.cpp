@@ -6,6 +6,11 @@
 
 namespace hookfw {
 
+static void logDiag(const char* msg) {
+    OutputDebugStringA(msg);
+    crash_log::write(msg);
+}
+
 Logger& Logger::instance() {
     static Logger inst;
     return inst;
@@ -16,7 +21,18 @@ void Logger::initialize(const std::string& logFile, spdlog::level::level_enum le
         return;
     }
 
-    crash_log::write(("Logger: initializing file=" + logFile + "\n").c_str());
+    logDiag(("Logger: initializing file=" + logFile + "\n").c_str());
+
+    // Check if directory is writable
+    auto dirSep = logFile.rfind('\\');
+    if (dirSep != std::string::npos) {
+        std::string dirPath = logFile.substr(0, dirSep);
+        DWORD attrs = GetFileAttributesA(dirPath.c_str());
+        if (attrs == INVALID_FILE_ATTRIBUTES) {
+            std::string err = "Logger: directory not found: " + dirPath + " err=" + std::to_string(GetLastError()) + "\n";
+            logDiag(err.c_str());
+        }
+    }
 
     try {
         auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFile, true);
@@ -30,11 +46,16 @@ void Logger::initialize(const std::string& logFile, spdlog::level::level_enum le
 
         spdlog::register_logger(logger_);
         logger_->info("Hook framework logger initialized, file={}", logFile);
-        crash_log::write("Logger: file sink created OK\n");
+        logDiag("Logger: file sink created OK\n");
     } catch (const std::exception& ex) {
-        std::string msg = "Logger init FAILED: " + std::string(ex.what()) + "\n";
-        OutputDebugStringA(msg.c_str());
-        crash_log::write(msg.c_str());
+        std::string msg = "Logger init EXCEPTION: " + std::string(ex.what()) + " err=" + std::to_string(GetLastError()) + "\n";
+        logDiag(msg.c_str());
+        auto msvcSink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
+        logger_ = std::make_shared<spdlog::logger>("hookfw", msvcSink);
+        logger_->set_level(level);
+        logger_->error("Logger fell back to MSVC debug sink (file creation failed: {})", ex.what());
+    } catch (...) {
+        logDiag("Logger init UNKNOWN EXCEPTION\n");
         auto msvcSink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
         logger_ = std::make_shared<spdlog::logger>("hookfw", msvcSink);
         logger_->set_level(level);
