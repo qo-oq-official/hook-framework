@@ -119,48 +119,63 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                                   uint64_t,
                                   const std::string& phase,
                                   const nlohmann::json& data) {
-    char ph = (phase == "entry") ? 'B' : 'E';
-    double ts = nowMicroseconds();
-    uint32_t pid = GetCurrentProcessId();
-    uint32_t tid = GetCurrentThreadId();
+    try {
+        char ph = (phase == "entry") ? 'B' : 'E';
+        double ts = nowMicroseconds();
+        uint32_t pid = GetCurrentProcessId();
+        uint32_t tid = GetCurrentThreadId();
 
-    std::string displayName = undecorateName(functionName);
+        std::string displayName = undecorateName(functionName);
 
-    nlohmann::json args;
-    if (data.contains("params")) {
-        for (const auto& p : data["params"]) {
-            std::string key = p.value("name", "arg");
-            if (p.contains("value")) {
-                args[key] = p["value"];
-            } else if (p.contains("value_hex")) {
-                args[key] = p["value_hex"];
+        nlohmann::json args;
+        if (data.contains("params")) {
+            for (const auto& p : data["params"]) {
+                std::string key = p.value("name", "arg");
+                if (p.contains("value")) {
+                    args[key] = p["value"];
+                } else if (p.contains("value_hex")) {
+                    args[key] = p["value_hex"];
+                }
             }
         }
-    }
-    if (data.contains("return_value") && data["return_value"].contains("value")) {
-        args["return"] = data["return_value"]["value"];
-    }
-    if (data.contains("output_params")) {
-        for (const auto& op : data["output_params"]) {
-            std::string key = op.value("name", "out") + "_out";
-            if (op.contains("deref_value")) {
-                args[key] = op["deref_value"];
+        if (data.contains("return_value") && data["return_value"].contains("value")) {
+            args["return"] = data["return_value"]["value"];
+        }
+        if (data.contains("output_params")) {
+            for (const auto& op : data["output_params"]) {
+                std::string key = op.value("name", "out") + "_out";
+                if (op.contains("deref_value")) {
+                    args[key] = op["deref_value"];
+                }
             }
         }
-    }
-    if (data.contains("exit_params")) {
-        for (const auto& p : data["exit_params"]) {
-            std::string key = p.value("name", "arg");
-            if (p.contains("value")) {
-                args[key] = p["value"];
-            } else if (p.contains("value_hex")) {
-                args[key] = p["value_hex"];
+        if (data.contains("exit_params")) {
+            for (const auto& p : data["exit_params"]) {
+                std::string key = p.value("name", "arg");
+                if (p.contains("value")) {
+                    args[key] = p["value"];
+                } else if (p.contains("value_hex")) {
+                    args[key] = p["value_hex"];
+                }
             }
         }
-    }
 
-    addTraceEvent(displayName, moduleName, ph, ts, pid, tid, args);
-    return true;
+        static const char* kKnown[] = {"params", "return_value", "output_params", "exit_params"};
+        for (const auto& [key, val] : data.items()) {
+            bool skip = false;
+            for (const auto* k : kKnown) { if (key == k) { skip = true; break; } }
+            if (!skip) args[key] = val;
+        }
+
+        addTraceEvent(displayName, moduleName, ph, ts, pid, tid, args);
+        return true;
+    } catch (const std::exception& ex) {
+        LOG_ERROR("writeJson failed for {}: {}", functionName, ex.what());
+        return false;
+    } catch (...) {
+        LOG_ERROR("writeJson unknown exception for {}", functionName);
+        return false;
+    }
 }
 
 uint64_t TraceOutputWriter::nextSeq() {
