@@ -37,6 +37,11 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
 
             hookfw::crash_log::write(("dllDir: " + dllDir.string() + "\n").c_str());
             hookfw::crash_log::write(("Git hash: " + std::string(HOOKFW_GIT_HASH) + "\n").c_str());
+            hookfw::crash_log::write("Log paths:\n");
+            hookfw::crash_log::write(("  early: " + earlyLogPath + "\n").c_str());
+            hookfw::crash_log::write(("  main:  " + logPath + "\n").c_str());
+            hookfw::crash_log::write(("  crash: " + (dllDir / "hook_crash.log").string() + "\n").c_str());
+            hookfw::crash_log::write(("  attach: " + (dllDir / "hook_attach_err.log").string() + "\n").c_str());
             hookfw::Logger::instance().initialize(logPath);
             hookfw::crash_log::write("[3] Logger initialized\n");
             LOG_INFO("=== Hook Framework DLL loaded ===");
