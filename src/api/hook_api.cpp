@@ -140,7 +140,6 @@ bool HookEngine::initialize(const std::string& configPath) {
             return true;
         }
 
-        Logger::instance().initialize();
         LOG_INFO("HookEngine initializing...");
 
         std::shared_ptr<OutputWriter> writer = std::make_shared<FileOutputWriter>(impl_->outputDir);
