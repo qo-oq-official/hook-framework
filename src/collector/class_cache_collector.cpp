@@ -20,11 +20,62 @@ static bool isReadableMemory(const void* addr, size_t size) {
            reinterpret_cast<uintptr_t>(mbi.BaseAddress) + mbi.RegionSize;
 }
 
-static std::string readClassName(void* crt) {
-    if (!isReadableMemory(crt, 8)) return "";
-    auto* namePtr = *reinterpret_cast<const char**>(crt);
-    if (!isReadableMemory(namePtr, 1)) return "";
-    return namePtr;
+static nlohmann::json readClassName(void* crt) {
+    nlohmann::json j;
+    if (!isReadableMemory(crt, 8)) {
+        j["error"] = "unreadable_crt";
+        return j;
+    }
+    auto* namePtr = *reinterpret_cast<uint8_t**>(crt);
+    if (!isReadableMemory(namePtr, 1)) {
+        j["error"] = "invalid_ptr";
+        return j;
+    }
+
+    size_t maxLen = 512;
+    size_t actualLen = 0;
+    for (size_t i = 0; i < maxLen && isReadableMemory(namePtr + i, 1); i++) {
+        actualLen = i + 1;
+        if (namePtr[i] == 0) break;
+    }
+
+    // 1. std::string display (ANSI/ASCII, filter non-printable)
+    auto* cptr = reinterpret_cast<const char*>(namePtr);
+    size_t cstrLen = strnlen(cptr, actualLen);
+    if (cstrLen > 0) {
+        std::string s(cptr, cstrLen);
+        bool allPrintable = true;
+        for (char ch : s) { if (static_cast<unsigned char>(ch) < 0x20 && ch != '\0') { allPrintable = false; break; } }
+        if (allPrintable) j["str"] = s;
+    }
+
+    // 2. std::wstring display (wide char → UTF-8)
+    if (actualLen >= 2) {
+        auto* wptr = reinterpret_cast<const wchar_t*>(namePtr);
+        size_t wlen = actualLen / 2;
+        size_t nullPos = wlen;
+        for (size_t i = 0; i < wlen && isReadableMemory(wptr + i, 2); i++) {
+            if (wptr[i] == 0) { nullPos = i; break; }
+        }
+        if (nullPos > 0 && nullPos <= wlen) {
+            std::string utf8 = wideToUtf8(wptr, nullPos);
+            if (!utf8.empty()) j["wstr"] = utf8;
+        }
+    }
+
+    // 3. Hex dump (first 32 bytes)
+    size_t hexLen = actualLen < 32 ? actualLen : 32;
+    std::string hex;
+    for (size_t i = 0; i < hexLen; i++) {
+        if (!isReadableMemory(namePtr + i, 1)) break;
+        char buf[4];
+        sprintf_s(buf, "%02X ", static_cast<unsigned int>(namePtr[i]));
+        hex += buf;
+    }
+    if (!hex.empty()) hex.pop_back();
+    j["hex"] = hex;
+
+    return j;
 }
 
 // su_CPtrArray — swccu.dll, 0x20 bytes
@@ -65,7 +116,7 @@ static nlohmann::json dumpClassList(void* archive) {
     }
     for (int i = 0; i < map->m_nSize; i++) {
         auto* crt = map->m_pData[i];
-        arr.push_back({{"idx", i}, {"class", crt ? readClassName(crt) : "(null)"}});
+        arr.push_back({{"idx", i}, {"class", crt ? readClassName(crt) : nlohmann::json{{"error", "null"}}}});
     }
     return arr;
 }
@@ -103,7 +154,8 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
     ParamSerializer::addConfigExit(args, ctx, params_, returnType_);
     auto* archive = ctx.arg<void*>(0);
     auto* crtFromRet = ctx.returnValue<void*>();
-    std::string clsName = crtFromRet ? readClassName(crtFromRet) : "<?>";
+    auto clsJson = crtFromRet ? readClassName(crtFromRet) : nlohmann::json{{"error", "?"}};
+    std::string clsName = clsJson.value("str", clsJson.value("error", "<no_str>"));
     auto cc = counterInfo(archive);
     cc["class"] = clsName;
     args["class_cache_after"] = cc;
