@@ -10,6 +10,13 @@ struct ReadClassCollector : public TypedCollector {
     void onExit(const HookContext& ctx) override;
 };
 
+// Hook: su_CArchive::ReadObject
+// Captures: vtable[2] Serialize RVA from returned CObject*
+struct ReadObjectCollector : public TypedCollector {
+    void onEntry(const HookContext& ctx) override;
+    void onExit(const HookContext& ctx) override;
+};
+
 // Hook: su_CArchive::copyLoadArrayStoreMapFrom
 // Captures: src/dst archive full class → index mapping
 struct CopyLoadArrayStoreMapFromCollector : public TypedCollector {

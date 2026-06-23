@@ -176,6 +176,38 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
     LOG_TRACE("ReadClass exit archive={:p} class={}", static_cast<void*>(archive), clsName);
 }
 
+// ── ReadObjectCollector ──────────────────────────────────────────────
+
+REGISTER_COLLECTOR("ReadObject", ReadObjectCollector);
+
+void ReadObjectCollector::onEntry(const HookContext& ctx) {
+    nlohmann::json args;
+    ParamSerializer::addDefaultEntry(args, ctx);
+    ParamSerializer::addConfigEntry(args, ctx, params_);
+    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
+}
+
+void ReadObjectCollector::onExit(const HookContext& ctx) {
+    nlohmann::json args;
+    ParamSerializer::addDefaultExit(args, ctx);
+    ParamSerializer::addConfigExit(args, ctx, params_, returnType_);
+
+    auto* obj = ctx.returnValue<void*>();
+    if (obj && isReadableMemory(obj, 8)) {
+        uint64_t vt = *reinterpret_cast<uint64_t*>(obj);
+        if (isReadableMemory(reinterpret_cast<void*>(vt), 24)) {
+            uint64_t serializeAddr = *reinterpret_cast<uint64_t*>(
+                reinterpret_cast<uint8_t*>(vt) + 0x10);
+            args["serialize_rva"]   = moduleBase_ > 0 && serializeAddr >= moduleBase_
+                ? std::format("0x{:08x}", serializeAddr - moduleBase_) : "?";
+            args["moduleBase"]       = std::format("{:#x}", moduleBase_);
+            args["serializeAddr"]    = std::format("{:#x}", serializeAddr);
+        }
+    }
+
+    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
+}
+
 // ── CopyLoadArrayStoreMapFromCollector ───────────────────────────────
 
 REGISTER_COLLECTOR("copyLoadArrayStoreMapFrom", CopyLoadArrayStoreMapFromCollector);
