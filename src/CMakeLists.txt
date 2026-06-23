@@ -5,6 +5,7 @@ set(HOOK_FW_SOURCES
     injector/test_read_injector.cpp
     injector/test_mode_injectors.cpp
     injector/test_struct_injectors.cpp
+    injector/test_stack_injector.cpp
     thunk/thunk_manager.cpp
     thunk/dispatch.cpp
     collector/raw_collector.cpp

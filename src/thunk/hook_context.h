@@ -1,6 +1,9 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
+#include <algorithm>
+#include <format>
+#include <Windows.h>
 
 namespace hookfw {
 
@@ -33,6 +36,43 @@ struct HookContext {
     uint8_t stackSnapshot[512];
     uint32_t stackSnapshotSize;
     uint32_t hookId;
+
+    uint32_t stackFrameCount = 0;
+    uint64_t stackFrames[64] = {};
+
+    void captureCallStack(uint32_t maxFrames = 32) {
+        void* frames[64] = {};
+        uint16_t n = (uint16_t)(std::min)(maxFrames, 64u);
+        uint16_t captured = RtlCaptureStackBackTrace(0, n, frames, NULL);
+        stackFrameCount = captured;
+        for (uint16_t i = 0; i < captured; i++)
+            stackFrames[i] = reinterpret_cast<uint64_t>(frames[i]);
+    }
+
+    static std::string resolveFrame(uint64_t addr) {
+        MEMORY_BASIC_INFORMATION mbi{};
+        if (!VirtualQuery(reinterpret_cast<void*>(addr), &mbi, sizeof(mbi)))
+            return std::format("{:#x}", addr);
+        if (mbi.Type == MEM_IMAGE && mbi.AllocationBase) {
+            wchar_t path[MAX_PATH];
+            if (GetModuleFileNameW(reinterpret_cast<HMODULE>(mbi.AllocationBase), path, MAX_PATH)) {
+                std::wstring_view wp(path);
+                auto pos = wp.rfind(L'\\');
+                std::wstring_view fname = (pos != std::wstring_view::npos)
+                    ? std::wstring_view(wp.begin() + pos + 1, wp.end())
+                    : wp;
+                int len = WideCharToMultiByte(CP_UTF8, 0, fname.data(), (int)fname.size(),
+                                              nullptr, 0, nullptr, nullptr);
+                std::string name(len, '\0');
+                if (len > 0)
+                    WideCharToMultiByte(CP_UTF8, 0, fname.data(), (int)fname.size(),
+                                        &name[0], len, nullptr, nullptr);
+                uint64_t rva = addr - reinterpret_cast<uint64_t>(mbi.AllocationBase);
+                return std::format("{}+0x{:08x}", name, rva);
+            }
+        }
+        return std::format("{:#x}", addr);
+    }
 
     template<typename T>
     T arg(int index) const {

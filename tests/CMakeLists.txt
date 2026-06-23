@@ -65,5 +65,10 @@ target_include_directories(test_perfetto_params PRIVATE ${CMAKE_SOURCE_DIR}/src 
 target_compile_definitions(test_perfetto_params PRIVATE WIN32_LEAN_AND_MEAN)
 
 add_executable(test_rva_scale test_rva_scale.cpp)
+
+add_executable(test_injector_stack test_injector_stack.cpp)
+target_link_libraries(test_injector_stack PRIVATE hook_framework nlohmann_json)
+target_include_directories(test_injector_stack PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src/injector ${CMAKE_BINARY_DIR}/generated)
+target_compile_definitions(test_injector_stack PRIVATE WIN32_LEAN_AND_MEAN)
 target_link_libraries(test_rva_scale PRIVATE hook_framework)
 target_include_directories(test_rva_scale PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/generated)
