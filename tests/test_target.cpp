@@ -85,8 +85,6 @@ TEST_API __declspec(noinline) const char* test_mul5_out(int a, int b, int c, int
     return buf;
 }
 
-}
-
 TEST_API __declspec(noinline) void test_modify_object(TestObjectA* obj) {
     obj->x     = 42;
     obj->y     = 3.14;
@@ -101,4 +99,6 @@ TEST_API __declspec(noinline) void test_modify_object2(TestObjectA* obj) {
     obj->flag  = 'X';
     obj->name  = "modified2";
     obj->wname = L"\u4fee\u65392";
+}
+
 }
