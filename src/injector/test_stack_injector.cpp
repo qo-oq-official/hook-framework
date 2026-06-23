@@ -14,7 +14,7 @@ public:
     std::string name() const override { return "stack_trace_injector"; }
 
     void onInject(hookfw::HookContext& ctx, hookfw::TraceOutputWriter* trace) override {
-        ctx.captureCallStack(16);
+        ctx.captureCallStack(ctx, 16);
         g_stackData.callCount++;
 
         std::lock_guard lock(g_stackData.mutex);

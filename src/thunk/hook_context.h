@@ -40,13 +40,16 @@ struct HookContext {
     uint32_t stackFrameCount = 0;
     uint64_t stackFrames[64] = {};
 
-    void captureCallStack(uint32_t maxFrames = 32) {
-        void* frames[64] = {};
-        uint16_t n = (uint16_t)(std::min)(maxFrames, 64u);
-        uint16_t captured = RtlCaptureStackBackTrace(0, n, frames, NULL);
-        stackFrameCount = captured;
-        for (uint16_t i = 0; i < captured; i++)
-            stackFrames[i] = reinterpret_cast<uint64_t>(frames[i]);
+    void captureCallStack(const HookContext& ctx, uint32_t maxFrames = 32) {
+        stackFrameCount = 0;
+        if (ctx.returnAddress) {
+            stackFrames[stackFrameCount++] = ctx.returnAddress;
+        }
+        void* frames[63] = {};
+        uint32_t n = maxFrames > 0 ? maxFrames - 1 : 0;
+        uint16_t captured = RtlCaptureStackBackTrace(0, (uint16_t)(std::min)(n, 63u), frames, NULL);
+        for (uint16_t i = 0; i < captured && stackFrameCount < 64; i++)
+            stackFrames[stackFrameCount++] = reinterpret_cast<uint64_t>(frames[i]);
     }
 
     static std::string resolveFrame(uint64_t addr) {
