@@ -53,7 +53,10 @@ struct HookContext {
 
             DWORD64 imgBase = 0;
             auto* fe = RtlLookupFunctionEntry(walk.Rip, &imgBase, nullptr);
-            if (!fe) break;
+            if (!fe) {
+                stackFrames[stackFrameCount++] = 0;
+                break;
+            }
 
             PVOID hd = nullptr; DWORD64 ef = 0;
             RtlVirtualUnwind(UNW_FLAG_NHANDLER, imgBase, walk.Rip,

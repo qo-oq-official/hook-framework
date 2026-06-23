@@ -51,15 +51,9 @@ int main() {
 
         CHECK(g_stackData.lastFrames.size() >= 4,
               (std::string("at least 4 frames (got ") + std::to_string(g_stackData.lastFrames.size()) + ")").c_str());
-
-        // Frame 0 comes from RtlVirtualUnwind(ctx.returnAddress), fallback from CaptureStackBackTrace
-        bool hasTargetOrHfw = false;
-        for (const auto& f : g_stackData.lastFrames) {
-            if (f.find("test_target.dll") != std::string::npos ||
-                f.find("hook_framework.dll") != std::string::npos)
-                hasTargetOrHfw = true;
-        }
-        CHECK(hasTargetOrHfw, "frames include test_target.dll or hook_framework.dll");
+        CHECK(g_stackData.lastFrames[0].find(".exe+") != std::string::npos ||
+              g_stackData.lastFrames[0].find(".dll+") != std::string::npos,
+              "frame 0 resolved to module+offset");
     }
 
     engine.shutdown();

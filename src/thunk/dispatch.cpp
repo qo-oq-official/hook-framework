@@ -56,10 +56,18 @@ static void doDispatchBody(hookfw::ThunkData* data,
             memcpy(ctx.xmm2, static_cast<uint8_t*>(xmmPtr) + 32, 16);
             memcpy(ctx.xmm3, static_cast<uint8_t*>(xmmPtr) + 48, 16);
         }
-        if (origRSP && !IsBadReadPtr(reinterpret_cast<void*>(origRSP), 512)) {
-            ctx.returnAddress = *reinterpret_cast<uint64_t*>(origRSP);
-            memcpy(ctx.stackSnapshot, reinterpret_cast<void*>(origRSP), 512);
-            ctx.stackSnapshotSize = 512;
+        if (origRSP) {
+            MEMORY_BASIC_INFORMATION mbi{};
+            if (VirtualQuery(reinterpret_cast<void*>(origRSP), &mbi, sizeof(mbi))
+                && mbi.State == MEM_COMMIT
+                && !(mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD))) {
+                size_t avail = reinterpret_cast<uint8_t*>(mbi.BaseAddress) + mbi.RegionSize
+                               - reinterpret_cast<uint8_t*>(origRSP);
+                size_t copySize = (avail < 512) ? avail : 512;
+                ctx.returnAddress = *reinterpret_cast<uint64_t*>(origRSP);
+                memcpy(ctx.stackSnapshot, reinterpret_cast<void*>(origRSP), copySize);
+                ctx.stackSnapshotSize = static_cast<uint32_t>(copySize);
+            }
         }
 
         auto writer = std::dynamic_pointer_cast<hookfw::TraceOutputWriter>(
