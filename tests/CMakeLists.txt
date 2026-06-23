@@ -1,5 +1,6 @@
 add_library(test_target SHARED test_target.cpp)
 target_compile_definitions(test_target PRIVATE TEST_TARGET_EXPORTS)
+target_compile_options(test_target PRIVATE /Oy-)
 
 add_library(test_scale_target SHARED test_scale_target.cpp)
 target_compile_definitions(test_scale_target PRIVATE TEST_SCALE_EXPORTS)

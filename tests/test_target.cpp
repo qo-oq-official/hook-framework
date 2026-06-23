@@ -85,13 +85,16 @@ TEST_API __declspec(noinline) const char* test_mul5_out(int a, int b, int c, int
     return buf;
 }
 
-static int __declspec(noinline) deep_call_l3(int x) { return x * 2; }
+TEST_API __declspec(noinline) int deep_call_l3(int x);
+
 static int __declspec(noinline) deep_call_l2(int x) { return deep_call_l3(x) + 1; }
 static int __declspec(noinline) deep_call_l1(int x) { return deep_call_l2(x) + 1; }
 
 TEST_API __declspec(noinline) int test_deep_call(int x) {
     return deep_call_l1(x) + 1;
 }
+
+TEST_API __declspec(noinline) int deep_call_l3(int x) { return x * 2; }
 
 TEST_API __declspec(noinline) void test_modify_object(TestObjectA* obj) {
     obj->x     = 42;
