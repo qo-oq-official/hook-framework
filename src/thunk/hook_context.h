@@ -43,30 +43,25 @@ struct HookContext {
     void captureCallStack(const HookContext& ctx, uint32_t maxFrames = 32) {
         stackFrameCount = 0;
 
-        // Unwind original call chain from the hooked function's return point
-        DWORD64 imageBase = 0;
-        CONTEXT fakeCtx{};
-        fakeCtx.Rip = ctx.returnAddress;
-        fakeCtx.Rsp = ctx.rsp + 8;
+        CONTEXT walk{};
+        walk.Rip = ctx.returnAddress;
+        walk.Rsp = ctx.rsp + 8;
 
-        for (uint32_t i = 0; i < maxFrames && stackFrameCount < 64; i++) {
-            if (!fakeCtx.Rip) break;
-            stackFrames[stackFrameCount++] = fakeCtx.Rip;
+        for (uint32_t i = 0; i < maxFrames && stackFrameCount < 32; i++) {
+            if (walk.Rip == 0 || walk.Rip < 0x10000) break;
+            stackFrames[stackFrameCount++] = walk.Rip;
 
-            auto* funcEntry = RtlLookupFunctionEntry(fakeCtx.Rip, &imageBase, nullptr);
-            if (!funcEntry) break;
+            DWORD64 imgBase = 0;
+            auto* fe = RtlLookupFunctionEntry(walk.Rip, &imgBase, nullptr);
+            if (!fe) break;
 
-            PVOID handlerData = nullptr;
-            DWORD64 establisherFrame = 0;
-            RtlVirtualUnwind(UNW_FLAG_NHANDLER, imageBase, fakeCtx.Rip,
-                             funcEntry, &fakeCtx, &handlerData,
-                             &establisherFrame, nullptr);
+            PVOID hd = nullptr; DWORD64 ef = 0;
+            RtlVirtualUnwind(UNW_FLAG_NHANDLER, imgBase, walk.Rip,
+                             fe, &walk, &hd, &ef, nullptr);
         }
 
-        // Append current chain from hook internal frames
         void* bt[32] = {};
-        uint32_t remaining = maxFrames > 5 ? 32 : (uint32_t)(std::min)(maxFrames, 32u);
-        uint16_t n = RtlCaptureStackBackTrace(0, (uint16_t)remaining, bt, NULL);
+        uint16_t n = RtlCaptureStackBackTrace(0, 32, bt, NULL);
         for (uint16_t i = 0; i < n && stackFrameCount < 64; i++)
             stackFrames[stackFrameCount++] = reinterpret_cast<uint64_t>(bt[i]);
     }
