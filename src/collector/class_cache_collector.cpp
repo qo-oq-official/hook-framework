@@ -158,6 +158,19 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
     std::string clsName = clsJson.value("str", clsJson.value("error", "<no_str>"));
     auto cc = counterInfo(archive);
     cc["class"] = clsName;
+
+    if (crtFromRet && isReadableMemory(crtFromRet, 8)) {
+        uint64_t vt = *reinterpret_cast<uint64_t*>(crtFromRet);
+        if (isReadableMemory(reinterpret_cast<void*>(vt), 24)) {
+            uint64_t serializeAddr = *reinterpret_cast<uint64_t*>(
+                reinterpret_cast<uint8_t*>(vt) + 0x10);
+            if (moduleBase_ > 0 && serializeAddr >= moduleBase_) {
+                uint64_t rva = serializeAddr - moduleBase_;
+                cc["serialize_rva"] = std::format("0x{:08x}", rva);
+            }
+        }
+    }
+
     args["class_cache_after"] = cc;
     outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
     LOG_TRACE("ReadClass exit archive={:p} class={}", static_cast<void*>(archive), clsName);

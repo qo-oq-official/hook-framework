@@ -101,6 +101,9 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
 
     HMODULE hMod = GetModuleHandleA(desc.target.moduleName.c_str());
     hook->moduleBase = reinterpret_cast<uintptr_t>(hMod);
+    if (hook->collector) {
+        hook->collector->setModuleBase(hook->moduleBase);
+    }
 
     for (const auto& existing : hooks_) {
         if (existing->resolvedAddress == hook->resolvedAddress) {

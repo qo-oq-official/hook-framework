@@ -19,11 +19,13 @@ public:
     void setOutputWriter(std::shared_ptr<OutputWriter> writer) { outputWriter_ = writer; }
     void setModuleName(const std::string& name) { moduleName_ = name; }
     void setFunctionName(const std::string& name) { functionName_ = name; }
+    void setModuleBase(uintptr_t base) { moduleBase_ = base; }
 
 protected:
     std::shared_ptr<OutputWriter> outputWriter_;
     std::string moduleName_;
     std::string functionName_;
+    uintptr_t moduleBase_ = 0;
 };
 
 using CollectorCreator = std::function<std::shared_ptr<CollectorBase>()>;
