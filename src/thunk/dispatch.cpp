@@ -64,7 +64,8 @@ static void doDispatchBody(hookfw::ThunkData* data,
                 size_t avail = reinterpret_cast<uint8_t*>(mbi.BaseAddress) + mbi.RegionSize
                                - reinterpret_cast<uint8_t*>(origRSP);
                 size_t copySize = (avail < 512) ? avail : 512;
-                ctx.returnAddress = *reinterpret_cast<uint64_t*>(origRSP);
+                ctx.returnAddress = *reinterpret_cast<uint64_t*>(
+                    reinterpret_cast<uint8_t*>(origRSP) - 8);
                 memcpy(ctx.stackSnapshot, reinterpret_cast<void*>(origRSP), copySize);
                 ctx.stackSnapshotSize = static_cast<uint32_t>(copySize);
             }

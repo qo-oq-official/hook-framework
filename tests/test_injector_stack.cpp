@@ -49,11 +49,10 @@ int main() {
         for (const auto& f : g_stackData.lastFrames)
             printf("    %s\n", f.c_str());
 
-        CHECK(g_stackData.lastFrames.size() >= 4,
-              (std::string("at least 4 frames (got ") + std::to_string(g_stackData.lastFrames.size()) + ")").c_str());
-        CHECK(g_stackData.lastFrames[0].find(".exe+") != std::string::npos ||
-              g_stackData.lastFrames[0].find(".dll+") != std::string::npos,
-              "frame 0 resolved to module+offset");
+        CHECK(g_stackData.lastFrames.size() >= 5,
+              (std::string("at least 5 frames (got ") + std::to_string(g_stackData.lastFrames.size()) + ")").c_str());
+        CHECK(g_stackData.lastFrames[0].find("test_target.dll") != std::string::npos,
+              "frame 0 is from test_target.dll (caller of deep_call_l3)");
     }
 
     engine.shutdown();
