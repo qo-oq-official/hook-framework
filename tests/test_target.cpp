@@ -1,6 +1,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdint>
+#include <cstdio>
 #include "test_struct_target.h"
 
 #ifdef TEST_TARGET_EXPORTS
@@ -77,6 +78,15 @@ TEST_API __declspec(noinline) int test_read_float(float* out) {
     return 1;
 }
 
+TEST_API __declspec(noinline) const char* test_mul5_out(int a, int b, int c, int d, int e, int* out) {
+    if (out) *out = a * b * c * d * e;
+    static char buf[32];
+    sprintf_s(buf, "%d", out ? *out : 0);
+    return buf;
+}
+
+}
+
 TEST_API __declspec(noinline) void test_modify_object(TestObjectA* obj) {
     obj->x     = 42;
     obj->y     = 3.14;
@@ -91,6 +101,4 @@ TEST_API __declspec(noinline) void test_modify_object2(TestObjectA* obj) {
     obj->flag  = 'X';
     obj->name  = "modified2";
     obj->wname = L"\u4fee\u65392";
-}
-
 }

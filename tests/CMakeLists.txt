@@ -12,6 +12,10 @@ add_executable(test_replace test_replace.cpp)
 target_link_libraries(test_replace PRIVATE hook_framework)
 target_include_directories(test_replace PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
+add_executable(test_replace_stack test_replace_stack.cpp)
+target_link_libraries(test_replace_stack PRIVATE hook_framework)
+target_include_directories(test_replace_stack PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/generated)
+
 add_executable(test_injection test_injection.cpp)
 target_link_libraries(test_injection PRIVATE nlohmann_json)
 target_compile_definitions(test_injection PRIVATE WIN32_LEAN_AND_MEAN)
