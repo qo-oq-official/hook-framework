@@ -80,10 +80,27 @@ hookfw_thunk_entry PROC
     test edi, edi
     jnz do_call_both
 
-    ;; Only replacement (no stack arg forwarding needed for user replacement)
-    sub rsp, 48                ; RSP: 0->0 mod16
+    ;; Only replacement with stack arg forwarding
+    sub rsp, 96                ; 32 shadow + 64 for up to 8 stack params
+    mov rax, [rsi + 32]
+    mov [rsp + 32], rax
+    mov rax, [rsi + 40]
+    mov [rsp + 40], rax
+    mov rax, [rsi + 48]
+    mov [rsp + 48], rax
+    mov rax, [rsi + 56]
+    mov [rsp + 56], rax
+    mov rax, [rsi + 64]
+    mov [rsp + 64], rax
+    mov rax, [rsi + 72]
+    mov [rsp + 72], rax
+    mov rax, [rsi + 80]
+    mov [rsp + 80], rax
+    mov rax, [rsi + 88]
+    mov [rsp + 88], rax
+    mov rax, [r12 + 28h]      ; replacementFunction
     call rax
-    add rsp, 48
+    add rsp, 96
     jmp after_call
 
 do_call_both:
@@ -114,10 +131,27 @@ do_call_both:
     mov rdx, r14
     mov r8, r15
     mov r9, rbx
-    sub rsp, 48
+    ;; Forward caller's stack args for replacement
+    sub rsp, 96                ; 32 shadow + 64 for up to 8 stack params
+    mov rax, [rsi + 32]
+    mov [rsp + 32], rax
+    mov rax, [rsi + 40]
+    mov [rsp + 40], rax
+    mov rax, [rsi + 48]
+    mov [rsp + 48], rax
+    mov rax, [rsi + 56]
+    mov [rsp + 56], rax
+    mov rax, [rsi + 64]
+    mov [rsp + 64], rax
+    mov rax, [rsi + 72]
+    mov [rsp + 72], rax
+    mov rax, [rsi + 80]
+    mov [rsp + 80], rax
+    mov rax, [rsi + 88]
+    mov [rsp + 88], rax
     mov rax, [r12 + 28h]
     call rax
-    add rsp, 48
+    add rsp, 96
     jmp after_call
 
 do_call_original:
