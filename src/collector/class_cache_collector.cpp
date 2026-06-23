@@ -25,11 +25,13 @@ static nlohmann::json readClassName(void* crt) {
     nlohmann::json j;
     if (!isReadableMemory(crt, 8)) {
         j["error"] = "unreadable_crt";
+        LOG_WARN("readClassName: unreadable CRuntimeClass at {:p}", static_cast<void*>(crt));
         return j;
     }
     auto* namePtr = *reinterpret_cast<uint8_t**>(crt);
     if (!isReadableMemory(namePtr, 1)) {
         j["error"] = "invalid_ptr";
+        LOG_WARN("readClassName: invalid namePtr at {:p}", static_cast<void*>(namePtr));
         return j;
     }
 
@@ -90,16 +92,20 @@ struct su_CPtrArray {
 
 static nlohmann::json dumpClassList(void* archive) {
     nlohmann::json arr = nlohmann::json::array();
-    if (!archive) { arr.push_back({{"error", "null_archive"}}); return arr; }
+    if (!archive) { arr.push_back({{"error", "null_archive"}});
+        LOG_WARN("dumpClassList: null archive"); return arr; }
     if (!isReadableMemory(archive, 0x60)) {
         arr.push_back({{"error", std::format("unreadable_archive@{:#x}", (uint64_t)archive)}});
+        LOG_WARN("dumpClassList: unreadable archive at {:p}", archive);
         return arr;
     }
     auto* map = reinterpret_cast<su_CPtrArray*>(
         *reinterpret_cast<void**>((uint8_t*)archive + 0x58));
-    if (!map) { arr.push_back({{"error", "null_map_ptr"}}); return arr; }
+    if (!map) { arr.push_back({{"error", "null_map_ptr"}});
+        LOG_WARN("dumpClassList: null map pointer"); return arr; }
     if (!isReadableMemory(map, sizeof(su_CPtrArray))) {
         arr.push_back({{"error", std::format("unreadable_map@{:#x}", (uint64_t)map)}});
+        LOG_WARN("dumpClassList: unreadable map at {:p}", (void*)map);
         return arr;
     }
     bool isStoring = (*(uint8_t*)((uint8_t*)archive + 0x20) & 1) != 0;
@@ -109,10 +115,12 @@ static nlohmann::json dumpClassList(void* archive) {
     }
     if (map->m_nSize > 0x10000) {
         arr.push_back({{"error", std::format("size_too_large:{}", map->m_nSize)}});
+        LOG_WARN("dumpClassList: size too large ({})", map->m_nSize);
         return arr;
     }
     if (!isReadableMemory(map->m_pData, map->m_nSize * sizeof(void*))) {
         arr.push_back({{"error", std::format("unreadable_data@{:#x}", (uint64_t)map->m_pData)}});
+        LOG_WARN("dumpClassList: unreadable data at {:p}", (void*)map->m_pData);
         return arr;
     }
     for (int i = 0; i < map->m_nSize; i++) {
@@ -131,6 +139,7 @@ static nlohmann::json counterInfo(void* archive) {
         cc["error"] = archive
             ? std::format("unreadable@{:#x}", (uint64_t)archive)
             : "null";
+        LOG_WARN("counterInfo: unreadable archive at {:p}", archive);
     }
     return cc;
 }
@@ -166,7 +175,11 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
             uint64_t serializeAddr = *reinterpret_cast<uint64_t*>(
                 reinterpret_cast<uint8_t*>(vt) + 0x10);
             cc["serializeAddr"] = std::format("{:#x}", serializeAddr);
+        } else {
+            LOG_WARN("ReadClassCollector: vtable unreadable at {:#x}", vt);
         }
+    } else if (crtFromRet) {
+        LOG_WARN("ReadClassCollector: return value unreadable at {:p}", crtFromRet);
     }
 
     args["class_cache_after"] = cc;
@@ -209,7 +222,11 @@ void ReadObjectCollector::onExit(const HookContext& ctx) {
             uint64_t serializeAddr = *reinterpret_cast<uint64_t*>(
                 reinterpret_cast<uint8_t*>(vt) + 0x10);
             args["serializeAddr"] = std::format("{:#x}", serializeAddr);
+        } else {
+            LOG_WARN("ReadObjectCollector: vtable unreadable at {:#x}", vt);
         }
+    } else if (obj) {
+        LOG_WARN("ReadObjectCollector: returned object unreadable at {:p}", obj);
     }
 
     outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
