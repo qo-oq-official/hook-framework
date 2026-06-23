@@ -42,14 +42,33 @@ struct HookContext {
 
     void captureCallStack(const HookContext& ctx, uint32_t maxFrames = 32) {
         stackFrameCount = 0;
-        if (ctx.returnAddress) {
-            stackFrames[stackFrameCount++] = ctx.returnAddress;
+
+        // Unwind original call chain from the hooked function's return point
+        DWORD64 imageBase = 0;
+        CONTEXT fakeCtx{};
+        fakeCtx.Rip = ctx.returnAddress;
+        fakeCtx.Rsp = ctx.rsp + 8;
+
+        for (uint32_t i = 0; i < maxFrames && stackFrameCount < 64; i++) {
+            if (!fakeCtx.Rip) break;
+            stackFrames[stackFrameCount++] = fakeCtx.Rip;
+
+            auto* funcEntry = RtlLookupFunctionEntry(fakeCtx.Rip, &imageBase, nullptr);
+            if (!funcEntry) break;
+
+            PVOID handlerData = nullptr;
+            DWORD64 establisherFrame = 0;
+            RtlVirtualUnwind(UNW_FLAG_NHANDLER, imageBase, fakeCtx.Rip,
+                             funcEntry, &fakeCtx, &handlerData,
+                             &establisherFrame, nullptr);
         }
-        void* frames[63] = {};
-        uint32_t n = maxFrames > 0 ? maxFrames - 1 : 0;
-        uint16_t captured = RtlCaptureStackBackTrace(0, (uint16_t)(std::min)(n, 63u), frames, NULL);
-        for (uint16_t i = 0; i < captured && stackFrameCount < 64; i++)
-            stackFrames[stackFrameCount++] = reinterpret_cast<uint64_t>(frames[i]);
+
+        // Append current chain from hook internal frames
+        void* bt[32] = {};
+        uint32_t remaining = maxFrames > 5 ? 32 : (uint32_t)(std::min)(maxFrames, 32u);
+        uint16_t n = RtlCaptureStackBackTrace(0, (uint16_t)remaining, bt, NULL);
+        for (uint16_t i = 0; i < n && stackFrameCount < 64; i++)
+            stackFrames[stackFrameCount++] = reinterpret_cast<uint64_t>(bt[i]);
     }
 
     static std::string resolveFrame(uint64_t addr) {

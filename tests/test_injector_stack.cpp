@@ -9,49 +9,50 @@ static int g_pass = 0, g_fail = 0;
     else { printf("  [FAIL] %s\n", msg); g_fail++; } \
 } while(0)
 
-typedef int (*AddFunc)(int, int);
+typedef int (*DeepFunc)(int);
 
 int main() {
-    printf("=== Stack Trace Injector Test ===\n\n");
+    printf("=== Stack Trace Injector Test (Deep Call Chain) ===\n\n");
 
     HMODULE hTarget = LoadLibraryA("test_target.dll");
     CHECK(hTarget != nullptr, "test_target.dll loaded");
     if (!hTarget) return 1;
 
-    auto test_add = reinterpret_cast<AddFunc>(GetProcAddress(hTarget, "test_add"));
-    CHECK(test_add != nullptr, "test_add resolved");
+    auto test_deep = reinterpret_cast<DeepFunc>(GetProcAddress(hTarget, "test_deep_call"));
+    CHECK(test_deep != nullptr, "test_deep_call resolved");
 
-    printf("[1] Setting up hook with stack trace injector...\n");
+    printf("[1] Setting up hook on test_deep_call with stack injector...\n");
     auto& engine = hookfw::HookEngine::instance();
     engine.initialize();
     engine.setOutputDirectory("dump_data_stack");
 
-    bool ok = engine.hook("test_target.dll", "test_add")
+    bool ok = engine.hook("test_target.dll", "test_deep_call")
         .injector("stack_trace_injector")
         .injectorMode(hookfw::InjectorMode::Pre)
         .install();
     CHECK(ok, "stack trace injector installed");
     CHECK(engine.installAll(), "installAll succeeded");
 
-    printf("[2] Calling test_add(7,8)...\n");
-    int r = test_add(7, 8);
-    CHECK(r == 15, "test_add(7,8) == 15");
+    printf("[2] Calling test_deep_call(5) → deep_call_l1 → l2 → l3...\n");
+    int r = test_deep(5);
+    CHECK(r == 13, "test_deep_call(5) == 13 (5*2+1+1+1)");
 
-    printf("[3] Verifying call stack captured...\n");
+    printf("[3] Verifying deep call stack captured...\n");
     int calls = g_stackData.callCount.load();
     CHECK(calls > 0, (std::string("injector called ") + std::to_string(calls) + " time(s)").c_str());
 
     {   std::lock_guard lock(g_stackData.mutex);
         CHECK(!g_stackData.lastFrames.empty(), "stack frames captured");
         printf("\n  Stack frames (%zu):\n", g_stackData.lastFrames.size());
-        bool hasModuleOffset = false;
-        for (const auto& f : g_stackData.lastFrames) {
+        for (const auto& f : g_stackData.lastFrames)
             printf("    %s\n", f.c_str());
-            if (f.find(".dll+0x") != std::string::npos || f.find(".exe+0x") != std::string::npos)
-                hasModuleOffset = true;
-        }
-        CHECK(hasModuleOffset, "frames resolved to module+offset format");
-        CHECK(g_stackData.lastFrames.size() >= 2, "at least 2 frames");
+
+        CHECK(g_stackData.lastFrames.size() >= 5,
+              (std::string("at least 5 frames (got ") + std::to_string(g_stackData.lastFrames.size()) + ")").c_str());
+
+        // Frame 0 should be the caller of the hooked function
+        CHECK(g_stackData.lastFrames[0].find("test_injector_stack.exe") != std::string::npos,
+              "frame 0 is the caller executable");
     }
 
     engine.shutdown();
