@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 #include <format>
 #include <Windows.h>
+#include <algorithm>
 
 namespace hookfw {
 
@@ -169,6 +170,18 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
     }
 
     args["class_cache_after"] = cc;
+
+    if (clsName == "moHeader_c" || clsName == "moLogs_c") {
+        nlohmann::json jframes = nlohmann::json::array();
+        if (ctx.returnAddress)
+            jframes.push_back(hookfw::HookContext::resolveFrame(ctx.returnAddress));
+        void* bt[15] = {};
+        uint16_t n = RtlCaptureStackBackTrace(0, 15, bt, NULL);
+        for (uint16_t i = 0; i < n; i++)
+            jframes.push_back(hookfw::HookContext::resolveFrame(reinterpret_cast<uint64_t>(bt[i])));
+        args["call_stack"] = jframes;
+    }
+
     outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
     LOG_TRACE("ReadClass exit archive={:p} class={}", static_cast<void*>(archive), clsName);
 }
