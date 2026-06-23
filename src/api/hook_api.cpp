@@ -216,7 +216,8 @@ bool HookEngine::initialize(const std::string& configPath) {
 
                 if (hookDesc.mode == HookMode::Trace) {
                     TraceFlusher::instance().registerHookName(
-                        hookId, hookDesc.target.moduleName, funcName, rva);
+                        hookId, hookDesc.target.moduleName, funcName, rva,
+                        ih ? ih->moduleBase : 0);
                     traceCount++;
                 } else {
                     if (collector && rva > 0) {

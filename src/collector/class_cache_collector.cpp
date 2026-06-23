@@ -164,10 +164,7 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
         if (isReadableMemory(reinterpret_cast<void*>(vt), 24)) {
             uint64_t serializeAddr = *reinterpret_cast<uint64_t*>(
                 reinterpret_cast<uint8_t*>(vt) + 0x10);
-            if (moduleBase_ > 0 && serializeAddr >= moduleBase_) {
-                uint64_t rva = serializeAddr - moduleBase_;
-                cc["serialize_rva"] = std::format("0x{:08x}", rva);
-            }
+            cc["serializeAddr"] = std::format("{:#x}", serializeAddr);
         }
     }
 
@@ -198,10 +195,7 @@ void ReadObjectCollector::onExit(const HookContext& ctx) {
         if (isReadableMemory(reinterpret_cast<void*>(vt), 24)) {
             uint64_t serializeAddr = *reinterpret_cast<uint64_t*>(
                 reinterpret_cast<uint8_t*>(vt) + 0x10);
-            args["serialize_rva"]   = moduleBase_ > 0 && serializeAddr >= moduleBase_
-                ? std::format("0x{:08x}", serializeAddr - moduleBase_) : "?";
-            args["moduleBase"]       = std::format("{:#x}", moduleBase_);
-            args["serializeAddr"]    = std::format("{:#x}", serializeAddr);
+            args["serializeAddr"] = std::format("{:#x}", serializeAddr);
         }
     }
 

@@ -6,8 +6,21 @@
 #include <filesystem>
 #include <format>
 #include <cstdio>
+#include <unordered_map>
 
 namespace hookfw {
+
+static std::unordered_map<std::string, uintptr_t> s_moduleBaseCache;
+
+static uintptr_t getModuleBase(const std::string& moduleName) {
+    auto it = s_moduleBaseCache.find(moduleName);
+    if (it != s_moduleBaseCache.end()) return it->second;
+    HMODULE hMod = GetModuleHandleA(moduleName.c_str());
+    if (!hMod) return 0;
+    uintptr_t base = reinterpret_cast<uintptr_t>(hMod);
+    s_moduleBaseCache[moduleName] = base;
+    return base;
+}
 
 HookEngineCore& HookEngineCore::instance() {
     static HookEngineCore inst;
@@ -99,8 +112,7 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
         return 0;
     }
 
-    HMODULE hMod = GetModuleHandleA(desc.target.moduleName.c_str());
-    hook->moduleBase = reinterpret_cast<uintptr_t>(hMod);
+    hook->moduleBase = getModuleBase(desc.target.moduleName);
     if (hook->collector) {
         hook->collector->setModuleBase(hook->moduleBase);
     }

@@ -29,12 +29,14 @@ void TraceFlusher::stop() {
 }
 
 void TraceFlusher::registerHookName(uint32_t hookId, const std::string& moduleName,
-                                     const std::string& functionName, uint64_t rva) {
+                                     const std::string& functionName, uint64_t rva,
+                                     uintptr_t moduleBase) {
     std::lock_guard lock(namesMutex_);
     HookInfo info;
     info.moduleName = moduleName;
     info.displayName = TraceOutputWriter::undecorateName(functionName);
     info.rva = rva;
+    info.moduleBase = moduleBase;
     hookNames_[hookId] = std::move(info);
 }
 
@@ -86,7 +88,11 @@ void TraceFlusher::drainToWriter() {
                         ? it->second.displayName + std::format(" @RVA_0x{:08x}", it->second.rva)
                         : it->second.displayName)
                     : std::to_string(rec.hookId);
-                std::string cat = (it != hookNames_.end()) ? it->second.moduleName : "unknown";
+                std::string cat = (it != hookNames_.end())
+                    ? (it->second.moduleBase > 0
+                        ? it->second.moduleName + std::format("@{:#x}", it->second.moduleBase)
+                        : it->second.moduleName)
+                    : "unknown";
 
                 nlohmann::json args;
                 if (rec.phase == 0) {
