@@ -1,0 +1,21 @@
+{
+  "output_dir": "dump_data",
+  "output_format": "perfetto",
+  "log_level": "trace",
+  "hooks": [
+    {"module":"sldappu.dll","symbol":"?OpenDocumentFile@CAmApp@@UEAAPEAVCDocument@@PEB_W@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"lpszFileName","type":"wstring"}],"return_type":"pointer"},
+    {"module":"sldmfcu.dll","symbol":"?attachToNode@suZipStorage@@UEAAHHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HW4suStorageCompression_e@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"id","type":"int32"},{"name":"name","type":"wstring_ref"},{"name":"flags","type":"int32"},{"name":"compression","type":"int32"}],"return_type":"int32"},
+    {"module":"sldmfcu.dll","symbol":"?openZipNode@ZipStorage@@QEAA?AW4errorcode@@PEB_WW4openMode@@PEAPEAV1@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"pName","type":"wstring"},{"name":"mode","type":"int32"},{"name":"ppStorage","type":"pointer","deref_type":"pointer","capture_on_exit":true}],"return_type":"int32"},
+    {"module":"swccu.dll","symbol":"??5@YAAEAVsu_CArchive@@AEAV0@AEAPEAVCObject@@@Z","action":"capture","collector":"typed","params":[{"name":"archive","type":"pointer"},{"name":"cstring","type":"wstring_ref","capture_on_exit":true}],"return_type":"pointer"},
+    {"module":"swccu.dll","symbol":"??5@YAAEAVsu_CArchive@@AEAV0@AEAPEAVsu_CMapStringToString@@@Z","action":"capture","collector":"typed","params":[{"name":"archive","type":"pointer"},{"name":"cstring","type":"wstring_ref","capture_on_exit":true}],"return_type":"pointer"},
+    {"module":"swccu.dll","symbol":"?AddToLoadArrayDirect@su_CArchive@@QEAAXPEBVCObject@@@Z","mode":"capture","action":"capture","collector":"custom","custom_collector_name":"ReadClass","params":[{"name":"this","type":"pointer"},{"name":"arg1","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","symbol":"?ReadClass@su_CArchive@@QEAAPEAUCRuntimeClass@@PEBU2@PEAIPEAK@Z","mode":"capture","action":"capture","collector":"custom","custom_collector_name":"ReadClass","params":[{"name":"this","type":"pointer"},{"name":"pClass","type":"pointer"},{"name":"pSchema","type":"pointer"},{"name":"pTag","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","symbol":"?ReadObject@su_CArchive@@QEAAPEAVCObject@@PEBUCRuntimeClass@@@Z","mode":"capture","action":"capture","collector":"custom","custom_collector_name":"ReadObject","params":[{"name":"this","type":"pointer"},{"name":"pClassName","type":"cstring_ref"}],"return_type":"pointer"},
+    {"module":"swccu.dll","symbol":"?copyLoadArrayStoreMapFrom@su_CArchive@@QEAAXPEAV1@H@Z","action":"capture","collector":"custom","custom_collector_name":"copyLoadArrayStoreMapFrom","params":[{"name":"this","type":"pointer"},{"name":"pSrc","type":"pointer"},{"name":"flags","type":"int32"}]},
+    {"module":"swccu.dll","symbol":"?WriteClass@su_CArchive@@QEAAXPEBUCRuntimeClass@@@Z","mode":"capture","action":"capture","collector":"custom","custom_collector_name":"ReadClass","params":[{"name":"this","type":"pointer"},{"name":"pClass","type":"pointer"}],"return_type":"pointer"},
+    {"module":"swccu.dll","symbol":"?Serialize@su_CArchive@@QEAAXAEAVCElement@@@Z","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"elm","type":"pointer"}],"return_type":"pointer"},
+    {"module":"sldmodu.dll","symbol":"??0moAssembly_c@@QEAA@XZ","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"sldmodu.dll","symbol":"??0moModel_c@@QEAA@XZ","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"}],"return_type":"pointer"},
+    {"module":"sldmodu.dll","symbol":"?addNode@moNodeList_c@@QEAAPEAU__POSITION@@PEAVmoNode_c@@@Z","mode":"capture","action":"capture","collector":"typed","params":[{"name":"this","type":"pointer"},{"name":"pNode","type":"pointer"}],"return_type":"pointer"}
+  ]
+}
