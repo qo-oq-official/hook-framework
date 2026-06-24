@@ -38,8 +38,8 @@ if (-not $sw) {
     Write-Host "    Start SOLIDWORKS first."
     exit 1
 }
-$Pid = $sw[0].Id
-Write-Host "[*] SLDWORKS.exe PID=$Pid"
+$ProcId = $sw[0].Id
+Write-Host "[*] SLDWORKS.exe PID=$ProcId"
 
 # Verify target DLLs
 $targetDlls = @("swccu.dll", "sldmodu.dll", "sldappu.dll", "sldmfcu.dll")
@@ -51,8 +51,8 @@ foreach ($dll in $targetDlls) {
 
 # Attach
 Write-Host ""
-Write-Host "[*] Attaching DR to PID=$Pid ..." -ForegroundColor Green
-$args = @("-attach", $Pid, "-c", $LocalDll, "--", "--config", $ConfigPath)
+Write-Host "[*] Attaching DR to PID=$ProcId ..." -ForegroundColor Green
+$args = @("-attach", $ProcId, "-c", $LocalDll, "--", "--config", $ConfigPath)
 Write-Host "    drrun.exe $($args -join ' ')"
 & $DRRun @args
 
