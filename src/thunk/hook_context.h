@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <format>
 #include <Windows.h>
+#include <unordered_map>
+#include <mutex>
 
 namespace hookfw {
 
@@ -40,56 +42,77 @@ struct HookContext {
     uint32_t stackFrameCount = 0;
     uint64_t stackFrames[64] = {};
 
-    void captureCallStack(const HookContext& ctx, uint32_t maxFrames = 32) {
+    void captureCallStack(uint32_t maxFrames = 64) {
         stackFrameCount = 0;
 
-        CONTEXT walk{};
-        walk.Rip = ctx.returnAddress;
-        walk.Rsp = ctx.rsp + 8;
+        // Frame 0: direct return address (captured by dispatch)
+        if (returnAddress > 0x10000)
+            stackFrames[stackFrameCount++] = returnAddress;
 
-        for (uint32_t i = 0; i < maxFrames && stackFrameCount < 32; i++) {
-            if (walk.Rip == 0 || walk.Rip < 0x10000) break;
-            stackFrames[stackFrameCount++] = walk.Rip;
+        // Scan remaining stack slots (from trampoline RSP upward)
+        uintptr_t rspTop = rsp;
+        for (int slot = 0; slot < 256 && stackFrameCount < maxFrames; slot++) {
+            uintptr_t* pSlot = reinterpret_cast<uintptr_t*>(rspTop + slot * 8);
 
-            DWORD64 imgBase = 0;
-            auto* fe = RtlLookupFunctionEntry(walk.Rip, &imgBase, nullptr);
-            if (!fe) {
-                stackFrames[stackFrameCount++] = 0;
-                break;
+            MEMORY_BASIC_INFORMATION mbi{};
+            if (!VirtualQuery(pSlot, &mbi, sizeof(mbi))) break;
+            if (mbi.State != MEM_COMMIT) break;
+            if (mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) break;
+
+            uintptr_t candidate = *pSlot;
+            if (candidate < 0x10000) continue;
+
+            MEMORY_BASIC_INFORMATION cmbi{};
+            if (!VirtualQuery(reinterpret_cast<void*>(candidate), &cmbi, sizeof(cmbi))) continue;
+            if (cmbi.Type != MEM_IMAGE) continue;
+
+            bool dup = false;
+            for (uint32_t j = 0; j < stackFrameCount; j++) {
+                if (stackFrames[j] == candidate) { dup = true; break; }
             }
+            if (dup) continue;
 
-            PVOID hd = nullptr; DWORD64 ef = 0;
-            RtlVirtualUnwind(UNW_FLAG_NHANDLER, imgBase, walk.Rip,
-                             fe, &walk, &hd, &ef, nullptr);
+            stackFrames[stackFrameCount++] = candidate;
         }
-
-        void* bt[32] = {};
-        uint16_t n = RtlCaptureStackBackTrace(0, 32, bt, NULL);
-        for (uint16_t i = 0; i < n && stackFrameCount < 64; i++)
-            stackFrames[stackFrameCount++] = reinterpret_cast<uint64_t>(bt[i]);
     }
 
     static std::string resolveFrame(uint64_t addr) {
         MEMORY_BASIC_INFORMATION mbi{};
         if (!VirtualQuery(reinterpret_cast<void*>(addr), &mbi, sizeof(mbi)))
             return std::format("{:#x}", addr);
+
+        static std::mutex s_cacheMutex;
+        static std::unordered_map<void*, std::string> s_nameCache;
+
         if (mbi.Type == MEM_IMAGE && mbi.AllocationBase) {
-            wchar_t path[MAX_PATH];
-            if (GetModuleFileNameW(reinterpret_cast<HMODULE>(mbi.AllocationBase), path, MAX_PATH)) {
-                std::wstring_view wp(path);
-                auto pos = wp.rfind(L'\\');
-                std::wstring_view fname = (pos != std::wstring_view::npos)
-                    ? std::wstring_view(wp.begin() + pos + 1, wp.end())
-                    : wp;
-                int len = WideCharToMultiByte(CP_UTF8, 0, fname.data(), (int)fname.size(),
-                                              nullptr, 0, nullptr, nullptr);
-                std::string name(len, '\0');
-                if (len > 0)
-                    WideCharToMultiByte(CP_UTF8, 0, fname.data(), (int)fname.size(),
-                                        &name[0], len, nullptr, nullptr);
-                uint64_t rva = addr - reinterpret_cast<uint64_t>(mbi.AllocationBase);
-                return std::format("{}+0x{:08x}", name, rva);
+            std::string name;
+            {
+                std::lock_guard<std::mutex> lock(s_cacheMutex);
+                auto it = s_nameCache.find(mbi.AllocationBase);
+                if (it != s_nameCache.end()) {
+                    name = it->second;
+                }
             }
+            if (name.empty()) {
+                wchar_t path[MAX_PATH];
+                if (GetModuleFileNameW(reinterpret_cast<HMODULE>(mbi.AllocationBase), path, MAX_PATH)) {
+                    std::wstring_view wp(path);
+                    auto pos = wp.rfind(L'\\');
+                    std::wstring_view fname = (pos != std::wstring_view::npos)
+                        ? std::wstring_view(wp.begin() + pos + 1, wp.end())
+                        : wp;
+                    int len = WideCharToMultiByte(CP_UTF8, 0, fname.data(), (int)fname.size(),
+                                                  nullptr, 0, nullptr, nullptr);
+                    name.resize(len);
+                    if (len > 0)
+                        WideCharToMultiByte(CP_UTF8, 0, fname.data(), (int)fname.size(),
+                                            &name[0], len, nullptr, nullptr);
+                    std::lock_guard<std::mutex> lock(s_cacheMutex);
+                    s_nameCache[mbi.AllocationBase] = name;
+                }
+            }
+            uint64_t rva = addr - reinterpret_cast<uint64_t>(mbi.AllocationBase);
+            return std::format("{}+0x{:08x}", name, rva);
         }
         return std::format("{:#x}", addr);
     }
