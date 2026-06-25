@@ -166,6 +166,45 @@ void TypedCollector::onExit(const HookContext& ctx) {
                         op["deref_value"] = *reinterpret_cast<float*>(ptr); break;
                     case ParamType::Float64:
                         op["deref_value"] = *reinterpret_cast<double*>(ptr); break;
+                    case ParamType::CStringRef:
+                    case ParamType::CString: {
+                        auto pStr = *reinterpret_cast<const char* const*>(ptr);
+                        if (pStr && !IsBadReadPtr(pStr, 1)) {
+                            size_t len = strnlen(pStr, 256);
+                            op["deref_value"] = std::string(pStr, len);
+                        } else {
+                            op["deref_value"] = nullptr;
+                        }
+                        break;
+                    }
+                    case ParamType::WStringRef:
+                    case ParamType::WString: {
+                        auto pStr = *reinterpret_cast<const wchar_t* const*>(ptr);
+                        if (pStr && !IsBadReadPtr(pStr, 2)) {
+                            int len = WideCharToMultiByte(CP_UTF8, 0, pStr, -1, nullptr, 0, nullptr, nullptr);
+                            if (len > 1) {
+                                std::string utf8(len - 1, '\0');
+                                WideCharToMultiByte(CP_UTF8, 0, pStr, -1, &utf8[0], len, nullptr, nullptr);
+                                op["deref_value"] = utf8;
+                            } else {
+                                op["deref_value"] = "";
+                            }
+                        } else {
+                            op["deref_value"] = nullptr;
+                        }
+                        break;
+                    }
+                    case ParamType::Buffer: {
+                        auto pBuf = *reinterpret_cast<const uint8_t* const*>(ptr);
+                        uint32_t size = params_[i].bufferSize > 0 ? params_[i].bufferSize : 64;
+                        if (pBuf && !IsBadReadPtr(pBuf, size) && size > 0) {
+                            size_t len = strnlen(reinterpret_cast<const char*>(pBuf), size);
+                            op["deref_value"] = std::string(reinterpret_cast<const char*>(pBuf), len);
+                        } else {
+                            op["deref_value"] = nullptr;
+                        }
+                        break;
+                    }
                     default:
                         op["deref_value"] = std::format("{:#x}", *reinterpret_cast<uint64_t*>(ptr)); break;
                 }

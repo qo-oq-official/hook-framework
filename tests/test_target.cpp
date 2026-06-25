@@ -96,6 +96,16 @@ TEST_API __declspec(noinline) int test_deep_call(int x) {
 
 TEST_API __declspec(noinline) int deep_call_l3(int x) { return x * 2; }
 
+TEST_API __declspec(noinline) int test_read_str(const char** out) {
+    if (out) *out = "hello_deref";
+    return 1;
+}
+
+TEST_API __declspec(noinline) int test_read_wstr(const wchar_t** out) {
+    if (out) *out = L"hello_wide_deref";
+    return 1;
+}
+
 TEST_API __declspec(noinline) void test_modify_object(TestObjectA* obj) {
     obj->x     = 42;
     obj->y     = 3.14;

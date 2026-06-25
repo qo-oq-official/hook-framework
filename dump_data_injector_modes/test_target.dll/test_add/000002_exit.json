@@ -1,0 +1,10 @@
+{
+  "function": "test_add",
+  "hook_id": 1,
+  "module": "test_target.dll",
+  "phase": "exit",
+  "return_value": {
+    "type": "int32",
+    "value": 30
+  }
+}
