@@ -158,7 +158,7 @@ static nlohmann::json dumpRemapTable(void* archive) {
     if (!isStoring) { arr.push_back({{"note", "loading_mode"}}); return arr; }
 
     void* remapPtr = *reinterpret_cast<void**>((uint8_t*)archive + 0x60);
-    if (!remapPtr) return arr;
+    if (!remapPtr) { arr.push_back({{"note", "remap_null_not_created"}}); return arr; }
     if (!isReadableMemory(remapPtr, sizeof(su_CMapPtrToPtr))) {
         arr.push_back({{"error", std::format("unreadable_remap@{:#x}", (uint64_t)remapPtr)}});
         return arr;
