@@ -6,6 +6,7 @@
 #include <format>
 #include <Windows.h>
 #include <algorithm>
+#include <cstdint>
 
 namespace hookfw {
 
@@ -81,13 +82,32 @@ static nlohmann::json readClassName(void* crt) {
     return j;
 }
 
-// su_CPtrArray — swccu.dll, 0x20 bytes
+// su_CPtrArray — swccu.dll, 0x28 bytes (0x20 after vftable)
 struct su_CPtrArray {
     void*  __vftable;     // +0x00
     void** m_pData;       // +0x08
     int    m_nSize;       // +0x10
     int    m_nMaxSize;    // +0x14
     int    m_nGrowBy;     // +0x18
+};
+
+// CMAP_NODE — swccu.dll, 0x18 bytes (24)
+// su_CMapPtrToPtr hash map node (linked-list collision chain)
+struct CMAP_NODE {
+    CMAP_NODE* pNext;     // +0x00 — next node in chain
+    void*      key;       // +0x08 — CRuntimeClass*
+    void*      value;     // +0x10 — schema (uint32_t stored as pointer)
+};
+
+// su_CMapPtrToPtr — swccu.dll, 0x30 bytes (after vftable at +0x00)
+// Schema Remap Table at archive+0x60: CRuntimeClass* → schema
+struct su_CMapPtrToPtr {
+    void*      __vftable;        // +0x00
+    void**     m_pHashTable;     // +0x08 — bucket array (void* per bucket)
+    uint64_t   m_nHashTableSize; // +0x10 — number of buckets
+    uint64_t   m_nCount;         // +0x18 — total entries
+    void*      m_pFreeList;      // +0x20 — free node list
+    int        m_nBlockSize;     // +0x28 — nodes per allocation block
 };
 
 static nlohmann::json dumpClassList(void* archive) {
@@ -130,11 +150,57 @@ static nlohmann::json dumpClassList(void* archive) {
     return arr;
 }
 
+static nlohmann::json dumpRemapTable(void* archive) {
+    nlohmann::json arr = nlohmann::json::array();
+    if (!archive || !isReadableMemory(archive, 0x68)) return arr;
+
+    bool isStoring = (*(uint8_t*)((uint8_t*)archive + 0x20) & 1) != 0;
+    if (!isStoring) { arr.push_back({{"note", "loading_mode"}}); return arr; }
+
+    void* remapPtr = *reinterpret_cast<void**>((uint8_t*)archive + 0x60);
+    if (!remapPtr) return arr;
+    if (!isReadableMemory(remapPtr, sizeof(su_CMapPtrToPtr))) {
+        arr.push_back({{"error", std::format("unreadable_remap@{:#x}", (uint64_t)remapPtr)}});
+        return arr;
+    }
+
+    auto* remap = reinterpret_cast<su_CMapPtrToPtr*>(remapPtr);
+    if (remap->m_nCount > 0x10000 || remap->m_nHashTableSize > 0x100000) {
+        arr.push_back({{"error", std::format("bad_remap_size:{} buckets, {} count",
+            remap->m_nHashTableSize, remap->m_nCount)}});
+        return arr;
+    }
+    if (!remap->m_pHashTable || !isReadableMemory(remap->m_pHashTable,
+                                                   remap->m_nHashTableSize * sizeof(void*))) {
+        arr.push_back({{"error", "unreadable_remap_buckets"}});
+        return arr;
+    }
+    uint32_t entryIdx = 0;
+    for (uint64_t b = 0; b < remap->m_nHashTableSize && entryIdx < 500; b++) {
+        auto* node = reinterpret_cast<CMAP_NODE*>(remap->m_pHashTable[b]);
+        while (node) {
+            if (!isReadableMemory(node, sizeof(CMAP_NODE))) break;
+            if (node->key) {
+                nlohmann::json entry;
+                entry["idx"] = entryIdx++;
+                entry["class"] = readClassName(node->key);
+                entry["schema"] = std::format("0x{:08x}",
+                    static_cast<uint32_t>(reinterpret_cast<uintptr_t>(node->value)));
+                arr.push_back(entry);
+            }
+            node = node->pNext;
+        }
+    }
+    return arr;
+}
+
 static nlohmann::json counterInfo(void* archive) {
     nlohmann::json cc;
-    if (isReadableMemory(archive, 0x60)) {
+    if (isReadableMemory(archive, 0x68)) {
         cc["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
         cc["class_list"] = dumpClassList(archive);
+        auto remap = dumpRemapTable(archive);
+        if (!remap.empty()) cc["schema_remap"] = remap;
     } else {
         cc["error"] = archive
             ? std::format("unreadable@{:#x}", (uint64_t)archive)
@@ -168,6 +234,14 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
     std::string clsName = clsJson.value("str", clsJson.value("error", "<no_str>"));
     auto cc = counterInfo(archive);
     cc["class"] = clsName;
+
+    // Tag (index 3, a4) and schema (index 2, a3) from ReadClass output params
+    auto* pSchema = ctx.arg<void*>(2);
+    if (pSchema && isReadableMemory(pSchema, 4))
+        cc["schema"] = std::format("0x{:08x}", *reinterpret_cast<uint32_t*>(pSchema));
+    auto* pTag = ctx.arg<void*>(3);
+    if (pTag && isReadableMemory(pTag, 4))
+        cc["tag"] = std::format("0x{:08x}", *reinterpret_cast<uint32_t*>(pTag));
 
     if (crtFromRet && isReadableMemory(crtFromRet, 8)) {
         uint64_t vt = *reinterpret_cast<uint64_t*>(crtFromRet);
