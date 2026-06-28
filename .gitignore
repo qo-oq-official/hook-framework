@@ -11,3 +11,4 @@ CMakeSettings.json
 hook-projects/**/dump_data/
 hook-projects/**/*.dll
 hook-projects/**/*.exe
+__pycache__/
