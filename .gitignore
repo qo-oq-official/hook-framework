@@ -12,3 +12,4 @@ hook-projects/**/dump_data/
 hook-projects/**/*.dll
 hook-projects/**/*.exe
 __pycache__/
+hook-projects/hook-ipx/ipx_interfaces.json

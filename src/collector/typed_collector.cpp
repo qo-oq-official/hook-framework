@@ -2,6 +2,7 @@
 #include "logging/logger.h"
 #include <format>
 #include <Windows.h>
+#include <OleAuto.h>
 
 namespace hookfw {
 
@@ -478,6 +479,37 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                 param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
                 LOG_WARN("su_CArchivePtr idx={} unreadable archive at 0x{:016x}", index, reinterpret_cast<uint64_t>(archive));
             }
+            break;
+        }
+        case ParamType::BStr: {
+            param["type"] = "bstr";
+            auto* bstr = ctx.arg<wchar_t*>(index);
+            if (bstr && !IsBadReadPtr(bstr, 4)) {
+                UINT len = SysStringLen(bstr);
+                if (len > 0 && !IsBadReadPtr(bstr, static_cast<size_t>(len) * 2 + 2)) {
+                    int utf8Len = WideCharToMultiByte(CP_UTF8, 0, bstr, static_cast<int>(len),
+                                                      nullptr, 0, nullptr, nullptr);
+                    if (utf8Len > 0) {
+                        std::string utf8(utf8Len, '\0');
+                        WideCharToMultiByte(CP_UTF8, 0, bstr, static_cast<int>(len),
+                                            &utf8[0], utf8Len, nullptr, nullptr);
+                        param["value"] = utf8;
+                    } else {
+                        param["value"] = std::format("<bstr@{:#x}>", reinterpret_cast<uint64_t>(bstr));
+                    }
+                } else {
+                    param["value"] = nullptr;
+                }
+            } else {
+                param["value"] = nullptr;
+            }
+            break;
+        }
+        case ParamType::Variant:
+        case ParamType::SafeArray: {
+            param["type"] = (desc.type == ParamType::Variant) ? "variant" : "safearray";
+            auto* ptr = ctx.arg<void*>(index);
+            param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(ptr));
             break;
         }
 

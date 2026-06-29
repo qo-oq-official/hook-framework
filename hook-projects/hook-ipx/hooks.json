@@ -1,0 +1,42 @@
+{
+  "output_dir": "dump_data",
+  "output_format": "perfetto",
+  "log_level": "trace",
+  "hooks": [
+    {
+      "module": "combase.dll",
+      "symbol": "CoCreateInstance",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "custom",
+      "custom_collector_name": "com_interface_capture",
+      "params": [
+        {"name": "rclsid", "type": "pointer"},
+        {"name": "pUnkOuter", "type": "pointer"},
+        {"name": "dwClsContext", "type": "uint32"},
+        {"name": "riid", "type": "pointer"},
+        {"name": "ppv", "type": "pointer", "deref_type": "pointer", "capture_on_exit": true}
+      ],
+      "return_type": "int32",
+      "display_name": "combase.dll!CoCreateInstance"
+    },
+    {
+      "module": "combase.dll",
+      "symbol": "CoCreateInstanceEx",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "custom",
+      "custom_collector_name": "com_interface_capture",
+      "params": [
+        {"name": "rclsid", "type": "pointer"},
+        {"name": "pUnkOuter", "type": "pointer"},
+        {"name": "dwClsContext", "type": "uint32"},
+        {"name": "pServerInfo", "type": "pointer"},
+        {"name": "cmq", "type": "uint32"},
+        {"name": "rgmqResults", "type": "pointer", "deref_type": "pointer", "capture_on_exit": true}
+      ],
+      "return_type": "int32",
+      "display_name": "combase.dll!CoCreateInstanceEx"
+    }
+  ]
+}
