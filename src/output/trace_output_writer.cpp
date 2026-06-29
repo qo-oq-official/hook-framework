@@ -136,9 +136,10 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                 } else if (p.contains("value_hex")) {
                     args[key] = p["value_hex"];
                 } else {
+                    std::string prefix = (p.value("type", "") == "su_CArchive") ? "archive" : key;
                     for (const auto& [k, v] : p.items()) {
                         if (k != "name" && k != "index" && k != "type")
-                            args[key + "_" + std::string(k)] = v;
+                            args[prefix + "_" + std::string(k)] = v;
                     }
                 }
             }
@@ -162,9 +163,10 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                 } else if (p.contains("value_hex")) {
                     args[key] = p["value_hex"];
                 } else {
+                    std::string prefix = (p.value("type", "") == "su_CArchive") ? "archive" : key;
                     for (const auto& [k, v] : p.items()) {
                         if (k != "name" && k != "index" && k != "type")
-                            args[key + "_" + std::string(k)] = v;
+                            args[prefix + "_" + std::string(k)] = v;
                     }
                 }
             }
