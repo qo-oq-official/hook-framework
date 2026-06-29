@@ -1,3 +1,4 @@
+"""Add capture_on_exit=true to su_CArchivePtr params in hooks.json."""
 import json
 from pathlib import Path
 
@@ -6,22 +7,23 @@ data = json.loads(path.read_text(encoding='utf-8'))
 
 changed = 0
 for hook in data['hooks']:
-    sym = hook.get('symbol', '')
-    if 'su_CArchive' not in sym:
-        continue
     for param in hook.get('params', []):
-        if isinstance(param, dict) and param.get('name') in ('this', 'archive') and param.get('type') == 'pointer':
-            param['type'] = 'su_CArchivePtr'
+        if isinstance(param, dict) and param.get('type') == 'su_CArchivePtr' and not param.get('capture_on_exit'):
+            param['capture_on_exit'] = True
             changed += 1
 
 path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
-print(f'Updated {changed} params to su_CArchivePtr')
+print(f'Updated {changed} su_CArchivePtr params with capture_on_exit=true')
 
 # verify
 data2 = json.loads(path.read_text(encoding='utf-8'))
-hooks = [h for h in data2['hooks'] if any(
-    p.get('type') == 'su_CArchivePtr' and p.get('name') in ('this','archive')
-    for p in h.get('params',[]) if isinstance(p, dict)
-)]
-print(f'Verified: {len(hooks)} hooks with su_CArchivePtr param')
+total = 0
+with_cexit = 0
+for hook in data2['hooks']:
+    for p in hook.get('params', []):
+        if isinstance(p, dict) and p.get('type') == 'su_CArchivePtr':
+            total += 1
+            if p.get('capture_on_exit'):
+                with_cexit += 1
+print(f'Verified: {with_cexit}/{total} su_CArchivePtr params have capture_on_exit')
 print(f'Total hooks: {len(data2["hooks"])}')
