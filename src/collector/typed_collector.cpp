@@ -85,6 +85,18 @@ void TypedCollector::onEntry(const HookContext& ctx) {
         }
         j["params"] = paramsJson;
 
+        // Capture archive buf_pos before function execution
+        for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
+            if (params_[i].type == ParamType::su_CArchivePtr) {
+                auto* archive = ctx.arg<void*>(i);
+                if (archive && !IsBadReadPtr(archive, 0x70)) {
+                    const_cast<HookContext&>(ctx).archiveBufPosBefore =
+                        *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38)
+                        - *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x48);
+                }
+            }
+        }
+
         if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "entry", j)) {
             LOG_ERROR("TypedCollector: failed to write entry JSON for {}!{}",
                       moduleName_, functionName_);
@@ -463,21 +475,14 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
         case ParamType::su_CArchivePtr: {
             param["type"] = "su_CArchive";
             auto* archive = ctx.arg<void*>(index);
-            LOG_DEBUG("su_CArchivePtr idx={} archive=0x{:016x} IsBadReadPtr={}",
-                      index, reinterpret_cast<uint64_t>(archive),
-                      archive ? (IsBadReadPtr(archive, 0x70) ? "true" : "false") : "null");
             if (archive && !IsBadReadPtr(archive, 0x70)) {
                 uint64_t bufCur   = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38);
                 uint64_t bufStart = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x48);
-                param["buf_pos"] = bufCur - bufStart;
-                param["buf_end"] = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x40) - bufStart;
+                param["buf_pos_before"] = ctx.archiveBufPosBefore;
+                param["buf_pos_after"]  = bufCur - bufStart;
                 param["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
-                LOG_DEBUG("su_CArchivePtr idx={} buf_pos={} counter={}", index,
-                          bufCur - bufStart,
-                          *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50));
             } else {
                 param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
-                LOG_WARN("su_CArchivePtr idx={} unreadable archive at 0x{:016x}", index, reinterpret_cast<uint64_t>(archive));
             }
             break;
         }
