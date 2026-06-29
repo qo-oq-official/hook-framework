@@ -154,6 +154,7 @@ ParamType ConfigLoader::parseParamType(const std::string& typeStr) const {
         {"cstring", ParamType::CString}, {"wstring", ParamType::WString},
         {"wstring_ref", ParamType::WStringRef}, {"cstring_ref", ParamType::CStringRef},
         {"buffer", ParamType::Buffer},
+        {"su_CArchivePtr", ParamType::su_CArchivePtr},
     };
     auto it = kMap.find(typeStr);
     if (it != kMap.end()) return it->second;

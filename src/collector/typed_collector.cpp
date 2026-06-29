@@ -217,6 +217,8 @@ void TypedCollector::onExit(const HookContext& ctx) {
             j["output_params"] = outputParams;
         }
 
+        onExitCustom(ctx, j);
+
         if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "exit", j)) {
             LOG_ERROR("TypedCollector: failed to write exit JSON for {}!{}",
                       moduleName_, functionName_);
@@ -451,6 +453,18 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             } catch (...) {
                 param["value"] = "<unreadable>";
                 LOG_WARN("Buffer param[{}] hook_id={}: AV", index, ctx.hookId);
+            }
+            break;
+        }
+        case ParamType::su_CArchivePtr: {
+            param["type"] = "su_CArchive";
+            auto* archive = ctx.arg<void*>(index);
+            if (archive && !IsBadReadPtr(archive, 0x70)) {
+                param["cursor"] = std::format("0x{:016x}",
+                    *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38));
+                param["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
+            } else {
+                param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
             }
             break;
         }

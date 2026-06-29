@@ -15,9 +15,11 @@ public:
     void setReturnType(ParamType type);
 
     void onEntry(const HookContext& ctx) override;
-    void onExit(const HookContext& ctx) override;
+    void onExit(const HookContext& ctx) final;
 
 protected:
+    virtual void onExitCustom(const HookContext& ctx, nlohmann::json& args) {}
+
     nlohmann::json extractParam(const HookContext& ctx, int index,
                                 const ParamDescriptor& desc) const;
     nlohmann::json extractReturnValue(const HookContext& ctx) const;

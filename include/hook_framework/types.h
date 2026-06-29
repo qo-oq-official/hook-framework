@@ -24,6 +24,7 @@ enum class ParamType : uint8_t {
     WStringRef,
     CStringRef,
     Buffer,
+    su_CArchivePtr,
 };
 
 enum class HookAction : uint8_t {

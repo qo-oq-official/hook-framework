@@ -224,10 +224,7 @@ void ReadClassCollector::onEntry(const HookContext& ctx) {
     LOG_TRACE("ReadClass entry archive={:p}", static_cast<void*>(archive));
 }
 
-void ReadClassCollector::onExit(const HookContext& ctx) {
-    nlohmann::json args;
-    ParamSerializer::addDefaultExit(args, ctx);
-    ParamSerializer::addConfigExit(args, ctx, params_, returnType_);
+void ReadClassCollector::onExitCustom(const HookContext& ctx, nlohmann::json& args) {
     auto* archive = ctx.arg<void*>(0);
     auto* crtFromRet = ctx.returnValue<void*>();
     auto clsJson = crtFromRet ? readClassName(crtFromRet) : nlohmann::json{{"error", "?"}};
@@ -235,7 +232,6 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
     auto cc = counterInfo(archive);
     cc["class"] = clsName;
 
-    // Tag (index 3, a4) and schema (index 2, a3) from ReadClass output params
     auto* pSchema = ctx.arg<void*>(2);
     if (pSchema && isReadableMemory(pSchema, 4))
         cc["schema"] = std::format("0x{:08x}", *reinterpret_cast<uint32_t*>(pSchema));
@@ -269,7 +265,6 @@ void ReadClassCollector::onExit(const HookContext& ctx) {
         args["call_stack"] = jframes;
     }
 
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
     LOG_TRACE("ReadClass exit archive={:p} class={}", static_cast<void*>(archive), clsName);
 }
 
@@ -284,11 +279,7 @@ void ReadObjectCollector::onEntry(const HookContext& ctx) {
     outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
 }
 
-void ReadObjectCollector::onExit(const HookContext& ctx) {
-    nlohmann::json args;
-    ParamSerializer::addDefaultExit(args, ctx);
-    ParamSerializer::addConfigExit(args, ctx, params_, returnType_);
-
+void ReadObjectCollector::onExitCustom(const HookContext& ctx, nlohmann::json& args) {
     auto* obj = ctx.returnValue<void*>();
     if (obj && isReadableMemory(obj, 8)) {
         uint64_t vt = *reinterpret_cast<uint64_t*>(obj);
@@ -302,8 +293,6 @@ void ReadObjectCollector::onExit(const HookContext& ctx) {
     } else if (obj) {
         LOG_WARN("ReadObjectCollector: returned object unreadable at {:p}", obj);
     }
-
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
 }
 
 // ── CopyLoadArrayStoreMapFromCollector ───────────────────────────────
@@ -317,12 +306,9 @@ void CopyLoadArrayStoreMapFromCollector::onEntry(const HookContext& ctx) {
     LOG_TRACE("copyLoadArrayStoreMapFrom entry");
 }
 
-void CopyLoadArrayStoreMapFromCollector::onExit(const HookContext& ctx) {
+void CopyLoadArrayStoreMapFromCollector::onExitCustom(const HookContext& ctx, nlohmann::json& args) {
     auto* src = ctx.arg<void*>(0);
-    nlohmann::json args;
-    args["phase"] = "exit";
     args["src"] = counterInfo(src);
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
 }
 
 // ── UseCacheArchiveCollector ─────────────────────────────────────────
@@ -343,15 +329,11 @@ void UseCacheArchiveCollector::onEntry(const HookContext& ctx) {
               static_cast<void*>(self), static_cast<void*>(archive), mode);
 }
 
-void UseCacheArchiveCollector::onExit(const HookContext& ctx) {
-    auto* self = ctx.arg<void*>(0);
+void UseCacheArchiveCollector::onExitCustom(const HookContext& ctx, nlohmann::json& args) {
     auto* archive = ctx.arg<void*>(1);
-    nlohmann::json args;
-    args["phase"] = "exit";
     args["archive_after"] = counterInfo(archive);
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", args);
     LOG_TRACE("useCacheArchive_c EXIT self={:p} archive={:p}",
-              static_cast<void*>(self), static_cast<void*>(archive));
+              static_cast<void*>(ctx.arg<void*>(0)), static_cast<void*>(archive));
 }
 
 }
