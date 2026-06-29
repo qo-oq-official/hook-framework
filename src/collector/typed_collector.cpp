@@ -58,14 +58,16 @@ void TypedCollector::onEntry(const HookContext& ctx) {
     }
 
     try {
+        static int diagCount = 0;
+        if (++diagCount <= 3) {
+            LOG_INFO("TypedCollector::onEntry hook_id={} func={} params_count={}",
+                     ctx.hookId, functionName_, params_.size());
+        }
         auto* fileWriter = dynamic_cast<FileOutputWriter*>(outputWriter_.get());
         uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
 
         nlohmann::json j;
         j["hook_id"] = ctx.hookId;
-        j["function"] = functionName_;
-        j["module"] = moduleName_;
-        j["phase"] = "entry";
 
         nlohmann::json paramsJson = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
@@ -105,10 +107,6 @@ void TypedCollector::onExit(const HookContext& ctx) {
         uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
 
         nlohmann::json j;
-        j["hook_id"] = ctx.hookId;
-        j["function"] = functionName_;
-        j["module"] = moduleName_;
-        j["phase"] = "exit";
         j["return_value"] = extractReturnValue(ctx);
 
         nlohmann::json exitParams = nlohmann::json::array();
@@ -116,13 +114,18 @@ void TypedCollector::onExit(const HookContext& ctx) {
             if (params_[i].captureOnExit) {
                 try {
                     exitParams.push_back(extractParam(ctx, i, params_[i]));
-                } catch (...) {
+                } catch (const std::exception& ex) {
+                    LOG_ERROR("extractParam[{}] hook_id={} (exit) exception: {}", i, ctx.hookId, ex.what());
                     nlohmann::json err;
                     err["name"] = params_[i].name;
                     err["error"] = "extract_failed";
                     exitParams.push_back(err);
-                    LOG_WARN("extractParam[{}] hook_id={} (exit) failed, E event preserved",
-                             i, ctx.hookId);
+                } catch (...) {
+                    LOG_ERROR("extractParam[{}] hook_id={} (exit) unknown exception", i, ctx.hookId);
+                    nlohmann::json err;
+                    err["name"] = params_[i].name;
+                    err["error"] = "extract_failed";
+                    exitParams.push_back(err);
                 }
             }
         }
@@ -459,12 +462,19 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
         case ParamType::su_CArchivePtr: {
             param["type"] = "su_CArchive";
             auto* archive = ctx.arg<void*>(index);
+            LOG_DEBUG("su_CArchivePtr idx={} archive=0x{:016x} IsBadReadPtr={}",
+                      index, reinterpret_cast<uint64_t>(archive),
+                      archive ? (IsBadReadPtr(archive, 0x70) ? "true" : "false") : "null");
             if (archive && !IsBadReadPtr(archive, 0x70)) {
                 param["cursor"] = std::format("0x{:016x}",
                     *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38));
                 param["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
+                LOG_DEBUG("su_CArchivePtr idx={} cursor={} counter={}", index,
+                          std::format("0x{:016x}", *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38)),
+                          *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50));
             } else {
                 param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
+                LOG_WARN("su_CArchivePtr idx={} unreadable archive at 0x{:016x}", index, reinterpret_cast<uint64_t>(archive));
             }
             break;
         }
