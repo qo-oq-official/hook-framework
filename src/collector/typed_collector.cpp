@@ -466,11 +466,13 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                       index, reinterpret_cast<uint64_t>(archive),
                       archive ? (IsBadReadPtr(archive, 0x70) ? "true" : "false") : "null");
             if (archive && !IsBadReadPtr(archive, 0x70)) {
-                param["cursor"] = std::format("0x{:016x}",
-                    *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38));
+                uint64_t bufCur   = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38);
+                uint64_t bufStart = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x48);
+                param["buf_pos"] = bufCur - bufStart;
+                param["buf_end"] = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x40) - bufStart;
                 param["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
-                LOG_DEBUG("su_CArchivePtr idx={} cursor={} counter={}", index,
-                          std::format("0x{:016x}", *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38)),
+                LOG_DEBUG("su_CArchivePtr idx={} buf_pos={} counter={}", index,
+                          bufCur - bufStart,
                           *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50));
             } else {
                 param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
