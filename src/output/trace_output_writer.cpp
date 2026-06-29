@@ -135,6 +135,11 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                     args[key] = p["value"];
                 } else if (p.contains("value_hex")) {
                     args[key] = p["value_hex"];
+                } else {
+                    for (const auto& [k, v] : p.items()) {
+                        if (k != "name" && k != "index" && k != "type")
+                            args[key + "_" + std::string(k)] = v;
+                    }
                 }
             }
         }
@@ -156,6 +161,11 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                     args[key] = p["value"];
                 } else if (p.contains("value_hex")) {
                     args[key] = p["value_hex"];
+                } else {
+                    for (const auto& [k, v] : p.items()) {
+                        if (k != "name" && k != "index" && k != "type")
+                            args[key + "_" + std::string(k)] = v;
+                    }
                 }
             }
         }
