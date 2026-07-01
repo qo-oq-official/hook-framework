@@ -45,6 +45,14 @@ public:
                        uint32_t tid,
                        const nlohmann::json& args);
 
+    // Write a single Perfetto event with auto-timestamp (simplified API)
+    void writeEvent(const std::string& name,
+                    const std::string& category,
+                    char phase,
+                    uint32_t pid,
+                    uint32_t tid,
+                    const nlohmann::json& args);
+
     void flush();
     void finalize() override;
     uint64_t nextSeq();

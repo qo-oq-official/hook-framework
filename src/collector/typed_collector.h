@@ -27,6 +27,15 @@ protected:
                                 ExtractionPhase phase) const;
     nlohmann::json extractReturnValue(const HookContext& ctx) const;
 
+    // Build flat Perfetto args from extracted params (collector owns formatting)
+    void buildPerfettoArgs(const nlohmann::json& params,
+                           const nlohmann::json& customData,
+                           nlohmann::json& args) const;
+
+    // Flatten a single param into args with a field prefix
+    static void flattenParam(const nlohmann::json& p, const std::string& key,
+                             nlohmann::json& args);
+
     std::vector<ParamDescriptor> params_;
     ParamType returnType_ = ParamType::Int64;
 };

@@ -1,4 +1,5 @@
 #include "collector/typed_collector.h"
+#include "output/trace_output_writer.h"
 #include "logging/logger.h"
 #include <format>
 #include <Windows.h>
@@ -80,6 +81,19 @@ void TypedCollector::onEntry(const HookContext& ctx) {
 
         nlohmann::json customData;
         onEntryCustom(ctx, customData);
+
+        // Write Perfetto event via collector-controlled formatting
+        {
+            auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
+            if (traceWriter) {
+                nlohmann::json perfettoArgs;
+                buildPerfettoArgs(j["params"], customData, perfettoArgs);
+                perfettoArgs["hook_id"] = ctx.hookId;
+                traceWriter->writeEvent(functionName_, moduleName_, 'B',
+                                        GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
+            }
+        }
+
         if (!customData.empty()) {
             j["custom_data"] = customData;
         }
@@ -210,6 +224,28 @@ void TypedCollector::onExit(const HookContext& ctx) {
 
         nlohmann::json customData;
         onExitCustom(ctx, customData);
+
+        // Write Perfetto event via collector-controlled formatting
+        {
+            auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
+            if (traceWriter) {
+                nlohmann::json perfettoArgs;
+                buildPerfettoArgs(j["exit_params"], customData, perfettoArgs);
+                // Add return value and deref outputs
+                if (j.contains("return_value") && j["return_value"].contains("value"))
+                    perfettoArgs["return"] = j["return_value"]["value"];
+                for (auto& op : j.value("output_params", nlohmann::json::array())) {
+                    if (op.contains("deref_value")) {
+                        std::string key = op.value("name", "out");
+                        perfettoArgs[key + "_out"] = op["deref_value"];
+                    }
+                }
+                perfettoArgs["hook_id"] = ctx.hookId;
+                traceWriter->writeEvent(functionName_, moduleName_, 'E',
+                                        GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
+            }
+        }
+
         if (!customData.empty()) {
             j["custom_data"] = customData;
         }
@@ -392,8 +428,7 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                     param["buf_pos"] = {{"after", offset}};
                 }
                 param["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
-            } else {
-                param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
+                param["ptr"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
             }
             break;
         }
@@ -480,6 +515,40 @@ nlohmann::json TypedCollector::extractReturnValue(const HookContext& ctx) const 
             break;
     }
     return ret;
+}
+
+void TypedCollector::buildPerfettoArgs(const nlohmann::json& params,
+                                        const nlohmann::json& customData,
+                                        nlohmann::json& args) const {
+    for (const auto& p : params) {
+        std::string key = p.value("name", "arg");
+        flattenParam(p, key, args);
+    }
+    for (const auto& [key, val] : customData.items()) {
+        args[key] = val;
+    }
+}
+
+void TypedCollector::flattenParam(const nlohmann::json& p, const std::string& key,
+                                   nlohmann::json& args) {
+    // su_CArchive composite type: use "archive" prefix
+    std::string prefix = (p.value("type", "") == "su_CArchive") ? "archive" : key;
+
+    if (p.contains("value")) {
+        args[prefix] = p["value"];
+    } else if (p.contains("value_hex")) {
+        args[prefix] = p["value_hex"];
+    } else {
+        for (const auto& [k, v] : p.items()) {
+            if (k == "name" || k == "index" || k == "type") continue;
+            if (v.is_object()) {
+                for (const auto& [nk, nv] : v.items())
+                    args[prefix + "_" + std::string(k) + "_" + std::string(nk)] = nv;
+            } else {
+                args[prefix + "_" + std::string(k)] = v;
+            }
+        }
+    }
 }
 
 }

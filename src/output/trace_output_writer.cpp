@@ -108,6 +108,15 @@ void TraceOutputWriter::addTraceEvent(const std::string& name,
     }
 }
 
+void TraceOutputWriter::writeEvent(const std::string& name,
+                                    const std::string& category,
+                                    char phase,
+                                    uint32_t pid,
+                                    uint32_t tid,
+                                    const nlohmann::json& args) {
+    addTraceEvent(name, category, phase, nowMicroseconds(), pid, tid, args);
+}
+
 bool TraceOutputWriter::writeRaw(const std::string&, const std::string&,
                                  uint64_t, const std::string&,
                                  const uint8_t*, size_t) {
