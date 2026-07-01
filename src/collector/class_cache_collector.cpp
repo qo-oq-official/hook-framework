@@ -1,6 +1,5 @@
 #include "collector/class_cache_collector.h"
 #include "collector/typed_collector.h"
-#include "collector/param_serializer.h"
 #include "logging/logger.h"
 #include <nlohmann/json.hpp>
 #include <format>
@@ -11,6 +10,19 @@
 namespace hookfw {
 
 // ── helpers ──────────────────────────────────────────────────────────
+
+static std::string wideToUtf8(const wchar_t* ptr, size_t len) {
+    if (len == 0) return "";
+    int utf8Len = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
+                                      ptr, static_cast<int>(len),
+                                      nullptr, 0, nullptr, nullptr);
+    if (utf8Len <= 0) return "";
+    std::string utf8(utf8Len, '\0');
+    WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
+                        ptr, static_cast<int>(len),
+                        utf8.data(), utf8Len, nullptr, nullptr);
+    return utf8;
+}
 
 static bool isReadableMemory(const void* addr, size_t size) {
     if (!addr) return false;
@@ -212,18 +224,6 @@ static nlohmann::json counterInfo(void* archive) {
 
 // ── ReadClassCollector ───────────────────────────────────────────────
 
-REGISTER_COLLECTOR("ReadClass", ReadClassCollector);
-
-void ReadClassCollector::onEntry(const HookContext& ctx) {
-    nlohmann::json args;
-    ParamSerializer::addDefaultEntry(args, ctx);
-    ParamSerializer::addConfigEntry(args, ctx, params_);
-
-    auto* archive = ctx.arg<void*>(0);
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
-    LOG_TRACE("ReadClass entry archive={:p}", static_cast<void*>(archive));
-}
-
 void ReadClassCollector::onExitCustom(const HookContext& ctx, nlohmann::json& args) {
     auto* archive = ctx.arg<void*>(0);
     auto* crtFromRet = ctx.returnValue<void*>();
@@ -270,15 +270,6 @@ void ReadClassCollector::onExitCustom(const HookContext& ctx, nlohmann::json& ar
 
 // ── ReadObjectCollector ──────────────────────────────────────────────
 
-REGISTER_COLLECTOR("ReadObject", ReadObjectCollector);
-
-void ReadObjectCollector::onEntry(const HookContext& ctx) {
-    nlohmann::json args;
-    ParamSerializer::addDefaultEntry(args, ctx);
-    ParamSerializer::addConfigEntry(args, ctx, params_);
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
-}
-
 void ReadObjectCollector::onExitCustom(const HookContext& ctx, nlohmann::json& args) {
     auto* obj = ctx.returnValue<void*>();
     if (obj && isReadableMemory(obj, 8)) {
@@ -299,10 +290,8 @@ void ReadObjectCollector::onExitCustom(const HookContext& ctx, nlohmann::json& a
 
 REGISTER_COLLECTOR("copyLoadArrayStoreMapFrom", CopyLoadArrayStoreMapFromCollector);
 
-void CopyLoadArrayStoreMapFromCollector::onEntry(const HookContext& ctx) {
-    nlohmann::json args;
-    ParamSerializer::addConfigEntry(args, ctx, params_);
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
+void CopyLoadArrayStoreMapFromCollector::onEntryCustom(const HookContext& ctx, nlohmann::json& customData) {
+    customData["mode"] = "copyLoadArrayStoreMapFrom";
     LOG_TRACE("copyLoadArrayStoreMapFrom entry");
 }
 
@@ -315,18 +304,13 @@ void CopyLoadArrayStoreMapFromCollector::onExitCustom(const HookContext& ctx, nl
 
 REGISTER_COLLECTOR("useCacheArchive_c", UseCacheArchiveCollector);
 
-void UseCacheArchiveCollector::onEntry(const HookContext& ctx) {
-    auto* self = ctx.arg<void*>(0);   // this
+void UseCacheArchiveCollector::onEntryCustom(const HookContext& ctx, nlohmann::json& customData) {
     auto* archive = ctx.arg<void*>(1);
     uint32_t mode = ctx.arg<uint32_t>(2);
-    nlohmann::json args;
-
-    ParamSerializer::addConfigEntry(args, ctx, params_);
-    args["phase"] = "entry";
-    args["mode"] = mode;
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", args);
+    customData["mode"] = mode;
+    customData["archive"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
     LOG_TRACE("useCacheArchive_c ENTER self={:p} archive={:p} mode={}",
-              static_cast<void*>(self), static_cast<void*>(archive), mode);
+              static_cast<void*>(ctx.arg<void*>(0)), static_cast<void*>(archive), mode);
 }
 
 void UseCacheArchiveCollector::onExitCustom(const HookContext& ctx, nlohmann::json& args) {

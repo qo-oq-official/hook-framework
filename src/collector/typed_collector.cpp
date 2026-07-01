@@ -59,11 +59,6 @@ void TypedCollector::onEntry(const HookContext& ctx) {
     }
 
     try {
-        static int diagCount = 0;
-        if (++diagCount <= 3) {
-            LOG_INFO("TypedCollector::onEntry hook_id={} func={} params_count={}",
-                     ctx.hookId, functionName_, params_.size());
-        }
         auto* fileWriter = dynamic_cast<FileOutputWriter*>(outputWriter_.get());
         uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
 
@@ -73,28 +68,20 @@ void TypedCollector::onEntry(const HookContext& ctx) {
         nlohmann::json paramsJson = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             try {
-                paramsJson.push_back(extractParam(ctx, i, params_[i]));
+                paramsJson.push_back(extractParam(ctx, i, params_[i], ExtractionPhase::Entry));
             } catch (...) {
                 nlohmann::json err;
                 err["name"] = params_[i].name;
                 err["error"] = "extract_failed";
                 paramsJson.push_back(err);
-                LOG_WARN("extractParam[{}] hook_id={} failed for '{}', B event preserved",
-                         i, ctx.hookId, params_[i].name);
             }
         }
         j["params"] = paramsJson;
 
-        // Capture archive buf_pos before function execution
-        for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
-            if (params_[i].type == ParamType::su_CArchivePtr) {
-                auto* archive = ctx.arg<void*>(i);
-                if (archive && !IsBadReadPtr(archive, 0x70)) {
-                    archiveBufPosBefore_ =
-                        *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38)
-                        - *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x48);
-                }
-            }
+        nlohmann::json customData;
+        onEntryCustom(ctx, customData);
+        if (!customData.empty()) {
+            j["custom_data"] = customData;
         }
 
         if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "entry", j)) {
@@ -126,15 +113,8 @@ void TypedCollector::onExit(const HookContext& ctx) {
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             if (params_[i].captureOnExit) {
                 try {
-                    exitParams.push_back(extractParam(ctx, i, params_[i]));
-                } catch (const std::exception& ex) {
-                    LOG_ERROR("extractParam[{}] hook_id={} (exit) exception: {}", i, ctx.hookId, ex.what());
-                    nlohmann::json err;
-                    err["name"] = params_[i].name;
-                    err["error"] = "extract_failed";
-                    exitParams.push_back(err);
+                    exitParams.push_back(extractParam(ctx, i, params_[i], ExtractionPhase::Exit));
                 } catch (...) {
-                    LOG_ERROR("extractParam[{}] hook_id={} (exit) unknown exception", i, ctx.hookId);
                     nlohmann::json err;
                     err["name"] = params_[i].name;
                     err["error"] = "extract_failed";
@@ -152,11 +132,7 @@ void TypedCollector::onExit(const HookContext& ctx) {
             try {
                 auto ptr = ctx.arg<void*>(i);
                 if (!ptr) continue;
-                if (IsBadReadPtr(ptr, 8)) {
-                    LOG_WARN("deref param[{}] hook_id={}: unreadable at {:p}",
-                             i, ctx.hookId, static_cast<const void*>(ptr));
-                    continue;
-                }
+                if (IsBadReadPtr(ptr, 8)) continue;
 
                 nlohmann::json op;
                 op["name"] = params_[i].name;
@@ -226,7 +202,6 @@ void TypedCollector::onExit(const HookContext& ctx) {
                 }
                 outputParams.push_back(op);
             } catch (...) {
-                LOG_WARN("deref param[{}] hook_id={}: AV, E event preserved", i, ctx.hookId);
             }
         }
         if (!outputParams.empty()) {
@@ -252,7 +227,8 @@ void TypedCollector::onExit(const HookContext& ctx) {
 }
 
 nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
-                                            const ParamDescriptor& desc) const {
+                                            const ParamDescriptor& desc,
+                                            ExtractionPhase phase) const {
     nlohmann::json param;
     param["name"] = desc.name;
     param["index"] = index;
@@ -305,146 +281,82 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
         case ParamType::CString: {
             param["type"] = "cstring";
             auto ptr = ctx.arg<const char*>(index);
-            try {
-                if (ptr && !IsBadReadPtr(ptr, 1)) {
-                    param["value"] = std::string(ptr, strnlen(ptr, 1024));
-                } else {
-                    param["value"] = nullptr;
-                    if (ptr) {
-                        LOG_WARN("CString param[{}] hook_id={}: unreadable ptr {:p}",
-                                 index, ctx.hookId, static_cast<const void*>(ptr));
-                    }
-                }
-            } catch (...) {
-                param["value"] = "<unreadable>";
-                LOG_WARN("CString param[{}] hook_id={}: AV", index, ctx.hookId);
-            }
+            if (ptr && !IsBadReadPtr(ptr, 1))
+                param["value"] = std::string(ptr, strnlen(ptr, 1024));
+            else
+                param["value"] = nullptr;
             break;
         }
         case ParamType::WString: {
             param["type"] = "wstring";
             auto ptr = ctx.arg<const wchar_t*>(index);
-            try {
-                size_t len = 0;
-                if (ptr && isLikelyWideString(ptr, &len) && len > 0) {
-                    std::string utf8 = wideToUtf8(ptr, len);
-                    if (!utf8.empty()) {
-                        param["value"] = utf8;
-                    } else {
-                        param["value"] = std::format("<non-text@{:#x}>",
-                                                     reinterpret_cast<uint64_t>(ptr));
-                        LOG_WARN("WString param[{}] hook_id={}: UTF-8 conversion failed at {:p}",
-                                 index, ctx.hookId, static_cast<const void*>(ptr));
-                    }
-                } else if (ptr && !IsBadReadPtr(ptr, 1)) {
-                    auto charPtr = reinterpret_cast<const char*>(ptr);
-                    size_t slen = strnlen(charPtr, 256);
-                    if (slen > 0) {
-                        param["value"] = std::string(charPtr, slen);
-                        param["type"] = "string_fallback";
-                    } else {
-                        param["value"] = ptr
-                            ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(ptr))
-                            : nullptr;
-                        if (ptr) {
-                            LOG_WARN("WString param[{}] hook_id={}: not a valid wide string or string at {:p}",
-                                     index, ctx.hookId, static_cast<const void*>(ptr));
-                        }
-                    }
+            size_t len = 0;
+            if (ptr && isLikelyWideString(ptr, &len) && len > 0) {
+                std::string utf8 = wideToUtf8(ptr, len);
+                param["value"] = utf8.empty()
+                    ? std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(ptr)) : utf8;
+            } else if (ptr && !IsBadReadPtr(ptr, 1)) {
+                auto charPtr = reinterpret_cast<const char*>(ptr);
+                size_t slen = strnlen(charPtr, 256);
+                if (slen > 0) {
+                    param["value"] = std::string(charPtr, slen);
+                    param["type"] = "string_fallback";
                 } else {
-                    param["value"] = ptr
-                        ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(ptr))
-                        : nullptr;
+                    param["value"] = std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(ptr));
                 }
-            } catch (...) {
-                param["value"] = "<unreadable>";
-                LOG_WARN("WString param[{}] hook_id={}: AV", index, ctx.hookId);
+            } else {
+                param["value"] = nullptr;
             }
             break;
         }
         case ParamType::WStringRef: {
             param["type"] = "wstring_ref";
             auto pCString = ctx.arg<const void*>(index);
-            try {
-                if (pCString && !IsBadReadPtr(pCString, 8)) {
-                    auto pStr = *reinterpret_cast<const wchar_t* const*>(pCString);
-                    size_t len = 0;
-                    if (pStr && isLikelyWideString(pStr, &len) && len > 0) {
-                        std::string utf8 = wideToUtf8(pStr, len);
-                        if (!utf8.empty()) {
-                            param["value"] = utf8;
-                        } else {
-                            param["value"] = std::format("<non-text@{:#x}>",
-                                                         reinterpret_cast<uint64_t>(pStr));
-                            LOG_WARN("WStringRef param[{}] hook_id={}: UTF-8 conversion failed at {:p}",
-                                     index, ctx.hookId, static_cast<const void*>(pStr));
-                        }
-                    } else if (pStr && !IsBadReadPtr(pStr, 1)) {
-                        auto charPtr = reinterpret_cast<const char*>(pStr);
-                        size_t slen = strnlen(charPtr, 256);
-                        if (slen > 0) {
-                            param["value"] = std::string(charPtr, slen);
-                            param["type"] = "string_fallback";
-                        } else {
-                            param["value"] = pStr
-                                ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(pStr))
-                                : nullptr;
-                            if (pStr) {
-                                LOG_WARN("WStringRef param[{}] hook_id={}: invalid wide string at {:p}",
-                                         index, ctx.hookId, static_cast<const void*>(pStr));
-                            }
-                        }
+            if (pCString && !IsBadReadPtr(pCString, 8)) {
+                auto pStr = *reinterpret_cast<const wchar_t* const*>(pCString);
+                size_t len = 0;
+                if (pStr && isLikelyWideString(pStr, &len) && len > 0) {
+                    std::string utf8 = wideToUtf8(pStr, len);
+                    param["value"] = utf8.empty()
+                        ? std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(pStr)) : utf8;
+                } else if (pStr && !IsBadReadPtr(pStr, 1)) {
+                    auto charPtr = reinterpret_cast<const char*>(pStr);
+                    size_t slen = strnlen(charPtr, 256);
+                    if (slen > 0) {
+                        param["value"] = std::string(charPtr, slen);
+                        param["type"] = "string_fallback";
                     } else {
-                        param["value"] = pStr
-                            ? std::format("<non-text@{:#x}>", reinterpret_cast<uint64_t>(pStr))
-                            : nullptr;
+                        param["value"] = std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(pStr));
                     }
                 } else {
                     param["value"] = nullptr;
-                    if (pCString) {
-                        LOG_WARN("WStringRef param[{}] hook_id={}: unreadable CString ref at {:p}",
-                                 index, ctx.hookId, static_cast<const void*>(pCString));
-                    }
                 }
-            } catch (...) {
-                param["value"] = "<unreadable>";
-                LOG_WARN("WStringRef param[{}] hook_id={}: AV", index, ctx.hookId);
+            } else {
+                param["value"] = nullptr;
             }
             break;
         }
         case ParamType::CStringRef: {
             param["type"] = "cstring_ref";
             auto pObj = ctx.arg<const void*>(index);
-            try {
-                if (!pObj || IsBadReadPtr(pObj, 8)) {
-                    param["value"] = pObj
-                        ? std::format("{:#x}", reinterpret_cast<uint64_t>(pObj))
-                        : nullptr;
-                    if (pObj) {
-                        LOG_WARN("CStringRef param[{}] hook_id={}: unreadable object at {:p}",
-                                 index, ctx.hookId, static_cast<const void*>(pObj));
-                    }
-                    break;
-                }
-                auto pStr = *reinterpret_cast<const char* const*>(pObj);
-                if (!pStr) { param["value"] = nullptr; break; }
-
-                MEMORY_BASIC_INFORMATION mbi = {};
-                if (!VirtualQuery(pStr, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT) {
-                    param["value"] = std::format("<badptr@{:#x}>", reinterpret_cast<uint64_t>(pStr));
-                    LOG_WARN("CStringRef param[{}] hook_id={}: invalid string ptr at {:p}",
-                             index, ctx.hookId, static_cast<const void*>(pStr));
-                    break;
-                }
-                auto regionEnd = reinterpret_cast<const uint8_t*>(mbi.BaseAddress) + mbi.RegionSize;
-                size_t safeBytes = regionEnd - reinterpret_cast<const uint8_t*>(pStr);
-                size_t maxLen = (safeBytes > 256) ? 256 : safeBytes;
-                size_t len = strnlen(pStr, maxLen);
-                param["value"] = std::string(pStr, len);
-            } catch (...) {
-                param["value"] = "<unreadable>";
-                LOG_WARN("CStringRef param[{}] hook_id={}: AV", index, ctx.hookId);
+            if (!pObj || IsBadReadPtr(pObj, 8)) {
+                param["value"] = pObj
+                    ? std::format("{:#x}", reinterpret_cast<uint64_t>(pObj)) : nullptr;
+                break;
             }
+            auto pStr = *reinterpret_cast<const char* const*>(pObj);
+            if (!pStr) { param["value"] = nullptr; break; }
+
+            MEMORY_BASIC_INFORMATION mbi = {};
+            if (!VirtualQuery(pStr, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT) {
+                param["value"] = std::format("<badptr@{:#x}>", reinterpret_cast<uint64_t>(pStr));
+                break;
+            }
+            auto regionEnd = reinterpret_cast<const uint8_t*>(mbi.BaseAddress) + mbi.RegionSize;
+            size_t safeBytes = regionEnd - reinterpret_cast<const uint8_t*>(pStr);
+            size_t maxLen = (safeBytes > 256) ? 256 : safeBytes;
+            size_t len = strnlen(pStr, maxLen);
+            param["value"] = std::string(pStr, len);
             break;
         }
         case ParamType::Buffer: {
@@ -458,21 +370,12 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                     if (size > 2048) size = 256;
                 }
             }
-            try {
-                if (ptr && !IsBadReadPtr(ptr, size) && size > 0) {
-                    size_t len = strnlen(reinterpret_cast<const char*>(ptr), size);
-                    param["value"] = std::string(reinterpret_cast<const char*>(ptr), len);
-                    param["type"] = "buffer_as_string";
-                } else {
-                    param["value"] = nullptr;
-                    if (ptr) {
-                        LOG_WARN("Buffer param[{}] hook_id={}: unreadable at {:p} size={}",
-                                 index, ctx.hookId, static_cast<const void*>(ptr), size);
-                    }
-                }
-            } catch (...) {
-                param["value"] = "<unreadable>";
-                LOG_WARN("Buffer param[{}] hook_id={}: AV", index, ctx.hookId);
+            if (ptr && !IsBadReadPtr(ptr, size) && size > 0) {
+                size_t len = strnlen(reinterpret_cast<const char*>(ptr), size);
+                param["value"] = std::string(reinterpret_cast<const char*>(ptr), len);
+                param["type"] = "buffer_as_string";
+            } else {
+                param["value"] = nullptr;
             }
             break;
         }
@@ -482,8 +385,12 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             if (archive && !IsBadReadPtr(archive, 0x70)) {
                 uint64_t bufCur   = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38);
                 uint64_t bufStart = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x48);
-                param["buf_pos_before"] = archiveBufPosBefore_;
-                param["buf_pos_after"]  = bufCur - bufStart;
+                uint64_t offset   = bufCur - bufStart;
+                if (phase == ExtractionPhase::Entry) {
+                    param["buf_pos"] = {{"before", offset}};
+                } else {
+                    param["buf_pos"] = {{"after", offset}};
+                }
                 param["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
             } else {
                 param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
@@ -514,12 +421,10 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             }
             break;
         }
-        case ParamType::Bool: {
+        case ParamType::Bool:
             param["type"] = "bool";
             param["value"] = (ctx.arg<uint64_t>(index) != 0);
             break;
-        }
-
     }
 
     return param;

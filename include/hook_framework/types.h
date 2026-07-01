@@ -29,6 +29,8 @@ enum class ParamType : uint8_t {
     Bool,
 };
 
+enum class ExtractionPhase : uint8_t { Entry, Exit };
+
 enum class HookAction : uint8_t {
     Capture,
     Replace,

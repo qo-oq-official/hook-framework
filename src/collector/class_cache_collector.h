@@ -3,26 +3,22 @@
 
 namespace hookfw {
 
-// Hook: su_CArchive::ReadClass / WriteClass
-// Captures: class name + index per archive
 struct ReadClassCollector : public TypedCollector {
-    void onEntry(const HookContext& ctx) override;
-    void onExitCustom(const HookContext& ctx, nlohmann::json& args) override;
+    void onExitCustom(const HookContext& ctx, nlohmann::json& customData) override;
 };
 
 struct ReadObjectCollector : public TypedCollector {
-    void onEntry(const HookContext& ctx) override;
-    void onExitCustom(const HookContext& ctx, nlohmann::json& args) override;
+    void onExitCustom(const HookContext& ctx, nlohmann::json& customData) override;
 };
 
 struct CopyLoadArrayStoreMapFromCollector : public TypedCollector {
-    void onEntry(const HookContext& ctx) override;
-    void onExitCustom(const HookContext& ctx, nlohmann::json& args) override;
+    void onEntryCustom(const HookContext& ctx, nlohmann::json& customData) override;
+    void onExitCustom(const HookContext& ctx, nlohmann::json& customData) override;
 };
 
 struct UseCacheArchiveCollector : public TypedCollector {
-    void onEntry(const HookContext& ctx) override;
-    void onExitCustom(const HookContext& ctx, nlohmann::json& args) override;
+    void onEntryCustom(const HookContext& ctx, nlohmann::json& customData) override;
+    void onExitCustom(const HookContext& ctx, nlohmann::json& customData) override;
 };
 
 }

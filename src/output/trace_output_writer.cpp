@@ -140,7 +140,12 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                     std::string prefix = (p.value("type", "") == "su_CArchive") ? "archive" : key;
                     for (const auto& [k, v] : p.items()) {
                         if (k == "name" || k == "index" || k == "type") continue;
-                        args[prefix + "_" + std::string(k)] = v;
+                        if (v.is_object()) {
+                            for (const auto& [nk, nv] : v.items())
+                                args[prefix + "_" + std::string(k) + "_" + std::string(nk)] = nv;
+                        } else {
+                            args[prefix + "_" + std::string(k)] = v;
+                        }
                     }
                 }
             }
@@ -167,7 +172,12 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                     std::string prefix = (p.value("type", "") == "su_CArchive") ? "archive" : key;
                     for (const auto& [k, v] : p.items()) {
                         if (k == "name" || k == "index" || k == "type") continue;
-                        args[prefix + "_" + std::string(k)] = v;
+                        if (v.is_object()) {
+                            for (const auto& [nk, nv] : v.items())
+                                args[prefix + "_" + std::string(k) + "_" + std::string(nk)] = nv;
+                        } else {
+                            args[prefix + "_" + std::string(k)] = v;
+                        }
                     }
                 }
             }
