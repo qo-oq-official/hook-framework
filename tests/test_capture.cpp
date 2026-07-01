@@ -149,8 +149,8 @@ int main() {
     for (auto& f : fs::directory_iterator(addDir)) {
         if (f.path().extension() == ".json" && f.path().stem().string().find("entry") != std::string::npos) {
             auto j = readJson(f.path());
-            if (!j.is_null() && j.contains("params")) {
-                auto& params = j["params"];
+            if (!j.is_null() && j.contains("args")) {
+                auto& params = j["args"];
                 if (params.size() == 2 &&
                     params[0]["value"] == 10 &&
                     params[1]["value"] == 20) {
@@ -166,22 +166,22 @@ int main() {
     for (auto& f : fs::directory_iterator(addDir)) {
         if (f.path().extension() == ".json" && f.path().stem().string().find("exit") != std::string::npos) {
             auto j = readJson(f.path());
-            if (!j.is_null() && j.contains("return_value")) {
-                if (j["return_value"]["value"] == 30) {
+            if (!j.is_null() && j.contains("return")) {
+                if (j["return"]["value"] == 30) {
                     foundExitJson = true;
                 }
             }
             break;
         }
     }
-    check(foundExitJson, "add exit json has return_value=30");
+    check(foundExitJson, "add exit json has return=30");
 
     bool foundConcatEntry = false;
     for (auto& f : fs::directory_iterator(concatDir)) {
         if (f.path().extension() == ".json" && f.path().stem().string().find("entry") != std::string::npos) {
             auto j = readJson(f.path());
-            if (!j.is_null() && j.contains("params")) {
-                auto& params = j["params"];
+            if (!j.is_null() && j.contains("args")) {
+                auto& params = j["args"];
                 if (params.size() == 2 &&
                     params[0]["value"] == "foo" &&
                     params[1]["value"] == "bar") {

@@ -45,6 +45,8 @@ static std::string wideToUtf8(const wchar_t* ptr, size_t len) {
     return utf8;
 }
 
+static nlohmann::json extractDerefValue(void* ptr, ParamType derefType);
+
 void TypedCollector::setParamDescriptors(const std::vector<ParamDescriptor>& params) {
     params_ = params;
 }
@@ -69,7 +71,15 @@ void TypedCollector::onEntry(const HookContext& ctx) {
         nlohmann::json paramsJson = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             try {
-                paramsJson.push_back(extractParam(ctx, i, params_[i], ExtractionPhase::Entry));
+                auto p = extractParam(ctx, i, params_[i], ExtractionPhase::Entry);
+                // deref on entry
+                if (params_[i].hasDeref) {
+                    auto ptr = ctx.arg<void*>(i);
+                    if (ptr && !IsBadReadPtr(ptr, 8)) {
+                        p["deref"] = extractDerefValue(ptr, params_[i].derefType);
+                    }
+                }
+                paramsJson.push_back(p);
             } catch (...) {
                 nlohmann::json err;
                 err["name"] = params_[i].name;
@@ -77,7 +87,7 @@ void TypedCollector::onEntry(const HookContext& ctx) {
                 paramsJson.push_back(err);
             }
         }
-        j["params"] = paramsJson;
+        j["args"] = paramsJson;
 
         nlohmann::json customData;
         onEntryCustom(ctx, customData);
@@ -87,7 +97,7 @@ void TypedCollector::onEntry(const HookContext& ctx) {
             auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
             if (traceWriter) {
                 nlohmann::json perfettoArgs;
-                buildPerfettoArgs(j["params"], customData, perfettoArgs);
+                buildPerfettoArgs(j["args"], customData, perfettoArgs);
                 perfettoArgs["hook_id"] = ctx.hookId;
                 traceWriter->writeEvent(functionName_, moduleName_, 'B',
                                         GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
@@ -95,12 +105,14 @@ void TypedCollector::onEntry(const HookContext& ctx) {
         }
 
         if (!customData.empty()) {
-            j["custom_data"] = customData;
+            j["custom"] = customData;
         }
 
-        if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "entry", j)) {
-            LOG_ERROR("TypedCollector: failed to write entry JSON for {}!{}",
-                      moduleName_, functionName_);
+        if (dynamic_cast<FileOutputWriter*>(outputWriter_.get())) {
+            if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "entry", j)) {
+                LOG_ERROR("TypedCollector: failed to write entry JSON for {}!{}",
+                          moduleName_, functionName_);
+            }
         }
 
         outputWriter_->writeRaw(moduleName_, functionName_, seq, "entry",
@@ -121,106 +133,29 @@ void TypedCollector::onExit(const HookContext& ctx) {
         uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
 
         nlohmann::json j;
-        j["return_value"] = extractReturnValue(ctx);
+        j["return"] = extractReturnValue(ctx);
 
-        nlohmann::json exitParams = nlohmann::json::array();
+        nlohmann::json argsJson = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
-            if (params_[i].captureOnExit) {
-                try {
-                    exitParams.push_back(extractParam(ctx, i, params_[i], ExtractionPhase::Exit));
-                } catch (...) {
-                    nlohmann::json err;
-                    err["name"] = params_[i].name;
-                    err["error"] = "extract_failed";
-                    exitParams.push_back(err);
-                }
-            }
-        }
-        if (!exitParams.empty()) {
-            j["exit_params"] = exitParams;
-        }
-
-        nlohmann::json outputParams = nlohmann::json::array();
-        for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
-            if (!params_[i].hasDeref) continue;
+            if (!params_[i].captureOnExit && !params_[i].hasDeref) continue;
             try {
-                auto ptr = ctx.arg<void*>(i);
-                if (!ptr) continue;
-                if (IsBadReadPtr(ptr, 8)) continue;
-
-                nlohmann::json op;
-                op["name"] = params_[i].name;
-                op["index"] = i;
-                switch (params_[i].derefType) {
-                    case ParamType::Int8:
-                        op["deref_value"] = *reinterpret_cast<int8_t*>(ptr); break;
-                    case ParamType::UInt8:
-                        op["deref_value"] = *reinterpret_cast<uint8_t*>(ptr); break;
-                    case ParamType::Int16:
-                        op["deref_value"] = *reinterpret_cast<int16_t*>(ptr); break;
-                    case ParamType::UInt16:
-                        op["deref_value"] = *reinterpret_cast<uint16_t*>(ptr); break;
-                    case ParamType::Int32:
-                        op["deref_value"] = *reinterpret_cast<int32_t*>(ptr); break;
-                    case ParamType::UInt32:
-                        op["deref_value"] = *reinterpret_cast<uint32_t*>(ptr); break;
-                    case ParamType::Int64:
-                        op["deref_value"] = *reinterpret_cast<int64_t*>(ptr); break;
-                    case ParamType::UInt64:
-                        op["deref_value"] = *reinterpret_cast<uint64_t*>(ptr); break;
-                    case ParamType::Float32:
-                        op["deref_value"] = *reinterpret_cast<float*>(ptr); break;
-                    case ParamType::Float64:
-                        op["deref_value"] = *reinterpret_cast<double*>(ptr); break;
-                    case ParamType::CStringRef:
-                    case ParamType::CString: {
-                        auto pStr = *reinterpret_cast<const char* const*>(ptr);
-                        if (pStr && !IsBadReadPtr(pStr, 1)) {
-                            size_t len = strnlen(pStr, 256);
-                            op["deref_value"] = std::string(pStr, len);
-                        } else {
-                            op["deref_value"] = nullptr;
-                        }
-                        break;
+                auto p = extractParam(ctx, i, params_[i], ExtractionPhase::Exit);
+                // deref
+                if (params_[i].hasDeref) {
+                    auto ptr = ctx.arg<void*>(i);
+                    if (ptr && !IsBadReadPtr(ptr, 8)) {
+                        p["deref"] = extractDerefValue(ptr, params_[i].derefType);
                     }
-                    case ParamType::WStringRef:
-                    case ParamType::WString: {
-                        auto pStr = *reinterpret_cast<const wchar_t* const*>(ptr);
-                        if (pStr && !IsBadReadPtr(pStr, 2)) {
-                            int len = WideCharToMultiByte(CP_UTF8, 0, pStr, -1, nullptr, 0, nullptr, nullptr);
-                            if (len > 1) {
-                                std::string utf8(len - 1, '\0');
-                                WideCharToMultiByte(CP_UTF8, 0, pStr, -1, &utf8[0], len, nullptr, nullptr);
-                                op["deref_value"] = utf8;
-                            } else {
-                                op["deref_value"] = "";
-                            }
-                        } else {
-                            op["deref_value"] = nullptr;
-                        }
-                        break;
-                    }
-                    case ParamType::Buffer: {
-                        auto pBuf = *reinterpret_cast<const uint8_t* const*>(ptr);
-                        uint32_t size = params_[i].bufferSize > 0 ? params_[i].bufferSize : 64;
-                        if (pBuf && !IsBadReadPtr(pBuf, size) && size > 0) {
-                            size_t len = strnlen(reinterpret_cast<const char*>(pBuf), size);
-                            op["deref_value"] = std::string(reinterpret_cast<const char*>(pBuf), len);
-                        } else {
-                            op["deref_value"] = nullptr;
-                        }
-                        break;
-                    }
-                    default:
-                        op["deref_value"] = std::format("{:#x}", *reinterpret_cast<uint64_t*>(ptr)); break;
                 }
-                outputParams.push_back(op);
+                argsJson.push_back(p);
             } catch (...) {
+                nlohmann::json err;
+                err["name"] = params_[i].name;
+                err["error"] = "extract_failed";
+                argsJson.push_back(err);
             }
         }
-        if (!outputParams.empty()) {
-            j["output_params"] = outputParams;
-        }
+        j["args"] = argsJson;
 
         nlohmann::json customData;
         onExitCustom(ctx, customData);
@@ -230,16 +165,9 @@ void TypedCollector::onExit(const HookContext& ctx) {
             auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
             if (traceWriter) {
                 nlohmann::json perfettoArgs;
-                buildPerfettoArgs(j["exit_params"], customData, perfettoArgs);
-                // Add return value and deref outputs
-                if (j.contains("return_value") && j["return_value"].contains("value"))
-                    perfettoArgs["return"] = j["return_value"]["value"];
-                for (auto& op : j.value("output_params", nlohmann::json::array())) {
-                    if (op.contains("deref_value")) {
-                        std::string key = op.value("name", "out");
-                        perfettoArgs[key + "_out"] = op["deref_value"];
-                    }
-                }
+                buildPerfettoArgs(argsJson, customData, perfettoArgs);
+                if (j.contains("return") && j["return"].contains("value"))
+                    perfettoArgs["return"] = j["return"]["value"];
                 perfettoArgs["hook_id"] = ctx.hookId;
                 traceWriter->writeEvent(functionName_, moduleName_, 'E',
                                         GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
@@ -247,12 +175,14 @@ void TypedCollector::onExit(const HookContext& ctx) {
         }
 
         if (!customData.empty()) {
-            j["custom_data"] = customData;
+            j["custom"] = customData;
         }
 
-        if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "exit", j)) {
-            LOG_ERROR("TypedCollector: failed to write exit JSON for {}!{}",
-                      moduleName_, functionName_);
+        if (dynamic_cast<FileOutputWriter*>(outputWriter_.get())) {
+            if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "exit", j)) {
+                LOG_ERROR("TypedCollector: failed to write exit JSON for {}!{}",
+                          moduleName_, functionName_);
+            }
         }
 
         outputWriter_->writeRaw(moduleName_, functionName_, seq, "exit",
@@ -262,9 +192,52 @@ void TypedCollector::onExit(const HookContext& ctx) {
     }
 }
 
+nlohmann::json extractDerefValue(void* ptr, ParamType derefType) {
+    if (!ptr) return nullptr;
+    switch (derefType) {
+        case ParamType::Int8:     return *reinterpret_cast<int8_t*>(ptr);
+        case ParamType::UInt8:    return *reinterpret_cast<uint8_t*>(ptr);
+        case ParamType::Int16:    return *reinterpret_cast<int16_t*>(ptr);
+        case ParamType::UInt16:   return *reinterpret_cast<uint16_t*>(ptr);
+        case ParamType::Int32:    return *reinterpret_cast<int32_t*>(ptr);
+        case ParamType::UInt32:   return *reinterpret_cast<uint32_t*>(ptr);
+        case ParamType::Int64:    return *reinterpret_cast<int64_t*>(ptr);
+        case ParamType::UInt64:   return *reinterpret_cast<uint64_t*>(ptr);
+        case ParamType::Float32:  return *reinterpret_cast<float*>(ptr);
+        case ParamType::Float64:  return *reinterpret_cast<double*>(ptr);
+        case ParamType::CStringRef:
+        case ParamType::CString: {
+            auto pStr = *reinterpret_cast<const char* const*>(ptr);
+            if (pStr && !IsBadReadPtr(pStr, 1))
+                return std::string(pStr, strnlen(pStr, 256));
+            return nullptr;
+        }
+        case ParamType::WStringRef:
+        case ParamType::WString: {
+            auto pStr = *reinterpret_cast<const wchar_t* const*>(ptr);
+            if (!pStr || IsBadReadPtr(pStr, 2)) return nullptr;
+            int len = WideCharToMultiByte(CP_UTF8, 0, pStr, -1, nullptr, 0, nullptr, nullptr);
+            if (len > 1) {
+                std::string utf8(len - 1, '\0');
+                WideCharToMultiByte(CP_UTF8, 0, pStr, -1, &utf8[0], len, nullptr, nullptr);
+                return utf8;
+            }
+            return nullptr;
+        }
+        case ParamType::Buffer: {
+            auto pBuf = *reinterpret_cast<const uint8_t* const*>(ptr);
+            if (!pBuf || IsBadReadPtr(pBuf, 64)) return nullptr;
+            size_t len = strnlen(reinterpret_cast<const char*>(pBuf), 64);
+            return std::string(reinterpret_cast<const char*>(pBuf), len);
+        }
+        default:
+            return std::format("0x{:016x}", *reinterpret_cast<uint64_t*>(ptr));
+    }
+}
+
 nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                                             const ParamDescriptor& desc,
-                                            ExtractionPhase phase) const {
+                                            ExtractionPhase /*phase*/) const {
     nlohmann::json param;
     param["name"] = desc.name;
     param["index"] = index;
@@ -312,7 +285,7 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             break;
         case ParamType::Pointer:
             param["type"] = "pointer";
-            param["value"] = std::format("{:#x}", ctx.arg<uint64_t>(index));
+            param["value"] = std::format("0x{:016x}", ctx.arg<uint64_t>(index));
             break;
         case ParamType::CString: {
             param["type"] = "cstring";
@@ -328,18 +301,16 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             auto ptr = ctx.arg<const wchar_t*>(index);
             size_t len = 0;
             if (ptr && isLikelyWideString(ptr, &len) && len > 0) {
-                std::string utf8 = wideToUtf8(ptr, len);
-                param["value"] = utf8.empty()
-                    ? std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(ptr)) : utf8;
+                param["value"] = wideToUtf8(ptr, len);
+                if (param["value"].get<std::string>().empty())
+                    param["value"] = std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(ptr));
             } else if (ptr && !IsBadReadPtr(ptr, 1)) {
                 auto charPtr = reinterpret_cast<const char*>(ptr);
                 size_t slen = strnlen(charPtr, 256);
-                if (slen > 0) {
+                if (slen > 0)
                     param["value"] = std::string(charPtr, slen);
-                    param["type"] = "string_fallback";
-                } else {
+                else
                     param["value"] = std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(ptr));
-                }
             } else {
                 param["value"] = nullptr;
             }
@@ -352,18 +323,16 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                 auto pStr = *reinterpret_cast<const wchar_t* const*>(pCString);
                 size_t len = 0;
                 if (pStr && isLikelyWideString(pStr, &len) && len > 0) {
-                    std::string utf8 = wideToUtf8(pStr, len);
-                    param["value"] = utf8.empty()
-                        ? std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(pStr)) : utf8;
+                    param["value"] = wideToUtf8(pStr, len);
+                    if (param["value"].get<std::string>().empty())
+                        param["value"] = std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(pStr));
                 } else if (pStr && !IsBadReadPtr(pStr, 1)) {
                     auto charPtr = reinterpret_cast<const char*>(pStr);
                     size_t slen = strnlen(charPtr, 256);
-                    if (slen > 0) {
+                    if (slen > 0)
                         param["value"] = std::string(charPtr, slen);
-                        param["type"] = "string_fallback";
-                    } else {
+                    else
                         param["value"] = std::format("<non-text@{:#x}>", reinterpret_cast<uintptr_t>(pStr));
-                    }
                 } else {
                     param["value"] = nullptr;
                 }
@@ -382,7 +351,6 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             }
             auto pStr = *reinterpret_cast<const char* const*>(pObj);
             if (!pStr) { param["value"] = nullptr; break; }
-
             MEMORY_BASIC_INFORMATION mbi = {};
             if (!VirtualQuery(pStr, &mbi, sizeof(mbi)) || mbi.State != MEM_COMMIT) {
                 param["value"] = std::format("<badptr@{:#x}>", reinterpret_cast<uint64_t>(pStr));
@@ -409,7 +377,6 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             if (ptr && !IsBadReadPtr(ptr, size) && size > 0) {
                 size_t len = strnlen(reinterpret_cast<const char*>(ptr), size);
                 param["value"] = std::string(reinterpret_cast<const char*>(ptr), len);
-                param["type"] = "buffer_as_string";
             } else {
                 param["value"] = nullptr;
             }
@@ -418,17 +385,14 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
         case ParamType::su_CArchivePtr: {
             param["type"] = "su_CArchive";
             auto* archive = ctx.arg<void*>(index);
+            param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
             if (archive && !IsBadReadPtr(archive, 0x70)) {
+                nlohmann::json state;
                 uint64_t bufCur   = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38);
                 uint64_t bufStart = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x48);
-                uint64_t offset   = bufCur - bufStart;
-                if (phase == ExtractionPhase::Entry) {
-                    param["buf_pos"] = {{"before", offset}};
-                } else {
-                    param["buf_pos"] = {{"after", offset}};
-                }
-                param["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
-                param["ptr"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(archive));
+                state["buf_pos"] = bufCur - bufStart;
+                state["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
+                param["state"] = state;
             }
             break;
         }
@@ -531,24 +495,21 @@ void TypedCollector::buildPerfettoArgs(const nlohmann::json& params,
 
 void TypedCollector::flattenParam(const nlohmann::json& p, const std::string& key,
                                    nlohmann::json& args) {
-    // su_CArchive composite type: use "archive" prefix
     std::string prefix = (p.value("type", "") == "su_CArchive") ? "archive" : key;
 
-    if (p.contains("value")) {
+    // value: direct passthrough
+    if (p.contains("value"))
         args[prefix] = p["value"];
-    } else if (p.contains("value_hex")) {
-        args[prefix] = p["value_hex"];
-    } else {
-        for (const auto& [k, v] : p.items()) {
-            if (k == "name" || k == "index" || k == "type") continue;
-            if (v.is_object()) {
-                for (const auto& [nk, nv] : v.items())
-                    args[prefix + "_" + std::string(k) + "_" + std::string(nk)] = nv;
-            } else {
-                args[prefix + "_" + std::string(k)] = v;
-            }
-        }
+
+    // state: composite type internals → archive_buf_pos, archive_counter
+    if (p.contains("state") && p["state"].is_object()) {
+        for (const auto& [k, v] : p["state"].items())
+            args[prefix + "_" + std::string(k)] = v;
     }
+
+    // deref: dereferenced value → pOut_out
+    if (p.contains("deref"))
+        args[prefix + "_out"] = p["deref"];
 }
 
 }

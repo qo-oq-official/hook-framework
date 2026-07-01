@@ -141,13 +141,13 @@ int main() {
     check(fs::exists(intDir), "test_read_int capture dir exists");
     if (fs::exists(intDir)) {
         auto j = findExitJson(intDir, "exit");
-        bool hasDeref = !j.is_null() && j.contains("output_params") &&
-                        j["output_params"].size() >= 1 &&
-                        j["output_params"][0].contains("deref_value") &&
-                        j["output_params"][0]["deref_value"] == 12345;
+        bool hasDeref = !j.is_null() && j.contains("args") &&
+                        j["args"].size() >= 1 &&
+                        j["args"][0].contains("deref") &&
+                        j["args"][0]["deref"] == 12345;
         check(hasDeref, "test_read_int exit: deref_value == 12345");
-        if (!j.is_null() && j.contains("output_params")) {
-            std::cout << "    output_params: " << j["output_params"].dump() << "\n";
+        if (!j.is_null() && j.contains("args")) {
+            std::cout << "    args: " << j["args"].dump() << "\n";
         }
     }
 
@@ -157,15 +157,15 @@ int main() {
     if (fs::exists(dblDir)) {
         auto j = findExitJson(dblDir, "exit");
         bool hasDeref = false;
-        if (!j.is_null() && j.contains("output_params") &&
-            j["output_params"].size() >= 1 &&
-            j["output_params"][0].contains("deref_value")) {
-            double captured = j["output_params"][0]["deref_value"].get<double>();
+        if (!j.is_null() && j.contains("args") &&
+            j["args"].size() >= 1 &&
+            j["args"][0].contains("deref")) {
+            double captured = j["args"][0]["deref"].get<double>();
             hasDeref = std::abs(captured - 3.14159265) < 0.001;
         }
         check(hasDeref, "test_read_double exit: deref_value ~= 3.14159");
-        if (!j.is_null() && j.contains("output_params")) {
-            std::cout << "    output_params: " << j["output_params"].dump() << "\n";
+        if (!j.is_null() && j.contains("args")) {
+            std::cout << "    output_params: " << j["args"].dump() << "\n";
         }
     }
 
@@ -175,15 +175,15 @@ int main() {
     if (fs::exists(pairDir)) {
         auto j = findExitJson(pairDir, "exit");
         bool hasDeref = false;
-        if (!j.is_null() && j.contains("output_params") &&
-            j["output_params"].size() >= 2) {
-            int a = j["output_params"][0].value("deref_value", 0);
-            int b = j["output_params"][1].value("deref_value", 0);
+        if (!j.is_null() && j.contains("args") &&
+            j["args"].size() >= 2) {
+            int a = j["args"][0].value("deref", 0);
+            int b = j["args"][1].value("deref", 0);
             hasDeref = (a == 100 && b == 200);
         }
         check(hasDeref, "test_read_pair exit: pOutA=100, pOutB=200");
-        if (!j.is_null() && j.contains("output_params")) {
-            std::cout << "    output_params: " << j["output_params"].dump() << "\n";
+        if (!j.is_null() && j.contains("args")) {
+            std::cout << "    output_params: " << j["args"].dump() << "\n";
         }
     }
 
@@ -193,15 +193,15 @@ int main() {
     if (fs::exists(i64Dir)) {
         auto j = findExitJson(i64Dir, "exit");
         bool hasDeref = false;
-        if (!j.is_null() && j.contains("output_params") &&
-            j["output_params"].size() >= 1 &&
-            j["output_params"][0].contains("deref_value")) {
-            int64_t captured = j["output_params"][0]["deref_value"].get<int64_t>();
+        if (!j.is_null() && j.contains("args") &&
+            j["args"].size() >= 1 &&
+            j["args"][0].contains("deref")) {
+            int64_t captured = j["args"][0]["deref"].get<int64_t>();
             hasDeref = (captured == 9876543210LL);
         }
         check(hasDeref, "test_read_int64 exit: deref_value == 9876543210");
-        if (!j.is_null() && j.contains("output_params")) {
-            std::cout << "    output_params: " << j["output_params"].dump() << "\n";
+        if (!j.is_null() && j.contains("args")) {
+            std::cout << "    output_params: " << j["args"].dump() << "\n";
         }
     }
 
@@ -211,15 +211,15 @@ int main() {
     if (fs::exists(fltDir)) {
         auto j = findExitJson(fltDir, "exit");
         bool hasDeref = false;
-        if (!j.is_null() && j.contains("output_params") &&
-            j["output_params"].size() >= 1 &&
-            j["output_params"][0].contains("deref_value")) {
-            float captured = j["output_params"][0]["deref_value"].get<float>();
+        if (!j.is_null() && j.contains("args") &&
+            j["args"].size() >= 1 &&
+            j["args"][0].contains("deref")) {
+            float captured = j["args"][0]["deref"].get<float>();
             hasDeref = std::abs(captured - 2.718f) < 0.01f;
         }
         check(hasDeref, "test_read_float exit: deref_value ~= 2.718");
-        if (!j.is_null() && j.contains("output_params")) {
-            std::cout << "    output_params: " << j["output_params"].dump() << "\n";
+        if (!j.is_null() && j.contains("args")) {
+            std::cout << "    output_params: " << j["args"].dump() << "\n";
         }
     }
 

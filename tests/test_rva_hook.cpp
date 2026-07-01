@@ -160,8 +160,8 @@ int main() {
                 f.path().stem().string().find("entry") != std::string::npos) {
                 std::ifstream jf(f.path());
                 nlohmann::json j; jf >> j;
-                if (j.contains("params") && j["params"].size() == 2 &&
-                    j["params"][0]["value"] == 7 && j["params"][1]["value"] == 8) {
+                if (j.contains("args") && j["args"].size() == 2 &&
+                    j["args"][0]["value"] == 7 && j["args"][1]["value"] == 8) {
                     foundEntry = true;
                 }
                 break;
@@ -175,7 +175,7 @@ int main() {
                 f.path().stem().string().find("exit") != std::string::npos) {
                 std::ifstream jf(f.path());
                 nlohmann::json j; jf >> j;
-                if (j.contains("return_value") && j["return_value"]["value"] == 15) {
+                if (j.contains("return") && j["return"]["value"] == 15) {
                     foundExit = true;
                 }
                 break;
