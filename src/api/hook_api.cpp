@@ -145,6 +145,9 @@ bool HookEngine::initialize(const std::string& configPath) {
         std::shared_ptr<OutputWriter> writer = std::make_shared<FileOutputWriter>(impl_->outputDir);
         HookEngineCore::instance().setOutputWriter(writer);
 
+        // Ensure all custom collectors are registered
+        registerAllCollectors();
+
         if (!configPath.empty()) {
             ConfigLoader loader;
             auto configOpt = loader.load(configPath);

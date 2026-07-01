@@ -252,19 +252,7 @@ void ReadClassCollector::onExitCustom(const HookContext& ctx, nlohmann::json& ar
         LOG_WARN("ReadClassCollector: return value unreadable at {:p}", crtFromRet);
     }
 
-    args["class_cache_after"] = cc;
-
-    if (clsName == "moHeader_c" || clsName == "moLogs_c") {
-        nlohmann::json jframes = nlohmann::json::array();
-        if (ctx.returnAddress)
-            jframes.push_back(hookfw::HookContext::resolveFrame(ctx.returnAddress));
-        void* bt[15] = {};
-        uint16_t n = RtlCaptureStackBackTrace(0, 15, bt, NULL);
-        for (uint16_t i = 0; i < n; i++)
-            jframes.push_back(hookfw::HookContext::resolveFrame(reinterpret_cast<uint64_t>(bt[i])));
-        args["call_stack"] = jframes;
-    }
-
+    args["class_cache"] = cc;
     LOG_TRACE("ReadClass exit archive={:p} class={}", static_cast<void*>(archive), clsName);
 }
 

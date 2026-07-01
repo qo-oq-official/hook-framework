@@ -42,6 +42,8 @@ private:
     std::unordered_map<std::string, CollectorCreator> creators_;
 };
 
+void registerAllCollectors();
+
 }
 
 #define REGISTER_COLLECTOR(name, className) \

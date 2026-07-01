@@ -72,7 +72,6 @@ void TypedCollector::onEntry(const HookContext& ctx) {
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             try {
                 auto p = extractParam(ctx, i, params_[i], ExtractionPhase::Entry);
-                // deref on entry
                 if (params_[i].hasDeref) {
                     auto ptr = ctx.arg<void*>(i);
                     if (ptr && !IsBadReadPtr(ptr, 8)) {
@@ -92,7 +91,6 @@ void TypedCollector::onEntry(const HookContext& ctx) {
         nlohmann::json customData;
         onEntryCustom(ctx, customData);
 
-        // Write Perfetto event via collector-controlled formatting
         {
             auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
             if (traceWriter) {
@@ -104,15 +102,12 @@ void TypedCollector::onEntry(const HookContext& ctx) {
             }
         }
 
-        if (!customData.empty()) {
+        if (!customData.empty())
             j["custom"] = customData;
-        }
 
         if (dynamic_cast<FileOutputWriter*>(outputWriter_.get())) {
-            if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "entry", j)) {
-                LOG_ERROR("TypedCollector: failed to write entry JSON for {}!{}",
-                          moduleName_, functionName_);
-            }
+            if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "entry", j))
+                LOG_ERROR("TypedCollector: failed to write entry JSON for {}!{}", moduleName_, functionName_);
         }
 
         outputWriter_->writeRaw(moduleName_, functionName_, seq, "entry",
@@ -140,7 +135,6 @@ void TypedCollector::onExit(const HookContext& ctx) {
             if (!params_[i].captureOnExit && !params_[i].hasDeref) continue;
             try {
                 auto p = extractParam(ctx, i, params_[i], ExtractionPhase::Exit);
-                // deref
                 if (params_[i].hasDeref) {
                     auto ptr = ctx.arg<void*>(i);
                     if (ptr && !IsBadReadPtr(ptr, 8)) {
@@ -160,7 +154,6 @@ void TypedCollector::onExit(const HookContext& ctx) {
         nlohmann::json customData;
         onExitCustom(ctx, customData);
 
-        // Write Perfetto event via collector-controlled formatting
         {
             auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
             if (traceWriter) {
@@ -174,15 +167,12 @@ void TypedCollector::onExit(const HookContext& ctx) {
             }
         }
 
-        if (!customData.empty()) {
+        if (!customData.empty())
             j["custom"] = customData;
-        }
 
         if (dynamic_cast<FileOutputWriter*>(outputWriter_.get())) {
-            if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "exit", j)) {
-                LOG_ERROR("TypedCollector: failed to write exit JSON for {}!{}",
-                          moduleName_, functionName_);
-            }
+            if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "exit", j))
+                LOG_ERROR("TypedCollector: failed to write exit JSON for {}!{}", moduleName_, functionName_);
         }
 
         outputWriter_->writeRaw(moduleName_, functionName_, seq, "exit",
@@ -192,7 +182,7 @@ void TypedCollector::onExit(const HookContext& ctx) {
     }
 }
 
-nlohmann::json extractDerefValue(void* ptr, ParamType derefType) {
+static nlohmann::json extractDerefValue(void* ptr, ParamType derefType) {
     if (!ptr) return nullptr;
     switch (derefType) {
         case ParamType::Int8:     return *reinterpret_cast<int8_t*>(ptr);
@@ -497,17 +487,14 @@ void TypedCollector::flattenParam(const nlohmann::json& p, const std::string& ke
                                    nlohmann::json& args) {
     std::string prefix = (p.value("type", "") == "su_CArchive") ? "archive" : key;
 
-    // value: direct passthrough
     if (p.contains("value"))
         args[prefix] = p["value"];
 
-    // state: composite type internals → archive_buf_pos, archive_counter
     if (p.contains("state") && p["state"].is_object()) {
         for (const auto& [k, v] : p["state"].items())
             args[prefix + "_" + std::string(k)] = v;
     }
 
-    // deref: dereferenced value → pOut_out
     if (p.contains("deref"))
         args[prefix + "_out"] = p["deref"];
 }

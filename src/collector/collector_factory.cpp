@@ -1,5 +1,6 @@
 #include "collector/collector_factory.h"
 #include "collector/typed_collector.h"
+#include "collector/class_cache_collector.h"
 #include "logging/logger.h"
 #include "output/rva_format.h"
 #include <format>
@@ -22,6 +23,18 @@ std::shared_ptr<CollectorBase> CollectorRegistry::create(const std::string& name
         return nullptr;
     }
     return it->second();
+}
+
+void registerAllCollectors() {
+    auto& reg = CollectorRegistry::instance();
+    reg.registerCreator("ReadClass",
+        []() { return std::make_shared<ReadClassCollector>(); });
+    reg.registerCreator("ReadObject",
+        []() { return std::make_shared<ReadObjectCollector>(); });
+    reg.registerCreator("copyLoadArrayStoreMapFrom",
+        []() { return std::make_shared<CopyLoadArrayStoreMapFromCollector>(); });
+    reg.registerCreator("useCacheArchive_c",
+        []() { return std::make_shared<UseCacheArchiveCollector>(); });
 }
 
 std::shared_ptr<CollectorBase> CollectorFactory::create(const HookDescriptor& desc) {
