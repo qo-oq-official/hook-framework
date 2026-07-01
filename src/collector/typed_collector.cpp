@@ -90,7 +90,7 @@ void TypedCollector::onEntry(const HookContext& ctx) {
             if (params_[i].type == ParamType::su_CArchivePtr) {
                 auto* archive = ctx.arg<void*>(i);
                 if (archive && !IsBadReadPtr(archive, 0x70)) {
-                    const_cast<HookContext&>(ctx).archiveBufPosBefore =
+                    archiveBufPosBefore_ =
                         *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38)
                         - *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x48);
                 }
@@ -233,7 +233,11 @@ void TypedCollector::onExit(const HookContext& ctx) {
             j["output_params"] = outputParams;
         }
 
-        onExitCustom(ctx, j);
+        nlohmann::json customData;
+        onExitCustom(ctx, customData);
+        if (!customData.empty()) {
+            j["custom_data"] = customData;
+        }
 
         if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "exit", j)) {
             LOG_ERROR("TypedCollector: failed to write exit JSON for {}!{}",
@@ -478,7 +482,7 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             if (archive && !IsBadReadPtr(archive, 0x70)) {
                 uint64_t bufCur   = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38);
                 uint64_t bufStart = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x48);
-                param["buf_pos_before"] = ctx.archiveBufPosBefore;
+                param["buf_pos_before"] = archiveBufPosBefore_;
                 param["buf_pos_after"]  = bufCur - bufStart;
                 param["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
             } else {
@@ -510,11 +514,9 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             }
             break;
         }
-        case ParamType::Variant:
-        case ParamType::SafeArray: {
-            param["type"] = (desc.type == ParamType::Variant) ? "variant" : "safearray";
-            auto* ptr = ctx.arg<void*>(index);
-            param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(ptr));
+        case ParamType::Bool: {
+            param["type"] = "bool";
+            param["value"] = (ctx.arg<uint64_t>(index) != 0);
             break;
         }
 
@@ -534,6 +536,14 @@ nlohmann::json TypedCollector::extractReturnValue(const HookContext& ctx) const 
             ret["type"] = "int64";
             ret["value"] = ctx.returnValue<int64_t>();
             break;
+        case ParamType::UInt8:
+            ret["type"] = "uint8";
+            ret["value"] = ctx.returnValue<uint8_t>();
+            break;
+        case ParamType::UInt16:
+            ret["type"] = "uint16";
+            ret["value"] = ctx.returnValue<uint16_t>();
+            break;
         case ParamType::UInt32:
             ret["type"] = "uint32";
             ret["value"] = ctx.returnValue<uint32_t>();
@@ -542,9 +552,22 @@ nlohmann::json TypedCollector::extractReturnValue(const HookContext& ctx) const 
             ret["type"] = "uint64";
             ret["value"] = ctx.returnValue<uint64_t>();
             break;
+        case ParamType::Float32:
+            ret["type"] = "float32";
+            ret["value"] = ctx.returnValue<float>();
+            break;
+        case ParamType::Float64:
+            ret["type"] = "float64";
+            ret["value"] = ctx.returnValue<double>();
+            break;
         case ParamType::Pointer:
+        case ParamType::su_CArchivePtr:
             ret["type"] = "pointer";
             ret["value"] = std::format("{:#x}", ctx.returnValue<uint64_t>());
+            break;
+        case ParamType::BStr:
+            ret["type"] = "bstr";
+            ret["value"] = std::format("0x{:016x}", ctx.returnValue<uint64_t>());
             break;
         default:
             ret["type"] = "int64";

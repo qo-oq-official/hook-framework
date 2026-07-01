@@ -41,7 +41,6 @@ struct HookContext {
 
     uint32_t stackFrameCount = 0;
     uint64_t stackFrames[64] = {};
-    uint64_t archiveBufPosBefore = 0;
 
     void captureCallStack(uint32_t maxFrames = 64) {
         stackFrameCount = 0;

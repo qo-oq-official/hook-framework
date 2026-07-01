@@ -18,7 +18,7 @@ public:
     void onExit(const HookContext& ctx) final;
 
 protected:
-    virtual void onExitCustom(const HookContext& ctx, nlohmann::json& args) {}
+    virtual void onExitCustom(const HookContext& ctx, nlohmann::json& customData) {}
 
     nlohmann::json extractParam(const HookContext& ctx, int index,
                                 const ParamDescriptor& desc) const;
@@ -26,6 +26,7 @@ protected:
 
     std::vector<ParamDescriptor> params_;
     ParamType returnType_ = ParamType::Int64;
+    uint64_t archiveBufPosBefore_ = 0;
 };
 
 }

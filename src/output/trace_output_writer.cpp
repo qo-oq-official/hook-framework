@@ -136,10 +136,11 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                 } else if (p.contains("value_hex")) {
                     args[key] = p["value_hex"];
                 } else {
+                    // Composite types (su_CArchive, etc.): flatten all data fields
                     std::string prefix = (p.value("type", "") == "su_CArchive") ? "archive" : key;
                     for (const auto& [k, v] : p.items()) {
-                        if (k != "name" && k != "index" && k != "type")
-                            args[prefix + "_" + std::string(k)] = v;
+                        if (k == "name" || k == "index" || k == "type") continue;
+                        args[prefix + "_" + std::string(k)] = v;
                     }
                 }
             }
@@ -165,14 +166,20 @@ bool TraceOutputWriter::writeJson(const std::string& moduleName,
                 } else {
                     std::string prefix = (p.value("type", "") == "su_CArchive") ? "archive" : key;
                     for (const auto& [k, v] : p.items()) {
-                        if (k != "name" && k != "index" && k != "type")
-                            args[prefix + "_" + std::string(k)] = v;
+                        if (k == "name" || k == "index" || k == "type") continue;
+                        args[prefix + "_" + std::string(k)] = v;
                     }
                 }
             }
         }
+        // Pass through custom_data from subclass collectors
+        if (data.contains("custom_data")) {
+            for (const auto& [key, val] : data["custom_data"].items()) {
+                args[key] = val;
+            }
+        }
 
-        static const char* kKnown[] = {"params", "return_value", "output_params", "exit_params"};
+        static const char* kKnown[] = {"params", "return_value", "output_params", "exit_params", "custom_data"};
         for (const auto& [key, val] : data.items()) {
             bool skip = false;
             for (const auto* k : kKnown) { if (key == k) { skip = true; break; } }
