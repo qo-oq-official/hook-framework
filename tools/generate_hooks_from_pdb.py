@@ -76,6 +76,8 @@ def main():
             output_path = args[i][9:]
         elif pdb_path is None:
             pdb_path = args[i]
+        elif output_path == "hooks_pdb.json":
+            output_path = args[i]
         i += 1
 
     if not pdb_path:
