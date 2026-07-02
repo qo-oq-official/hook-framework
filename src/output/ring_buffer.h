@@ -19,14 +19,18 @@ struct TraceRecord {
 
 class RingBuffer {
 public:
-    static constexpr size_t CAPACITY = 10000000;
+    static constexpr size_t DEFAULT_CAPACITY = 10000000;
+    static size_t globalCapacity;
 
-    RingBuffer() : buffer_(new TraceRecord[CAPACITY]) {}
+    RingBuffer() : capacity_(globalCapacity), buffer_(new TraceRecord[globalCapacity]) {}
     ~RingBuffer() { delete[] buffer_; }
+
+    static void setGlobalCapacity(size_t cap) { globalCapacity = cap; }
+    size_t capacity() const { return capacity_; }
 
     bool push(const TraceRecord& record) {
         uint64_t pos = writePos_.fetch_add(1, std::memory_order_relaxed);
-        buffer_[pos % CAPACITY] = record;
+        buffer_[pos % capacity_] = record;
         commitPos_.fetch_add(1, std::memory_order_release);
         return true;
     }
@@ -37,9 +41,9 @@ public:
         size_t available = static_cast<size_t>(committed - read);
         if (available == 0) return 0;
         if (available > maxCount) available = maxCount;
-        if (available > CAPACITY) {
-            if (outOverflow) *outOverflow = available - CAPACITY;
-            readPos_ = committed - CAPACITY;
+        if (available > capacity_) {
+            if (outOverflow) *outOverflow = available - capacity_;
+            readPos_ = committed - capacity_;
             read = readPos_;
             available = static_cast<size_t>(committed - read);
             if (available > maxCount) available = maxCount;
@@ -47,7 +51,7 @@ public:
             *outOverflow = 0;
         }
         for (size_t i = 0; i < available; i++) {
-            out[i] = buffer_[(read + i) % CAPACITY];
+            out[i] = buffer_[(read + i) % capacity_];
         }
         readPos_ = read + available;
         return available;
@@ -64,10 +68,13 @@ public:
     }
 
 private:
+    size_t capacity_;
     TraceRecord* buffer_;
     std::atomic<uint64_t> writePos_{0};
     std::atomic<uint64_t> commitPos_{0};
     uint64_t readPos_ = 0;
 };
+
+inline size_t RingBuffer::globalCapacity = RingBuffer::DEFAULT_CAPACITY;
 
 }

@@ -65,12 +65,12 @@ void TraceFlusher::drainToWriter() {
     while ((count = ringBuffer_.drain(batch, BATCH)) > 0) {
         g_totalFlushed += count;
         uint64_t pending = ringBuffer_.pending();
-        if (pending > RingBuffer::CAPACITY * 2 / 3) {
+        if (pending > ringBuffer_.capacity() * 2 / 3) {
             static uint64_t lastWarnPending = 0;
             if (pending > lastWarnPending + 100000) {
                 lastWarnPending = pending;
                 LOG_WARN("Ring buffer approaching capacity: {} pending / {} total ({} total flushed)",
-                         pending, RingBuffer::CAPACITY, g_totalFlushed.load());
+                         pending, ringBuffer_.capacity(), g_totalFlushed.load());
             }
         }
 

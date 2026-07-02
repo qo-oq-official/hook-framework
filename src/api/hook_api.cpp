@@ -236,6 +236,7 @@ bool HookEngine::initialize(const std::string& configPath) {
             if (configOpt->outputFormat == OutputFormat::Perfetto) {
                 auto traceWriter = std::dynamic_pointer_cast<TraceOutputWriter>(writer);
                 if (traceWriter) {
+                    RingBuffer::setGlobalCapacity(configOpt->ringBufferCapacity);
                     TraceFlusher::instance().start(traceWriter);
                 }
             }

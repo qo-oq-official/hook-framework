@@ -16,6 +16,7 @@ struct FrameworkConfig {
     std::string logLevel = "trace";
     OutputFormat outputFormat = OutputFormat::File;
     std::vector<HookDescriptor> hooks;
+    size_t ringBufferCapacity = 100000;
 };
 
 }

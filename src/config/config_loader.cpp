@@ -44,6 +44,9 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
                 config.outputFormat = OutputFormat::File;
             }
         }
+        if (root.contains("ring_buffer_capacity")) {
+            config.ringBufferCapacity = root["ring_buffer_capacity"].get<size_t>();
+        }
 
         if (!root.contains("hooks") || !root["hooks"].is_array()) {
             LOG_ERROR("Config must contain 'hooks' array");
