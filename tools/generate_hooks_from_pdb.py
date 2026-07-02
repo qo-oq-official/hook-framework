@@ -2,7 +2,11 @@
 
 All functions → raw RVA hooks (no parameter parsing).
 Static functions included via RVA (not symbol).
-Filter: only include functions matching --prefix pattern.
+
+Usage:
+  python generate_hooks_from_pdb.py --module <dll> <pdb> [output.json]
+  python generate_hooks_from_pdb.py --module <dll> --contain <s> <pdb> [output.json]
+  python generate_hooks_from_pdb.py --module <dll> --dia2dump <path> <pdb> [output.json]
 """
 import re
 import json
@@ -10,12 +14,25 @@ import subprocess
 import sys
 from pathlib import Path
 
-DIA2DUMP = r"C:\Users\zwsoft\toolbox\DIA2Dump.exe"
+
+def find_dia2dump(override: str = "") -> str:
+    if override:
+        return override
+    # Check same directory as this script
+    local = Path(__file__).resolve().parent / "DIA2Dump.exe"
+    if local.exists():
+        return str(local)
+    # Check toolbox
+    toolbox = Path(r"C:\Users\zwsoft\toolbox\DIA2Dump.exe")
+    if toolbox.exists():
+        return str(toolbox)
+    # Fallback: assume in PATH
+    return "DIA2Dump.exe"
 
 
-def run_dia2dump(pdb_path: str) -> str:
+def run_dia2dump(dia2dump: str, pdb_path: str) -> str:
     result = subprocess.run(
-        [DIA2DUMP, "-s", pdb_path],
+        [dia2dump, "-s", pdb_path],
         capture_output=True,
         text=True,
         timeout=60,
@@ -23,7 +40,7 @@ def run_dia2dump(pdb_path: str) -> str:
     return result.stdout
 
 
-def parse_functions(output: str, prefix: str = "") -> list[dict]:
+def parse_functions(output: str, containing: str, module: str) -> list[dict]:
     hooks = []
     seen_rva = set()
 
@@ -39,7 +56,7 @@ def parse_functions(output: str, prefix: str = "") -> list[dict]:
         sig = m.group(2).strip()
         sig = re.sub(r"\s+", " ", sig)
 
-        if prefix and not any(part.startswith(prefix) for part in sig.split()):
+        if containing and containing not in sig:
             continue
 
         rva = int(rva_hex, 16)
@@ -48,11 +65,11 @@ def parse_functions(output: str, prefix: str = "") -> list[dict]:
         seen_rva.add(rva)
 
         hooks.append({
-            "module": "test_pdb_target.dll",
+            "module": module,
             "rva": f"0x{rva:x}",
             "action": "capture",
             "mode": "capture",
-            "collector": "raw",
+            "collector": "typed",
             "display_name": sig,
         })
 
@@ -60,39 +77,55 @@ def parse_functions(output: str, prefix: str = "") -> list[dict]:
 
 
 def main():
-    prefix = "pdb_"
-    pdb_path = None
+    dia2dump_override = ""
+    containing = ""
+    module = ""
     output_path = "hooks_pdb.json"
+    pdb_path = None
     args = sys.argv[1:]
 
     i = 0
     while i < len(args):
-        if args[i] == "--prefix":
+        if args[i] == "--dia2dump":
             i += 1
-            prefix = args[i]
-        elif args[i] == "--all":
-            prefix = ""
+            dia2dump_override = args[i]
+        elif args[i] == "--contain":
+            i += 1
+            containing = args[i]
+        elif args[i] == "--module":
+            i += 1
+            module = args[i]
         elif args[i].startswith("--output="):
             output_path = args[i][9:]
+        elif args[i].startswith("-"):
+            print(f"Unknown flag: {args[i]}")
+            sys.exit(1)
         elif pdb_path is None:
             pdb_path = args[i]
         elif output_path == "hooks_pdb.json":
             output_path = args[i]
         i += 1
 
-    if not pdb_path:
-        print(f"Usage: {sys.argv[0]} [--prefix pdb_] [--all] <pdb_path>")
+    if not pdb_path or not module:
+        print("Usage: generate_hooks_from_pdb.py --module <dll> [--contain <s>] [--dia2dump <path>] <pdb> [output.json]")
+        print("")
+        print("  --module <dll>    Target module name in hooks.json (required)")
+        print("  --contain <s>     Only include functions whose name contains <s>")
+        print("  --dia2dump <p>    Path to DIA2Dump.exe (default: DIA2Dump.exe)")
+        print("  --output <file>   Output path (default: hooks_pdb.json)")
         sys.exit(1)
 
-    print(f"Running DIA2Dump on: {pdb_path}")
-    out = run_dia2dump(pdb_path)
+    dia2dump = find_dia2dump(dia2dump_override)
+    print(f"Running DIA2Dump: {dia2dump} on {pdb_path}")
+    out = run_dia2dump(dia2dump, pdb_path)
 
-    hooks = parse_functions(out, prefix)
-    print(f"Found {len(hooks)} functions (prefix='{prefix or '(all)'}')")
+    hooks = parse_functions(out, containing, module)
+    filter_info = f"(contain='{containing}')" if containing else "(no filter)"
+    print(f"Found {len(hooks)} functions {filter_info}")
 
     config = {
         "output_dir": "dump_data",
-        "output_format": "file",
+        "output_format": "perfetto",
         "hooks": hooks,
     }
 

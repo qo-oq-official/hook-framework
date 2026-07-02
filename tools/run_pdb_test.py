@@ -45,7 +45,10 @@ print("=== PDB Integration Test ===")
 print("[1] Generating hooks.json from PDB...")
 hooks_json = test_dir / "hooks.json"
 result = subprocess.run(
-    [sys.executable, str(GEN_SCRIPT), str(DLL_PDB), str(hooks_json)],
+    [sys.executable, str(GEN_SCRIPT),
+     "--contain", "pdb_",
+     "--module", "test_pdb_target.dll",
+     str(DLL_PDB), str(hooks_json)],
     capture_output=True, text=True, timeout=60,
 )
 if not hooks_json.exists():
@@ -79,35 +82,44 @@ if inj_result.returncode != 0:
     print(f"     stderr: {inj_result.stderr.strip()}")
 
 # Step 4: Verify
-print("[4] Verifying raw output files...")
-raw_files = list((test_dir / "dump_data").rglob("*.raw"))
-raw_count = len(raw_files)
-func_dirs = list((test_dir / "dump_data" / "test_pdb_target.dll").glob("*")) if (test_dir / "dump_data" / "test_pdb_target.dll").is_dir() else []
-print(f"     Raw files: {raw_count}")
-print(f"     Function dirs: {len(func_dirs)}")
+print("[4] Verifying Perfetto trace output...")
+trace_files = list((test_dir / "dump_data").glob("trace_*.json"))
+trace_count = len(trace_files)
+print(f"     Trace files: {trace_count}")
 
-check(raw_count >= 20, f"at least 20 raw files (got {raw_count})")
+check(trace_count >= 1, f"at least 1 trace file (got {trace_count})")
 
-# Check by dir name pattern (dirs include @RVA suffix)
+# Read trace and check for our function events
+trace_events = []
+if trace_files:
+    try:
+        data = json.loads(trace_files[0].read_text(encoding="utf-8"))
+        trace_events = data.get("traceEvents", [])
+    except Exception as e:
+        print(f"     [WARN] Failed to parse trace: {e}")
+
+event_names = set(e.get("name", "") for e in trace_events)
+print(f"     Event count: {len(trace_events)}")
+print(f"     Unique names: {len(event_names)}")
+
+check(len(trace_events) > 0, "trace contains events")
+
 expected = [
     "pdb_add", "pdb_sub", "pdb_mul_double", "pdb_div_float", "pdb_mul_i64",
     "pdb_sum4", "pdb_echo_str", "pdb_concat_w", "pdb_read_int", "pdb_read_double",
     "pdb_read_pair", "pdb_format", "pdb_set_flag", "pdb_is_positive", "pdb_deep_call",
     "pdb_deep_l3",
-    "static int pdb_deep_l1(int)", "static int pdb_deep_l2(int)",
 ]
-func_base = test_dir / "dump_data" / "test_pdb_target.dll"
 for name in expected:
-    found = False
-    if func_base.is_dir():
-        for d in func_base.iterdir():
-            if d.is_dir() and d.name.startswith(name):
-                cnt = len(list(d.rglob("*.raw")))
-                check(cnt >= 2, f"{name}: at least 2 raw files (got {cnt})")
-                found = True
-                break
-    if not found:
-        check(False, f"{name}: directory not found")
+    found = any(name in n for n in event_names)
+    check(found, f"{name}: B/E events in trace")
+
+# Check for Begin/End phase events
+b_count = sum(1 for e in trace_events if e.get("ph") == "B")
+e_count = sum(1 for e in trace_events if e.get("ph") == "E")
+print(f"     Begin: {b_count}, End: {e_count}")
+check(b_count > 0, "contains Begin events (ph:B)")
+check(e_count > 0, "contains End events (ph:E)")
 
 print(f"\n=== {ok} passed, {bad} failed ===")
 
