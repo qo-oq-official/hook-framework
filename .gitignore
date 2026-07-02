@@ -13,3 +13,5 @@ hook-projects/**/*.dll
 hook-projects/**/*.exe
 __pycache__/
 hook-projects/hook-ipx/ipx_interfaces.json
+package/
+hooks_pdb.json
