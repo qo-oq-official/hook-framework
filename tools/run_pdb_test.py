@@ -4,13 +4,11 @@ import os
 import shutil
 import subprocess
 import sys
-import time
 from pathlib import Path
 
 TOOLBOX = Path(r"C:\Users\zwsoft\toolbox")
 SCRIPT_DIR = Path(__file__).resolve().parent
 BUILD_DIR = (SCRIPT_DIR / ".." / "build" / "bin" / "Release").resolve()
-WAIT_SEC = 3
 
 HOOK_DLL   = BUILD_DIR / "hook_framework.dll"
 INJECTOR   = BUILD_DIR / "injector.exe"
@@ -62,45 +60,26 @@ for src in [HOOK_DLL, DLL_TARGET, RUNNER]:
     shutil.copy2(str(src), str(test_dir))
 print("     OK")
 
-# Step 3: Start runner with injection window
-print(f"[3] Starting test_pdb_runner (wait={WAIT_SEC}s)...")
-proc = subprocess.Popen(
-    [str(test_dir / "test_pdb_runner.exe"), "--wait", str(WAIT_SEC)],
-    cwd=str(test_dir),
-    stdout=subprocess.PIPE,
-    stderr=subprocess.STDOUT,
-)
-pid = proc.pid
-print(f"     PID={pid}")
-
-# Collect runner stdout asynchronously
-import threading
-runner_output = []
-def read_stdout():
-    for line in proc.stdout:
-        runner_output.append(line.decode(errors='replace').rstrip())
-threading.Thread(target=read_stdout, daemon=True).start()
-
-# Step 4: Inject
-time.sleep(0.5)
-print(f"[4] Injecting hook_framework.dll into PID={pid}...")
+# Step 3: Launch + inject via --exe mode (one step)
+print("[3] Launching + injecting (--exe mode)...")
 inj_result = subprocess.run(
-    [str(INJECTOR), "--pid", str(pid), "--dll", str(test_dir / "hook_framework.dll")],
-    capture_output=True, text=True, timeout=30,
+    [
+        str(INJECTOR), "--exe", str(test_dir / "test_pdb_runner.exe"),
+        "--dll", str(test_dir / "hook_framework.dll"),
+        "--args", "",
+    ],
+    cwd=str(test_dir),
+    capture_output=True,
+    text=True,
+    timeout=60,
 )
 print(f"     Exit code: {inj_result.returncode}")
+if inj_result.returncode != 0:
+    print(f"     stdout: {inj_result.stdout.strip()}")
+    print(f"     stderr: {inj_result.stderr.strip()}")
 
-# Step 5: Wait for runner
-print("[5] Waiting for runner to complete...")
-try:
-    proc.wait(timeout=30)
-except subprocess.TimeoutExpired:
-    proc.kill()
-    proc.wait()
-print(f"     Runner exit code: {proc.returncode}")
-
-# Step 6: Verify
-print("[6] Verifying raw output files...")
+# Step 4: Verify
+print("[4] Verifying raw output files...")
 raw_files = list((test_dir / "dump_data").rglob("*.raw"))
 raw_count = len(raw_files)
 func_dirs = list((test_dir / "dump_data" / "test_pdb_target.dll").glob("*")) if (test_dir / "dump_data" / "test_pdb_target.dll").is_dir() else []

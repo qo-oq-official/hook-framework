@@ -89,12 +89,27 @@ bool injectDll(DWORD pid, const std::string& dllPath) {
 int main(int argc, char* argv[]) {
     std::cout << "=== Hook Framework Injector ===\n";
 
-    if (argc < 3) {
-        std::cout << "Usage:\n";
-        std::cout << "  injector --pid <process_id> --dll <path_to_dll>\n";
-        std::cout << "  injector --name <process_name> --dll <path_to_dll>\n";
-        std::cout << "  injector --exe <exe_path> --dll <path_to_dll> [--args <args>]\n";
-        return 1;
+    if (argc < 3 || strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
+        std::cout << R"(DESCRIPTION:
+  Injects a DLL into a target process for API hooking.
+
+MODES:
+  --pid <PID>       Inject into running process by PID
+  --name <NAME>     Inject into running process by name
+  --exe <PATH>      Create suspended process, inject DLL, resume and wait
+
+OPTIONS:
+  --dll <PATH>      Path to DLL to inject (required)
+  --args <ARGS>     Arguments passed to target exe (--exe mode only)
+  --help, -h        Show this help
+
+EXAMPLES:
+  injector --pid 1234 --dll hook_framework.dll
+  injector --name notepad.exe --dll hook_framework.dll
+  injector --exe target.exe --dll hook_framework.dll
+  injector --exe target.exe --dll hook_framework.dll --args "-config hooks.json"
+)";
+        return argc < 3 ? 1 : 0;
     }
 
     DWORD pid = 0;
