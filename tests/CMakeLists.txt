@@ -81,5 +81,3 @@ target_compile_options(test_pdb_target PRIVATE /Oy- /Zi)
 target_link_options(test_pdb_target PRIVATE /DEBUG:FULL)
 
 add_executable(test_pdb_runner test_pdb_runner.cpp)
-target_link_libraries(test_pdb_runner PRIVATE hook_framework nlohmann_json)
-target_include_directories(test_pdb_runner PRIVATE ${CMAKE_SOURCE_DIR}/src)

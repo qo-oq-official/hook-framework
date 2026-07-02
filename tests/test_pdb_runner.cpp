@@ -1,10 +1,9 @@
 #include <Windows.h>
 #include <iostream>
 #include <filesystem>
-#include <fstream>
-#include <nlohmann/json.hpp>
 #include <cstring>
 #include <cmath>
+#include <string>
 
 namespace fs = std::filesystem;
 
@@ -46,13 +45,25 @@ T getProc(HMODULE h, const char* name) {
     return fn;
 }
 
-int main() {
-    std::cout << "=== PDB Hook Framework Test ===\n\n";
+int main(int argc, char* argv[]) {
+    int waitSec = 0;
+    for (int i = 1; i < argc - 1; i++) {
+        if (strcmp(argv[i], "--wait") == 0) {
+            waitSec = atoi(argv[i + 1]);
+        }
+    }
 
     // Get current exe directory as DLL location
     char exePath[MAX_PATH];
     GetModuleFileNameA(NULL, exePath, MAX_PATH);
     g_dllDir = fs::path(exePath).parent_path().string();
+
+    if (waitSec > 0) {
+        std::cout << "PID=" << GetCurrentProcessId() << "  Waiting " << waitSec << "s for injection...\n" << std::flush;
+        Sleep(waitSec * 1000);
+    }
+
+    std::cout << "=== PDB Hook Framework Test ===\n\n";
 
     HMODULE h = loadTarget();
     CHECK(h != nullptr, "test_pdb_target.dll loaded");
@@ -101,17 +112,17 @@ int main() {
     CHECK(wcscmp(fnConcatW(L"foo", L"bar"), L"foobar") == 0, "pdb_concat_w('foo','bar')");
 
     int outInt = 0;
-    CHECK(fnReadInt(&outInt) == 1 && outInt == 12345, "pdb_read_int → 12345");
+    CHECK(fnReadInt(&outInt) == 1 && outInt == 12345, "pdb_read_int to 12345");
     double outDouble = 0;
-    CHECK(fnReadDouble(&outDouble) == 1 && std::abs(outDouble - 3.14159) < 0.001, "pdb_read_double → 3.14159");
+    CHECK(fnReadDouble(&outDouble) == 1 && std::abs(outDouble - 3.14159) < 0.001, "pdb_read_double to 3.14159");
     int outA = 0, outB = 0;
-    CHECK(fnReadPair(&outA, &outB) == 2 && outA == 100 && outB == 200, "pdb_read_pair → (100,200)");
+    CHECK(fnReadPair(&outA, &outB) == 2 && outA == 100 && outB == 200, "pdb_read_pair to (100,200)");
 
     CHECK(strncmp(fnFormat("test_%d", 42), "test_42", 7) == 0, "pdb_format('test_%d', 42)");
 
     int flag = 0;
     fnSetFlag(&flag, 99);
-    CHECK(flag == 99, "pdb_set_flag → 99");
+    CHECK(flag == 99, "pdb_set_flag to 99");
     CHECK(fnIsPositive(5) == 1, "pdb_is_positive(5) == 1");
     CHECK(fnIsPositive(-1) == 0, "pdb_is_positive(-1) == 0");
 
