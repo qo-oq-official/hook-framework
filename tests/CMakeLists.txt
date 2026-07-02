@@ -72,3 +72,14 @@ target_compile_definitions(test_perfetto_params PRIVATE WIN32_LEAN_AND_MEAN)
 add_executable(test_rva_scale test_rva_scale.cpp)
 target_link_libraries(test_rva_scale PRIVATE hook_framework)
 target_include_directories(test_rva_scale PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/generated)
+
+# ── PDB test targets ────────────────────────────────────────────────────
+
+add_library(test_pdb_target SHARED test_pdb_target.cpp)
+target_compile_definitions(test_pdb_target PRIVATE TEST_PDB_EXPORTS)
+target_compile_options(test_pdb_target PRIVATE /Oy- /Zi)
+target_link_options(test_pdb_target PRIVATE /DEBUG:FULL)
+
+add_executable(test_pdb_runner test_pdb_runner.cpp)
+target_link_libraries(test_pdb_runner PRIVATE hook_framework nlohmann_json)
+target_include_directories(test_pdb_runner PRIVATE ${CMAKE_SOURCE_DIR}/src)
