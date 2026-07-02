@@ -250,9 +250,12 @@ bool HookEngineCore::installAll() {
                 DetourTransactionBegin();
                 DetourUpdateThread(GetCurrentThread());
             } else {
-                LOG_ERROR("Mid-transaction commit failed at hook id={}, error={}", hook->id, r);
-                hasActiveTxn = false;
-                break;
+                LOG_ERROR("Mid-transaction commit failed at hook id={}, error={}. Starting new transaction.",
+                          hook->id, r);
+                // Discard failed batch, retry with fresh transaction
+                DetourTransactionBegin();
+                DetourUpdateThread(GetCurrentThread());
+                hasActiveTxn = true;
             }
         }
     }

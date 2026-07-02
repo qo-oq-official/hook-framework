@@ -1,0 +1,166 @@
+{
+  "output_dir": "dump_data",
+  "output_format": "file",
+  "hooks": [
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1100",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_add"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1110",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_alloc"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1120",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_concat_w"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1160",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_deep_call"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1170",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "static int pdb_deep_l1(int)"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1180",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "static int pdb_deep_l2(int)"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1190",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_deep_l3"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x11a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_div_float"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x11b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_echo_str"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x11c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_format"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x11f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_free"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1200",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_is_positive"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1210",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_mul_double"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_mul_i64"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1230",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_read_double"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1250",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_read_int"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1270",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_read_pair"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x1290",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_set_flag"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x12a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_sub"
+    },
+    {
+      "module": "test_pdb_target.dll",
+      "rva": "0x12b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "raw",
+      "display_name": "pdb_sum4"
+    }
+  ]
+}
