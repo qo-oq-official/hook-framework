@@ -35,7 +35,7 @@ def generate(limit: int = 0):
                 continue
             seen_rva.add(rva)
 
-            cls_m = re.search(r"dee::internal::(.+?)::.*vftable", line)
+            cls_m = re.search(r"dee::internal::(.+)::`vftable'", line)
             cls_name = cls_m.group(1) if cls_m else "?"
 
             hooks.append({
