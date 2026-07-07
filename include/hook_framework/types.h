@@ -27,6 +27,7 @@ enum class ParamType : uint8_t {
     su_CArchivePtr,
     BStr,
     Bool,
+    BinStreamPtr,
 };
 
 enum class ExtractionPhase : uint8_t { Entry, Exit };

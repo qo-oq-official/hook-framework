@@ -65,10 +65,7 @@ void TypedCollector::onEntry(const HookContext& ctx) {
         auto* fileWriter = dynamic_cast<FileOutputWriter*>(outputWriter_.get());
         uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
 
-        nlohmann::json j;
-        j["hook_id"] = ctx.hookId;
-
-        nlohmann::json paramsJson = nlohmann::json::array();
+        nlohmann::json argsJson = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             try {
                 auto p = extractParam(ctx, i, params_[i], ExtractionPhase::Entry);
@@ -78,40 +75,25 @@ void TypedCollector::onEntry(const HookContext& ctx) {
                         p["deref"] = extractDerefValue(ptr, params_[i].derefType);
                     }
                 }
-                paramsJson.push_back(p);
+                argsJson.push_back(p);
             } catch (...) {
                 nlohmann::json err;
                 err["name"] = params_[i].name;
                 err["error"] = "extract_failed";
-                paramsJson.push_back(err);
+                argsJson.push_back(err);
             }
         }
-        j["args"] = paramsJson;
-
         nlohmann::json customData;
         onEntryCustom(ctx, customData);
 
-        {
-            auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
-            if (traceWriter) {
-                nlohmann::json perfettoArgs;
-                buildPerfettoArgs(j["args"], customData, perfettoArgs);
-                perfettoArgs["hook_id"] = ctx.hookId;
-                traceWriter->writeEvent(functionName_, moduleName_, 'B',
-                                        GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
-            }
+
+        auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
+        if (traceWriter) {
+            nlohmann::json perfettoArgs;
+            buildPerfettoArgs(argsJson, customData, perfettoArgs["Entry"]);
+            traceWriter->writeEvent(functionName_, moduleName_, 'B',
+                                    GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
         }
-
-        if (!customData.empty())
-            j["custom"] = customData;
-
-        if (dynamic_cast<FileOutputWriter*>(outputWriter_.get())) {
-            if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "entry", j))
-                LOG_ERROR("TypedCollector: failed to write entry JSON for {}!{}", moduleName_, functionName_);
-        }
-
-        outputWriter_->writeRaw(moduleName_, functionName_, seq, "entry",
-                                reinterpret_cast<const uint8_t*>(&ctx), sizeof(HookContext));
     } catch (const std::exception& ex) {
         LOG_ERROR("TypedCollector::onEntry exception: {}", ex.what());
     }
@@ -127,12 +109,10 @@ void TypedCollector::onExit(const HookContext& ctx) {
         auto* fileWriter = dynamic_cast<FileOutputWriter*>(outputWriter_.get());
         uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
 
-        nlohmann::json j;
-        j["return"] = extractReturnValue(ctx);
+        nlohmann::json returnValue = extractReturnValue(ctx);
 
         nlohmann::json argsJson = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
-            if (!params_[i].captureOnExit && !params_[i].hasDeref) continue;
             try {
                 auto p = extractParam(ctx, i, params_[i], ExtractionPhase::Exit);
                 if (params_[i].hasDeref) {
@@ -149,34 +129,18 @@ void TypedCollector::onExit(const HookContext& ctx) {
                 argsJson.push_back(err);
             }
         }
-        j["args"] = argsJson;
-
         nlohmann::json customData;
         onExitCustom(ctx, customData);
 
-        {
-            auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
-            if (traceWriter) {
-                nlohmann::json perfettoArgs;
-                buildPerfettoArgs(argsJson, customData, perfettoArgs);
-                if (j.contains("return") && j["return"].contains("value"))
-                    perfettoArgs["return"] = j["return"]["value"];
-                perfettoArgs["hook_id"] = ctx.hookId;
-                traceWriter->writeEvent(functionName_, moduleName_, 'E',
-                                        GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
-            }
+        auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
+        if (traceWriter) {
+            nlohmann::json perfettoArgs;
+            buildPerfettoArgs(argsJson, customData, perfettoArgs["Exit"]);
+            perfettoArgs["return"] = returnValue;
+            perfettoArgs["hook_id"] = ctx.hookId;
+            traceWriter->writeEvent(functionName_, moduleName_, 'E',
+                                    GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
         }
-
-        if (!customData.empty())
-            j["custom"] = customData;
-
-        if (dynamic_cast<FileOutputWriter*>(outputWriter_.get())) {
-            if (!outputWriter_->writeJson(moduleName_, functionName_, seq, "exit", j))
-                LOG_ERROR("TypedCollector: failed to write exit JSON for {}!{}", moduleName_, functionName_);
-        }
-
-        outputWriter_->writeRaw(moduleName_, functionName_, seq, "exit",
-                                reinterpret_cast<const uint8_t*>(&ctx), sizeof(HookContext));
     } catch (const std::exception& ex) {
         LOG_ERROR("TypedCollector::onExit exception: {}", ex.what());
     }
@@ -414,6 +378,20 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
             param["type"] = "bool";
             param["value"] = (ctx.arg<uint64_t>(index) != 0);
             break;
+        case ParamType::BinStreamPtr: {
+            param["type"] = "BinStreamPtr";
+            auto* stream = ctx.arg<void*>(index);
+            param["value"] = std::format("0x{:016x}", reinterpret_cast<uint64_t>(stream));
+            if (stream && !IsBadReadPtr(stream, 0x30)) {
+                nlohmann::json state;
+                uint64_t start = *reinterpret_cast<uint64_t*>((uint8_t*)stream + 0x20);
+                uint64_t end   = *reinterpret_cast<uint64_t*>((uint8_t*)stream + 0x28);
+                state["buf_pos"] = end - start;
+                state["count"]   = *reinterpret_cast<uint32_t*>((uint8_t*)stream + 0x10);
+                param["state"] = state;
+            }
+            break;
+        }
     }
 
     return param;
@@ -474,13 +452,15 @@ nlohmann::json TypedCollector::extractReturnValue(const HookContext& ctx) const 
 void TypedCollector::buildPerfettoArgs(const nlohmann::json& params,
                                         const nlohmann::json& customData,
                                         nlohmann::json& args) const {
-    for (const auto& p : params) {
-        std::string key = p.value("name", "arg");
-        flattenParam(p, key, args);
-    }
-    for (const auto& [key, val] : customData.items()) {
-        args[key] = val;
-    }
+    // for (const auto& p : params) {
+    //     std::string key = p.value("name", "arg");
+    //     flattenParam(p, key, args);
+    // }
+    // for (const auto& [key, val] : customData.items()) {
+    //     args[key] = val;
+    // }
+    args["params"] = params;
+    args["customData"] = customData;
 }
 
 void TypedCollector::flattenParam(const nlohmann::json& p, const std::string& key,

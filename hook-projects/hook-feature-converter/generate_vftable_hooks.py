@@ -45,6 +45,9 @@ def generate(limit: int = 0):
                 "mode": "capture",
                 "collector": "typed",
                 "display_name": f"{cls_name}::vftable_func",
+                "params": [
+                    {"name": "stream", "type": "BinStreamPtr"}
+                ],
             })
 
             if limit and len(hooks) >= limit:

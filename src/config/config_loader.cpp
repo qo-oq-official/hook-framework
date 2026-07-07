@@ -160,6 +160,7 @@ ParamType ConfigLoader::parseParamType(const std::string& typeStr) const {
         {"su_CArchivePtr", ParamType::su_CArchivePtr},
         {"bstr", ParamType::BStr},
         {"bool", ParamType::Bool},
+        {"BinStreamPtr", ParamType::BinStreamPtr},
     };
     auto it = kMap.find(typeStr);
     if (it != kMap.end()) return it->second;
