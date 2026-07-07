@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ParametricModel RootId="32" Version="0.16">
+	<ProductStructureElements>
+		<Part Name="sketch" ObjectId="32">
+			<Properties>
+				<Units LengthUnits="millimeters" AngleUnits="degrees" />
+			</Properties>
+			<FeatureTree>
+				<Sketches>
+					<Sketch ObjectId="5">
+						<Point ObjectId="6">
+							<Coordinates x="0" y="0" />
+						</Point>
+						<Constraints>
+							<LogicConstraintWith1Ref Type="Fixed" ObjectId="7" Ref="6" />
+						</Constraints>
+					</Sketch>
+					<Sketch ObjectId="9">
+						<Contour ObjectId="23">
+							<Segments>19 18 21 20</Segments>
+						</Contour>
+						<Contour ObjectId="24">
+							<Segments>22</Segments>
+						</Contour>
+						<Point ObjectId="10">
+							<Coordinates x="-40.7734806629834" y="35.3038674033149" />
+						</Point>
+						<Point ObjectId="11">
+							<Coordinates x="19.2265193370166" y="-14.6961325966851" />
+						</Point>
+						<Point ObjectId="12">
+							<Coordinates x="-40.7734806629834" y="-14.6961325966851" />
+						</Point>
+						<Point ObjectId="13">
+							<Coordinates x="19.2265193370166" y="35.3038674033149" />
+						</Point>
+						<Point ObjectId="14">
+							<Coordinates x="19.2265193370166" y="35.3038674033149" />
+						</Point>
+						<Point ObjectId="15">
+							<Coordinates x="52.6971857957228" y="45.5368770686107" />
+						</Point>
+						<Point ObjectId="16">
+							<Coordinates x="-29.1712707182321" y="30.2762430939226" />
+						</Point>
+						<LineSegment StartPoint="11" EndPoint="14" IsHidden="true" ObjectId="17" />
+						<LineSegment StartPoint="10" EndPoint="13" ObjectId="18" />
+						<LineSegment StartPoint="10" EndPoint="12" ObjectId="19" />
+						<LineSegment StartPoint="12" EndPoint="11" ObjectId="20" />
+						<LineSegment StartPoint="13" EndPoint="11" ObjectId="21" />
+						<CircleArcSegment StartPoint="15" EndPoint="15" ObjectId="22" Center="13" />
+						<Constraints>
+							<LogicConstraintWith1Ref Type="Vertical" ObjectId="25" Ref="19" />
+							<LogicConstraintWith1Ref Type="Horizontal" ObjectId="26" Ref="18" />
+							<LogicConstraintWith1Ref Type="Vertical" ObjectId="27" Ref="21" />
+							<LogicConstraintWith1Ref Type="Horizontal" ObjectId="28" Ref="20" />
+						</Constraints>
+						<Dimensions>
+							<DiameterDimension LengthParameterId="29" Entity1Id="22" />
+							<CartesianDistanceDimension LengthParameterId="30" Entity1Id="12" Entity2Id="11" />
+							<CartesianDistanceDimension LengthParameterId="31" Entity1Id="10" Entity2Id="12" />
+						</Dimensions>
+					</Sketch>
+				</Sketches>
+				<Operations>
+					<Plane Name="前视基准面" OperationId="1">
+						<NonParametricData>
+							<XDir x="1" y="0" z="0" />
+							<YDir x="0" y="1" z="0" />
+							<ZDir x="0" y="0" z="1" />
+							<Translation x="0" y="0" z="0" />
+							<Origin x="0" y="0" z="0" />
+							<Scale>1</Scale>
+						</NonParametricData>
+						<DefaultPlaneOperation />
+					</Plane>
+					<Plane Name="上视基准面" OperationId="2">
+						<NonParametricData>
+							<XDir x="1" y="0" z="0" />
+							<YDir x="0" y="0" z="-1" />
+							<ZDir x="0" y="1" z="0" />
+							<Translation x="0" y="0" z="0" />
+							<Origin x="0" y="0" z="0" />
+							<Scale>1</Scale>
+						</NonParametricData>
+						<DefaultPlaneOperation />
+					</Plane>
+					<Plane Name="右视基准面" OperationId="3">
+						<NonParametricData>
+							<XDir x="-0" y="-0" z="-1" />
+							<YDir x="0" y="1" z="0" />
+							<ZDir x="1" y="0" z="0" />
+							<Translation x="0" y="0" z="0" />
+							<Origin x="0" y="0" z="0" />
+							<Scale>1</Scale>
+						</NonParametricData>
+						<DefaultPlaneOperation />
+					</Plane>
+					<Profile Name="原点" OperationId="4">
+						<MasterProfileData SketchId="5" PlaneId="1" />
+					</Profile>
+					<Profile Name="草图1" OperationId="8">
+						<MasterProfileData SketchId="9" PlaneId="1" />
+					</Profile>
+				</Operations>
+			</FeatureTree>
+			<Parameters>
+				<LengthParameter id="29" name="D3" value="70" />
+				<LengthParameter id="30" name="D1" value="60" />
+				<LengthParameter id="31" name="D2" value="50" />
+			</Parameters>
+			<GeometryReferences />
+			<NamedGeometryEntities />
+		</Part>
+	</ProductStructureElements>
+</ParametricModel>
+

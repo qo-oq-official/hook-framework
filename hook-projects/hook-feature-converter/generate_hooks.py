@@ -18,6 +18,16 @@ def generate(csv_path: Path, output_path: Path):
         rows = list(csv.DictReader(f))
 
     hooks = []
+    # Always include main for verification
+    hooks.append({
+        "module": MODULE,
+        "rva": "0x8520",
+        "action": "capture",
+        "mode": "capture",
+        "collector": "typed",
+        "display_name": "main",
+    })
+
     for r in rows:
         addr_str = r.get("deser_addr", "").strip()
         if not addr_str:

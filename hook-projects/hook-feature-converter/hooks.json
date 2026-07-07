@@ -4,6 +4,14 @@
   "hooks": [
     {
       "module": "SLDFeatureConverter.exe",
+      "rva": "0x8520",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "main"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
       "rva": "0x6b3f0",
       "action": "capture",
       "mode": "capture",

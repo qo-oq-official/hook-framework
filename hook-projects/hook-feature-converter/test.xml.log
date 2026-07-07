@@ -1,0 +1,47 @@
+174 [0x00001eac] INFO - Starting to parse the file: C:\Users\zwsoft\ws\sld_reversing\resource\sketch.SLDPRT
+179 [0x00001eac] INFO - Finished parsing the feature: 评论
+179 [0x00001eac] INFO - Finished parsing the feature: 设计活页夹
+179 [0x00001eac] INFO - Finished parsing the feature: 曲面实体
+179 [0x00001eac] INFO - Finished parsing the feature: 实体
+179 [0x00001eac] INFO - Finished parsing the feature: 光源与相机
+180 [0x00001eac] INFO - Finished parsing the feature: 注解
+180 [0x00001eac] INFO - Finished parsing the feature: 方程式
+180 [0x00001eac] INFO - Finished parsing the feature: 材质 <未指定>
+180 [0x00001eac] INFO - Finished parsing the feature: 前视基准面
+180 [0x00001eac] INFO - Finished parsing the feature: 上视基准面
+180 [0x00001eac] INFO - Finished parsing the feature: 右视基准面
+180 [0x00001eac] INFO - Finished parsing the feature: 原点
+180 [0x00001eac] INFO - Finished parsing the feature: 草图1
+180 [0x00001eac] INFO - Started converting the feature: 评论
+180 [0x00001eac] INFO - Feature is skipped due to it is in a skip list: 评论
+180 [0x00001eac] INFO - Started converting the feature: 设计活页夹
+180 [0x00001eac] INFO - Feature is skipped due to it is in a skip list: 设计活页夹
+180 [0x00001eac] INFO - Started converting the feature: 曲面实体
+180 [0x00001eac] INFO - Feature is skipped due to it is in a skip list: 曲面实体
+180 [0x00001eac] INFO - Started converting the feature: 实体
+180 [0x00001eac] INFO - Feature is skipped due to it is in a skip list: 实体
+180 [0x00001eac] INFO - Started converting the feature: 光源与相机
+180 [0x00001eac] INFO - Feature is skipped due to it is in a skip list: 光源与相机
+180 [0x00001eac] INFO - Started converting the feature: 注解
+180 [0x00001eac] INFO - Feature is skipped due to it is in a skip list: 注解
+180 [0x00001eac] INFO - Started converting the feature: 方程式
+180 [0x00001eac] INFO - Feature is skipped due to it is in a skip list: 方程式
+180 [0x00001eac] INFO - Started converting the feature: 材质 <未指定>
+180 [0x00001eac] INFO - Feature is skipped due to it is in a skip list: 材质 <未指定>
+180 [0x00001eac] INFO - Started converting the feature: 前视基准面
+180 [0x00001eac] INFO - Successfully converted the feature: 前视基准面
+180 [0x00001eac] INFO - Started converting the feature: 上视基准面
+180 [0x00001eac] INFO - Successfully converted the feature: 上视基准面
+180 [0x00001eac] INFO - Started converting the feature: 右视基准面
+180 [0x00001eac] INFO - Successfully converted the feature: 右视基准面
+180 [0x00001eac] INFO - Started converting the feature: 原点
+181 [0x00001eac] INFO - Successfully converted the feature: 原点
+181 [0x00001eac] INFO - Started converting the feature: 草图1
+181 [0x00001eac] WARNING - Unsupported dimension type.
+181 [0x00001eac] WARNING - Could not convert length parameter.
+181 [0x00001eac] WARNING - Unsupported dimension type.
+181 [0x00001eac] WARNING - Could not convert length parameter.
+181 [0x00001eac] WARNING - Unsupported dimension type.
+181 [0x00001eac] WARNING - Could not convert length parameter.
+181 [0x00001eac] INFO - Successfully converted the feature: 草图1
+181 [0x00001eac] INFO - Successfully converted the file: C:\Users\zwsoft\ws\sld_reversing\resource\sketch.SLDPRT
