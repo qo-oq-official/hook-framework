@@ -1,0 +1,6438 @@
+{
+  "output_dir": "dump_data",
+  "output_format": "perfetto",
+  "hooks": [
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x6b3f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CObArray"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x133e80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suObArray"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x132c90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moProfileFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23b1f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "utParagraphFormat_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23b440",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "vertexObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b48f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoMaterialTextureProperties"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23a750",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoModelData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23a460",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoDisplayEndItem_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b58e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoMaterialProperties"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23ae00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "utCharFormat_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23af70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "utLineWidthPrintData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b4c40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoRVAppearanceProperties"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23a8d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoScene"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x6b3f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CObList"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x238d50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CStringArray"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2387f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CMapStringToString"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x238a10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CMapWordToOb"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x239b00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "unkFunc2"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x239d10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "unkStruct_with_string"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x238f30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CWordArray"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x239150",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uiLFConfig_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2371d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CMapIntToOb"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2374e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CMapObToInt"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x236ea0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suUIntArray"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x237010",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CDWordArray"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x237fa0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CMapStringToInt"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x238420",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CMapStringToOb"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2379e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CMapObToPtr"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x237df0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CMapPtrToPtr"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2361f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgValG2Dim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x236550",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgValG3Dim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x235e50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgValDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x235fb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgValG1Dim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x6b3f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suObList"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x236c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suSortedTripleIdList_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1bd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suHyperlink_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x236a90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suObArray_ptr"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2280f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSplineHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x235b20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgText"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2342e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSlot_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2349c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSpline"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22a140",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgUnderlyingOffsetBConic"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22a1c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgUnderlyingOffsetParabola"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgTextHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x235d10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgUnderlyingOffsetArc"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228990",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSingleSpanSpline"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22d520",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSkOffsetDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22d230",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSegment"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSegmentHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2280f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSlotHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2340c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSlotManager"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22ff50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSketch"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x233b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSketchOffset_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPntPntDist"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPntPntHorDist"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f4a00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPermanentObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPntLineDist"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPointHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22d1a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgSameCircleDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPntPntVertDist"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22c970",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPoint"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22c280",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPGMLoopOffsetData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22c370",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPGMLoopOffsetEdgeData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22c0f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgOldUnderlyingOffsetSpline"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgOneEntAnglDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgParabolaHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22c630",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPattern"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22c450",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgPGMProfileData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228270",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgParabola"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22ab50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLogG3Dim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22b350",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLoopManager"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22a550",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLogG1Dim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22a6e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLogG2Dim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22c0f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgOldExternalSpline"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228990",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgOldSpline"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22b640",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgOffsetDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22b790",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgOffset_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22a240",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgExternalPoint"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgFixedLengthSplineControlData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22a140",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgExternalBConic"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22a1c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgExternalParabola"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2280f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLineHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22a480",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLogDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLLDist"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x22a350",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLine"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2297d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2298a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgDimEntityHelpData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x229630",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgCreationIDs"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6e00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgCurvatureComb_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x229b30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgEntHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x229c60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgExtEnt_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x229930",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgEllipse"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgEllipseHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228a90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgCircularPattCntDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228b40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgCircularPattCon"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228990",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgCOSspline_1"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228a10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgCircleDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgConicHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228a10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgConicRhoDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228e70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgCircularPattern"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x229450",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgConic"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgAnglDim"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227ff0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgArc"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227be0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sg3DPlane"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sg3DPlaneHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228270",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgBConic"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x228600",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgBlockManager"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2280f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgArcHandle"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2281d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgArcLenDist"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227000",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mo_dynSurfIdArr"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c5320",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "modifSplineList_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ec0d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moWzdHoleSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moXmlRulesModelData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227610",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "radiusObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227740",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sg2DEnt"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227260",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "pointParamsObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227380",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "pointRadiusObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x226200",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moVizPropPropListElt_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x226350",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moWeldDataHelper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b61c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moVisualProperties_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x226060",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moVizPropFaceListElt_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x226da0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moWireContact_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moWireEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x226b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moWeldDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x226c80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moWeldTableDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b45f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moUserProperty_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x225560",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moUserUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7480",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moUnitSysUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2254a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moUnitsTable_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x225a60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moViewLocationLabelDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x225bf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moView_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x225710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moVertDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x225970",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moVertexRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x224df0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTransRefPlaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x224eb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTripleEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1ac0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTop3IntEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTopEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x225110",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTwoPtsAxisData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2253a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moUnitComponent_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x224f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTripleSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x225020",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTwistDataForBiDirectionalSweep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ec0d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moThinClosingSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moThinOffsetSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2243a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTextDataSymbol_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2245e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moThicken_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x224c60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTitleBlockTableDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moToolboxPartSpecArray_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x224990",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moThinSpec_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7480",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTimeUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x222970",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTableDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x223a20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTempAxisRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x222520",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftSimpleHole_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2227d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftSizeTol_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x223ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTextDataLineHead_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2241e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTextDataSpaceHolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x223b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTextDataChar_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x223df0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTextDataControl_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x221720",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftMFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftPartInterface_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x220f90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftHole_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2214d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftLocationTol_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x221d30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftSchema_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x222380",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftSimpleFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2218a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftPlaneGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x221b40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftPlane_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21fda0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftFGeometry_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21fbf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftFPlaneRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21fbf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftFCylinderRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21fcd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftFGeomRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2202e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftFeatureRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x220400",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftGtsOptions_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21fff0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftFR_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2200a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftFeatEntRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21f3c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftCylinderGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21f540",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftCylinder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21efa0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftAttachPoint_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21f250",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftBaseSchema_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21fa90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftDimTol_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21fbf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftFConeRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21f780",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftDatumTarget_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21f940",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftDatum_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21d870",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSurfaceRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21db00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSweepCut_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21c5e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSurfaceBodyFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ebe30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSurfaceIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21e6f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSweep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21ed70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftAnnotation_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21dcf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSweepData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ec0d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSweepSideSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moStartEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moStressUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moStackPartData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21d100",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moStamp_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21d410",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSurfRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21d680",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSurfaceAxisData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21d2b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moStringParameter_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eeb80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSurfIdKeeper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21c5e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSolidBodyFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21c6b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSolidRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSmartInsertComponentData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSmartPartData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21ccd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSpotLight_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSpringConstantUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21c8a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSplineDerivativeControl_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21cbd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSplineTangencyControl_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21c150",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchExtRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21c290",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchRegion_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21b5c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchBlockMgr_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21bac0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchChain_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21c4a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchedFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6f50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSlotCenterAxisData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21c350",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchRelMgr_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21c3d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchToolsUserObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a290",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkDimHandleValG2_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a4c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkDimHandleValG3ArcLength_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a380",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkDimHandleRadial_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a290",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkDimHandleValG1_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a6c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkIntersectInfo_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkIsoCurveInfo_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a290",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkDimHandleValG3_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a5a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkDimHandle_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x219f80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSingleEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a090",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSingleFaceRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSimpleSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x219d90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSingleBoundedSurfRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a290",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkDimHandleCircularPattCnt_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a290",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkDimHandleOffset_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a170",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSingleSketchedFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a1f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSingleSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201960",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moShellSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2194f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moShell_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x133e80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSharedParams_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x219140",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSheetMetalMaster_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x219bb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSilhVertexRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSimpleEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ec030",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSideFace3IntSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x219900",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSilhEdgeRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x210f80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSegmRightTrimEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x218560",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSegmentBackedUpData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSegmEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x210f80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSegmLeftTrimEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x218960",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moShapePatternData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x218dc0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSharedFileDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2186f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSelectionSetFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSensorFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x217c60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSFDataHelper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2180a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSFDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2179f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevolvSurfData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRotaryMotorUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c73f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moScalerParameter_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x218290",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSectionLabelData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSMCInstanceData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4680",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moScalerDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x216bd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevEndSpec_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x216fe0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevisionTableDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x216a40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevCutThin_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x216ac0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevCut_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eeb80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevolvRefSurfIdKeeper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2177c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevolvRefSurf_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x217110",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevolutionThin_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2172f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevolution_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x216000",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelGlobalVar_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2162d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelMgr_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x215d30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelEquationSide_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x215f50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelFunction_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ad770",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelation_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x216960",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevCloudDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x215720",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelOperator_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x215f50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelValue_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2153f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moReferenceCurve_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1aded0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moReference_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x214af0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefWrapper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2150e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moReferenceChain_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2157e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelDimension_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x215c30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelElement_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x215660",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moReferencedConfiguration_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x215720",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRelComment_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x213f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefSurface_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x214210",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefSwiftCallout_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x213a60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPoint_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x213ce0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x214560",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefSwiftDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2148d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefThreePtsData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x214310",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefSwiftDim1E_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x214450",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefSwiftDimHandle_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212e30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlaneProjectionGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212cf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlaneTangentGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212a10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlaneParallelGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212cf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlanePerpendicularGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2131d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x213830",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPointData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212f50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlaneWithDirectionGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x213000",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlane_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefLineData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2127e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefLine_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212200",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212580",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212ab0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlaneGeometry_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212cf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlaneMidPlaneGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212950",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlaneAngleGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x212a10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefPlaneCoincidentGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x211290",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefAxisData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2114d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefAxis_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x210f80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRadiateOrigEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x211040",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefAtAngleData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x211bb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefDim2E_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefDimHandle_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x211650",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefCylinder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2117b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefDim1E_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x210410",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPosGroupFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7480",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPowerUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2100e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPointLight_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2102e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPointRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x210d40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPunchTableDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x210e90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRadialDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b44e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPropertyExt_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x210aa0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPrtExplViewManager_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20f770",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPlanarSurface_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20f8e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPlaneInterAxisData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20edd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPercentUserUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20f440",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPlanarSurfIdKeeper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20fe80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPntSurfRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x210060",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPointBackedUpData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20fab0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPlanePtAxisData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20fc60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPlaneRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20d460",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPattern_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20e5a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPerBodyChooserDataWithFileName_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20c490",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPart_c_ResolvedData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPatternItemId_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20ea20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPerBodySheetMetalData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20ecf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPerLinePtRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20e730",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPerBodyChooserData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPerBodySheetMetalDataNew_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d4370",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPMarkRecord_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20add0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPTSRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20a710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moOrigDimData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7000",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moOriginProfileFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20b320",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPart_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20b9b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPart_c_LWData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20b040",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moParameter_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20b1a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moParametricPoint_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201330",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNotesAreaFtrFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4680",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNumberDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2098d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNoteDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNotePattern_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x209e60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moOrderedFaceArray_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20a590",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moOrdinateDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNumberUserUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x209ba0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moOneContour_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x208390",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNativeConfigurationTableFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2086e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNodeList_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x205bd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moModel_c_ResolvedData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d4370",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moModel_c_piece0"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x208e50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNoteDataHelper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x209700",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNoteData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1bd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNodeName_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x208820",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNode_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x202540",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMiscLabelData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMissingRefDataHolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201bb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMirrorPattern_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201e80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMirrorSolid_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moModel_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x203020",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moModel_c_LWData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x202660",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moModDimHandle_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x134e90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moModelFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201700",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMatrixIndexHelper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201870",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMinPointDistData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201440",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMaterialFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201530",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMaterial_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201ac0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMirPatternSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMirrorAssemblyData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201960",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMirPatrnBaseSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201a00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMirPatternSurfIdRep2_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ffcb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateParallel"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x200fa0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateParent"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2004c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateLock_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x200730",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateNGeoms_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201330",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateReferenceGroupFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ffcb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateTangent"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ffcb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMatePerpendicular"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x201230",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMatePlanarAngleDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ffcb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateCoincident"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ffd50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateConcentric"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ff4d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateBeltDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ffab0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateBushingData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x200120",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateFrictionData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2002b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateGroup_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ffee0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x200010",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateDistanceDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fe6f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMassPropCache_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fea50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMassProp_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fdad0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLoopRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fdcd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMBD3DPDFPublishCacheData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ff320",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateAnalysisData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ff460",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMateAngleDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fef20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMate"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ff2a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMate2Geoms_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fd270",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLineViz_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fd410",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLinearDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fd090",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLinePtRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fd130",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLineRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fd6a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLoftSynchRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fda00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLogs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLinearMotorUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fd590",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLiveSectionFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c73f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLengthParameter_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fc250",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLengthUserUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fb9d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLabelDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLayerMgr_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fcdd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLineBackedUpData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fce80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLinePtBaseData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fc3a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLightFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fccb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLineAxisData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fa630",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moIndirectSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moInkMarkupFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moIdKeeper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fa570",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moIndirectSurfIdRep2_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d44e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLPatternSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1faad0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLPattern_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fa720",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moIntegerParameter_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fa810",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLPatternItemId_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f8a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHoleCalloutDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f8b40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHoleTableDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f8670",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHistoryFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f14f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHistoryItemData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fa160",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHwCalloutData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1fa470",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moICE_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f8ea0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHoleWizardInfo_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f9430",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHoleWzd_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f6e90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGtolItemIndicator_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f7040",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGtolItemTol2022_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f6640",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGtolDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f6820",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGtolItemDatum2022_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f83c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHistoryCompItemData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f84f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHistoryFeatItemData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f76c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHeader_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f8130",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHelix_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f5b80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGhostBodyObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f5f90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGhostGeometricData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f53d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGenericText_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f5800",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGhostBodyIdManager_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGroup_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f6580",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGroupedMatesFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f6000",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGlobalVarRefWrapper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGravityUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f4580",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGenTextBoxInfo_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f4640",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGenTextDataList_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f3660",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGTolDlgDataFrame_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f4250",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGTolDlgDataTol_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f5000",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGeneralSurfRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f50b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGeneralTableDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f4a00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGenTextData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f4b00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGeneralCurveRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ec030",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFromSktEnt3IntSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFromSktEntSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f25c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFromEndSpec_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFromSktBottomSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2ba0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGFR_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2f60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGTolDataHelper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFromSktTopSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2960",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFtrFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f2220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFloatNumberUserUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f22a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dcb60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFixedRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFlatPatternColorTab_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f24a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFrequencyUserUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1ac0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFromBod3IntEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7480",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moForceUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f23f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moForwardedFeatRefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f1e70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeatureParameter_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeatureRefMgr_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeatureDimHandle_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f1be0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeatureDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eff40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFilletSIdKeeper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFilletSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f1fe0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeatureRefWrapper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x133f40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f10e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFavoriteFeatItemData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f1220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFavoriteFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f07c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFaceVizProps_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f0e20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFacetedData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f15b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeatColorTab_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeatComment_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f1430",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFavoriteHandle_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f14f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFavoriteItemData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1efd60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFaceBlendSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1efe10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFaceCenterRefPointData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ef8f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFaceBlendItemPair_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1efb20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFaceBlendItem_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f04b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFaceRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f06a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFaceRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eff40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFaceFilletSIdKeeper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f0080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFacePtRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eec40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtruRefSurface_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eefd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtruThin_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eeab0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtensionLineIndicator_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eeb80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtruRefSurfIdKeeper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ef530",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFRKeeper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ef770",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFR_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ef330",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtrusion_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ef470",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFRData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1edd50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtDimension_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ede70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtFeatPatData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExplPrtId_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ed920",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExplViewManager_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c5320",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtObjectList_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ee6c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ee0d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtFeatureList_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1adaf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExtFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ed480",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEntityIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ed610",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEntityId_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ec350",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEndSpec_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7480",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEnergyUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEqnFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExplId_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ed700",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEnvFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEnvFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEdgeRefIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ebf20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEdgeRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eb970",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEdgeFaceSIdKeeper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ebe30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ec0d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEndFaceSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ec170",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEndPointRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEndEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ec030",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEndFace3IntSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDrView"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e9cf0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDrViewLabelData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dcbe0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDoubleParameter_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e9b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDoubleSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ead60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDraft_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1eb7d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEdgeDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ea1d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDrViewTag_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ea600",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDraftSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayRevisionTable_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e9350",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayRevolveDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e8630",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e8ab0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayRadialDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDocsFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e9a60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDoubleEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e4cd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayScalarDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e9600",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayTarget_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e4d80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayDatumTag_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e5490",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayBom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e4cd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayCircularPattCntDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e6f50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayItem_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e79d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayNote_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e6ca0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayDistanceDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayFlagNoteData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e4320",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimTolerance_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e4630",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDirectionLight_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e32a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimRefWrapper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e3360",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimText_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e49c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayAngularDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e4a40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayArcDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e4730",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDirectionSpec_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e4900",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDispObjRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e0fc0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDiameterDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e1160",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e0b50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDetailItem_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e0ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDetailLabelData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimJog_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e3020",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimPlaneEntTag_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e24a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimHandle_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1e2c70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimIncrementId_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dcbe0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDensityParameter_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dcce0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDensityUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dc0f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDatumTarget_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dcb60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDefaultRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dd3c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDetailDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dfd40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDetailFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dcf10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDerivedSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dcff0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDetailCabinet_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d4370",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDateCodeState_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dad50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDatumDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1a20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCutThin_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1daba0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCylinderRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1db550",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDatumTargetAttachPoint_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dbbe0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDatumTargetDataHelper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1dae50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDatumFeatureDataHelper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1db070",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDatumTag_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d99e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moContact_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d9d30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moContextChainComponent_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintTanTwoCylindersRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d98b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moContactData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1da130",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCosmeticThread_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1daa60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCurveRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d9ea0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moContextUnitComponent_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x6e520",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moContourChooser_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintPrllPlnTanOneCylinderRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d89e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintProjLinePerpPlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintPerpLineTanOneCylinderRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintPerpPlnTanOneCylinderRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8a60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintTanCylAtAnglePlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d97e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintTanOneCylinderRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d91c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d9360",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintRefplaneInterfaceData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d89e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincTwoLinesRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8d70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincTwoPointsPerpPlnRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8d70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincPointPerpTwoPlnsRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincPtTanOneCylinderRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8d70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintLineAtAnglePlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8d70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintMidPlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8a60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincTwoPtsAtAnglePlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8d70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintGenRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8b00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincLineParallelPlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d89e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincLinePerpLineRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d89e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincCurveRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8a60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincLineAtAnglePlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8cc0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincOrProjLinePerpPlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8d70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincPlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d89e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincLinePerpPlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintCoincLineTanOneCylinderRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d82c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompositeCurve_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x134a40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConcept_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d7ec0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moComponentImportData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d80f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moComponent_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d87f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstSurfRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d88b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraintAtAnglePlaneRefplaneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d8620",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConeRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConfigTableFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d66d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompSilhVertex_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d7a20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompSketchEntHandle_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d7210",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d7880",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompSilhEdge_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d66d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompVertex_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d7d20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompXFormWrapper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d7c00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompSolidBody_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d7c00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompSurfaceBody_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6e40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompRefAxis_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6e40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompRefCylinder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6d70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompNote_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5d90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompProfile_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d70e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompRefPlane_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6e40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompRefPoint_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6f20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompRefGeom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6e40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompRefLine_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d66d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompFace_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6760",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6490",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompEdge_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6540",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompEntGroup_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6ae0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompHoleWzd_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d6c00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompLoop_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d69c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompGlobalVar_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d01e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompHolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5b10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompBEntRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5d90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompBodyFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5710",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCommentsFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d57a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompAtomBody_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d61e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompDisplayDatumTarget_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d62a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompDisplayObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5e10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompCompositeEdge_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5f90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompDetailItem_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d43f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCirPatternItemId_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d44e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCirPatternSurfIdRep2_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d4240",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moChamferDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d4370",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moChooserFeatData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d52e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCircleRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d5490",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCombineBodies_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d4590",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCirPatternSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d4700",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCirPattern_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCachedBoundingBoxData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d3920",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCalloutVarLength_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1aff60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCThreadRefEntHolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d34c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCThreadRefMgr_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d3d20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCenterMarkSymDataHelper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d40b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moChainComponent_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d3a00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCalloutVar_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d3b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCenterEdgeRefPointData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1bd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCStringHandle_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1c50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCThreadCacheData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1ac0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBottom3IntEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1b60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBottomEdgeIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d30c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCThreadInstRefEntHolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCThreadInstanceId_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1fa0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCThreadData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d30c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCThreadInstRefEntHoldeer_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d04d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBlendCut_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d0620",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBlendData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBendNoteFormat_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d0370",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBendTableDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d17a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBodyFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1a20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBossThin_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d1330",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBlend_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d15f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBodyChooser_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf390",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseAnnotationDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf700",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBackDraftSurfIdRep_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cf100",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaloonDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d01e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseSwiftFeatureRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d0260",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBendNoteDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1d00e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseHoleWzd_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseSwiftFGeomRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cebe0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAttributeDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1af4b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAttribute_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ce820",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAttachPointData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ce980",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAttachPoint_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b0340",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBEntRef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cef30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBOMTableDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cec60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAuxLabelData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ced20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBBoxCenterData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cabc0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAssembly_c_ResolvedData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cb670",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAtomBodyFolder_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c9b00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAssembly_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c9df0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAssembly_c_LWData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ce220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAtomManager_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ce5e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAtom_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1cc8f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAtomFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ce130",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAtomGeomRef_w"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7530",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAnnotationDataHelper_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c79c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAnnotationDefs_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c73f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAngleParameter_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7480",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAngleUserUnits_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c9860",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moArcLengthDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c98d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAssemblyTimings_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c8f30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAnnotationView_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c9430",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moArcBackedUpData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7000",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mo3DProfileFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAbsoluteRefPlnData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6e60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mgXform_c_2"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6f50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mo3DPlaneBackedUpData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7210",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAngOrdinateDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7310",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAngleDimDef_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c70f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAdvHoleWzdItemId_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c7190",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAmbientLight_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6650",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "limitData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6900",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "loopRadiusObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6460",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcSurfaceParam_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c64c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcXhatch_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6d70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mgPlane_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6e00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mgRadius_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6ae0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mgBBox_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6bb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mgCone_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c5d20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "edgeParamsObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c5ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "edgeRadiusObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c53e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "edgeLimitObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c5920",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "edgeLimitPointObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcBucket_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c62f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcCurvatureObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c6050",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "faceRadiusObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c61a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "featRadiusObject_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4af0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "Struct4Doubles"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4680",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "ThreeDRadiusDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c49a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "ResolvedData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4440",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "ResolvedFeaturesFile"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4ec0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "VarFillet_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c5320",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "cptsSplineList_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4680",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "ThreeDdiameterDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4d20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "TripleIdStruct_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c2800",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "Fillet_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c3ec0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "LWData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c0f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "ConfigFile"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c1120",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "Dimension_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4680",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "ParallelPlaneDistanceDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c46f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "RelCacheDimValueMap_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4440",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "MatesListFile"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4520",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "ModelHeaderFile"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b8600",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoTempPartTessData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23ad90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoTempSubAssemblySHDData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b73f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoTempBodyTessData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b6a40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoTempFaceTessData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1bfc40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "CStringArray"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1bff30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "Chamfer_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23b100",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "utLineWidth_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1bfb90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "AngleDim_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x227440",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "pwSceneData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x2392a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uiLineFontMgr_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21a760",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchBitmapData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x21aa20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchBitmap_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x239e90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoBodyPropInfo_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1bb6a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uoTempAssemblySHDData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x239550",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uiUserModelEnv_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x239850",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uiViewBucket_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23b6b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "dmConfigMgrHeader_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23bad0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEntVisProp_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1ba760",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "ViewerComponentData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x23b550",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "dmConfigHeader_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f6410",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGraphicsRefWrapData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x20ee80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPictureFeature_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f6080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGraphicsConnectRefMgrData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1f62a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGraphicsMagneticConnectRefData_c"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1bf800",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayListsPart"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c1800",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "FaceTessellationDirectory"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1bf600",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayListsAssembly"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1bf190",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayListsHeader"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b36d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "TessData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c4d60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "UserUnitsData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c1dd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "FaceTessellationStream"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1c3d10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "ForceUserUnits"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b2620",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemPolyline"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b2ad0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemReferences"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b2110",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemPlane"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b21f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemPolygon"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1bb930",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayListAssemblyMultipleConfigs"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1bcd30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayListPartMultipleConfigs"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b3030",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemSymbol"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b3250",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemVector"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b0860",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "Annotation"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b1a30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemArc"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b1260",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "3DView"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b1ee0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemFont"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b2010",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemLine"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1b1b30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemData"
+    },
+    {
+      "module": "SLDFeatureConverter.exe",
+      "rva": "0x1a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "DisplayItemEmpty"
+    }
+  ]
+}
