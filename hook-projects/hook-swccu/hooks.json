@@ -2200,6 +2200,7 @@
     {
       "module": "swccu.dll",
       "symbol": "?MapObject@su_CArchive@@QEAAXPEBVCObject@@@Z",
+      "mode": "capture",
       "action": "capture",
       "collector": "custom",
       "custom_collector_name": "ReadClass",
@@ -42602,15 +42603,11 @@
           "type": "pointer"
         },
         {
-          "name": "streamName",
-          "type": "wstring_ref"
-        },
-        {
-          "name": "storagePath",
-          "type": "wstring_ref"
+          "name": "arg1",
+          "type": "pointer"
         }
       ],
-      "return_type": "int32"
+      "return_type": "pointer"
     },
     {
       "module": "sldarchiveu.dll",
@@ -43636,23 +43633,6 @@
     {
       "module": "sldmfcu.dll",
       "symbol": "?loadDisplayName@suFileStorage@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ",
-      "action": "capture",
-      "collector": "typed",
-      "params": [
-        {
-          "name": "this",
-          "type": "pointer"
-        },
-        {
-          "name": "arg1",
-          "type": "pointer"
-        }
-      ],
-      "return_type": "pointer"
-    },
-    {
-      "module": "sldmfcu.dll",
-      "symbol": "?loadFileStream@suFileStorage@@QEAAHAEBV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@0@Z",
       "action": "capture",
       "collector": "typed",
       "params": [
@@ -125007,6 +124987,462 @@
         }
       ],
       "return_type": "pointer"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x167f5c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall moReferenceCurve_c::iRestoreWire(moReferenceCurve_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xceec0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcBucketArcData::restore(gcBucketArcData *this, struct su_CArchive *a2, int a3)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xcf040",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcBucketEdgeData_c::restore(gcBucketEdgeData_c *this, struct su_CArchive *a2, int a3)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xcf330",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcBucketPoly_c::restore(gcBucketPoly_c *this, struct su_CArchive *a2, int a3)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xcfd00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcBucket_c::restore(gcBucket_c *this, struct su_CArchive *a2, int a3, int a4)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xe9a10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcEdMapInfo_c::restore(gcEdMapInfo_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xe9af0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "__int64 __fastcall gcEdgeFullInfo_c::restore(gcEdgeFullInfo_c *this, struct su_CArchive *a2, int a3)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xe9e30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcFacetContainer_c::restore(gcFacetContainer_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xeacd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcTextureMode_c::restore(gcTextureMode_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xeace0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcFacetContainer_c::restoreForFlatten(gcFacetContainer_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xf3160",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcBaseHatchManager_c::restore(gcBaseHatchManager_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xf3170",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall gcXBodyhatchManager_c::restore(gcXBodyhatchManager_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x10dda0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall uoDecalProperties::restore(uoDecalProperties *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x10e020",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall uoMaterialProperties::restore(uoMaterialProperties *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x142f60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall moUserProperty_c::restore(moUserProperty_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x152d00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall uoRVAppearanceProperties::restore(uoRVAppearanceProperties *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x190ca0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall uoMaterialTextureProperties::restore(uoMaterialTextureProperties *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1db310",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall moVisualProperties_c::restore(uoMaterialProperties **this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x76f450",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall moLayoutConnectRefMgr_c::restore(moLayoutConnectRefMgr_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xad65c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall partCompInfo_c::restore(partCompInfo_c *this, struct su_CArchive *a2, int a3)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x160cbb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall PWMaterialManager_c::restore(PWMaterialManager_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x16464e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall moFaceVizProps_c::restore(moFaceVizProps_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x17b6720",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall uoModelData_c::restore(uoModelData_c *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1d31ec0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "void __fastcall moPreviewViewData::restore(moPreviewViewData *this, struct su_CArchive *a2)",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
     }
   ]
 }
