@@ -125519,6 +125519,25 @@
           "capture_on_exit": true
         }
       ]
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x158b350",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConcept_c::SerializeResolvedData",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
     }
   ]
 }
