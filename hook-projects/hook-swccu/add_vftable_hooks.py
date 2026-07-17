@@ -4,7 +4,7 @@ Rule: if vftable[2] == '?Serialize@su_CObject@@UEAAXAEAVCArchive@@@Z'
        use vftable[5], otherwise use vftable[2].
 Display name = entity column.
 sub_XXXXXXXX entries: RVA = VA - ImageBase.
-MSVC symbol names: look up RVA from existing hooks.json.
+MSVC symbol names: look up RVA from PE export table + existing hooks.json.
 """
 import csv
 import json
@@ -16,6 +16,9 @@ from collections import OrderedDict
 SCRIPT_DIR = Path(__file__).resolve().parent
 HOOKS_PATH = SCRIPT_DIR / "hooks.json"
 CSV_DIR = SCRIPT_DIR
+TOOLS_DIR = SCRIPT_DIR.parent.parent / "tools"
+sys.path.insert(0, str(TOOLS_DIR))
+from pe_parser import PEFile
 
 BASES = {
     "swccu.dll":    0x2EB90000,
@@ -23,15 +26,40 @@ BASES = {
     "sldmodu.dll":  0x4AA40000,
 }
 
+SW_DLL_DIR = r"C:\Program Files\SOLIDWORKS Corp 2024\SOLIDWORKS"
 
-def load_symbol_map(hooks: list) -> dict:
-    """Build (module, symbol) → rva map from existing hooks."""
+# Pre-cache PE export tables
+_pe_cache = {}
+
+
+def get_pe(dll_name: str) -> PEFile:
+    if dll_name in _pe_cache:
+        return _pe_cache[dll_name]
+    path = Path(SW_DLL_DIR) / dll_name
+    pe = PEFile(str(path))
+    _pe_cache[dll_name] = pe
+    return pe
+
+
+def load_symbol_map(existing_hooks: list) -> dict:
+    """Build (module, symbol) → rva map from existing hooks + PE export tables."""
     symbol_map = {}
-    for h in hooks:
+
+    # From existing hooks
+    for h in existing_hooks:
         sym = h.get("symbol", "")
         if sym:
-            key = (h["module"], sym)
-            symbol_map[key] = h.get("rva", "")
+            symbol_map[(h["module"], sym)] = h.get("rva", "")
+
+    # From PE export tables (overrides with accurate RVAs)
+    for dll in BASES:
+        try:
+            pe = get_pe(dll)
+            for sym, rva in pe.export_rvas().items():
+                symbol_map[(dll, sym)] = f"0x{rva:x}"
+        except Exception as ex:
+            print(f"  [WARN] Failed to load exports for {dll}: {ex}")
+
     return symbol_map
 
 

@@ -1,7 +1,7 @@
 """PE file parser: export table + section headers (stdlib only, no imports)."""
 import struct
 from pathlib import Path
-from typing import Set, Optional
+from typing import Set, Optional, Dict
 
 
 class PEFile:
@@ -118,3 +118,50 @@ class PEFile:
 
     def has_export(self, symbol: str) -> bool:
         return symbol in self.exports()
+
+    def export_rvas(self) -> Dict[str, int]:
+        """Return {symbol_name: RVA} for all exports."""
+        result = {}
+        if self._export_dir is None:
+            return result
+        try:
+            exp_off = self.rva_to_offset(self._export_dir['rva'])
+        except ValueError:
+            return result
+
+        # IMAGE_EXPORT_DIRECTORY fields
+        num_functions = struct.unpack_from("<I", self._data, exp_off + 20)[0]
+        num_names     = struct.unpack_from("<I", self._data, exp_off + 24)[0]
+        addr_func_rva = struct.unpack_from("<I", self._data, exp_off + 28)[0]
+        addr_name_rva = struct.unpack_from("<I", self._data, exp_off + 32)[0]
+        addr_ord_rva  = struct.unpack_from("<I", self._data, exp_off + 36)[0]
+
+        if num_names == 0:
+            return result
+
+        try:
+            func_off = self.rva_to_offset(addr_func_rva)
+            name_off = self.rva_to_offset(addr_name_rva)
+            ord_off  = self.rva_to_offset(addr_ord_rva)
+        except ValueError:
+            return result
+
+        for i in range(min(num_names, 200000)):
+            name_rva = struct.unpack_from("<I", self._data, name_off + i * 4)[0]
+            try:
+                str_off = self.rva_to_offset(name_rva)
+            except ValueError:
+                continue
+            end = self._data.find(b'\x00', str_off)
+            if end < 0:
+                end = str_off + 256
+            name = self._data[str_off:end].decode('ascii', errors='replace')
+            if not name:
+                continue
+
+            ordinal_index = struct.unpack_from("<H", self._data, ord_off + i * 2)[0]
+            if ordinal_index < num_functions:
+                func_rva = struct.unpack_from("<I", self._data, func_off + ordinal_index * 4)[0]
+                result[name] = func_rva
+
+        return result

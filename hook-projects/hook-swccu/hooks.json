@@ -136010,6 +136010,1606 @@
       "mode": "capture",
       "collector": "typed",
       "display_name": "?$CMap@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WHH"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x2af90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "?$CTypedPtrList@VCPtrList@@PEAVCItemData@CDisableItemComboBox@@"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x237640",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "CSWReportImage"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xc44c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcBucketEdgeData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xc4510",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcBucketFaceData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xc45b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcBucketPolyData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x879d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcColorContourObject_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x87ae0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcCurvatureObject_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x87bc0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcDraftMgrColorContourObject_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xbd470",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcFCAnalyticData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xbd4a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcFCCircle_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xbd540",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcFCCone_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xbd590",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcFCEdgeData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xbd660",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcFCEllipse_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xbd750",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcFCLine_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xbd7d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcFCPlane_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xbd820",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcFCSphere_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xbd8a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcFCTorus_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xf1fc0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "gcXhatch_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1125f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "headerFooterTemplate_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x112640",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "headerFooter_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1e69c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mfcutZebraData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1c6c90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mo2CombinedUnits_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x112740",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAngOrdinateDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x112840",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAngleDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1c67f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAngleUserUnits_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1128c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAnnotationDataHelper_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x112b00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAnnotationDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x112e30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moArcLengthDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x129150",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAuxLabelData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x112e40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBOMTableDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x112fa0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBalloonDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x113300",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseAnnotationDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x113560",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x113a70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBendNoteDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x113b40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBendTableDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x113c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCenterMarkSymDataHelper_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x113ee0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moChamferDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x84c70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConfig_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x114060",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDatumDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x114150",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDatumFeatureDataHelper_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1142e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDatumTargetDataHelper_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1c6850",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDensityUnits_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1145f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDetailDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1291d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDetailLabelData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1183e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDiameterDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x118490",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x118b50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDimTolerance_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1292b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDrViewLabelData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x119460",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDrawingDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1c6a40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEnergyUnits_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xb0c30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeatColorTab_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x15eb40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFlatPatternColorTab_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x119690",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGTolDataHelper_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x119bd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGTolDlgDataFrame_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11a090",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGTolDlgDataTol_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11a190",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGeneralTableDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11a370",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGtolDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11aa60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGtolItemTol2022_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11b080",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHoleCalloutDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11b110",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moHoleTableDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11b320",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLabelDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11b430",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLayerData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1c6ac0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLengthUserUnits_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xb9780",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLineStyle_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11b4e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLinearDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x129740",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMiscLabelData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11b670",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNoteDataHelper_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11c230",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNoteDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11c3c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moOrdinateDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1c6be0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPerDegreeUnits_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11c4c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPunchTableDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11c620",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRadialDimDef_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11c6d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevCloudDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11c720",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRevisionTableDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11c820",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSFDataHelper_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11cc00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSFDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1297f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSectionLabelData_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0xf9500",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftGtsOptions_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11ccb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTableDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1c6c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTemperatureUnits_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11ce60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTitleBlockTableDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11ce70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moViewLocationLabelDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x1d9e80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moVisualProperties_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11d020",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moWeldDataHelper_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11d660",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moWeldDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x11d6e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moWeldTableDefs_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x100c00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suHyperlink_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x148d90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suOlePropertyHelper"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x154250",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suSafeObList"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x187cb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "suUIntArray"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x67e00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "uiLFConfig_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x7f040",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "utCharFormat_c"
+    },
+    {
+      "module": "sldmfcu.dll",
+      "rva": "0x107c10",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "utLineWidthPrintData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x72ec50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "?$CTypedPtrMap@Vsu_CMapStringToPtr@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEAVgcFace_w@@"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1bf99a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "Dimension_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1ab7e90",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mcMachiningWrapperInterface"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x9ec2e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mo3dViewMgr_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x161d920",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "mo3dView_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xf62be0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAEMSimulationElement"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x86dfe0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAHWBaseTaperedElmtFavorite_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x86e070",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAHWElmtFavorite_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x86e420",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAHWFarSideCBoreElmtFavorite_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x86e430",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAHWFarSideCSinkElmtFavorite_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x86e440",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAHWFarSideTaperThreadedElmtFavorite_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x86e450",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAHWStraightElmtFavorite_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x86e540",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAHWStraightThreadedElmtFavorite_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x86e630",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAHWTaperThreadedElmtFavorite_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1672260",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAbsolutePoint_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x12e3bc0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAnnoFolder_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xe9db00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moArrowSize_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x162a9e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAssemblyFeatFolder_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xaf38b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAssembly_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x9994d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moAutoExplodeLineData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xbc1c20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBCAssemblyNode_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xbc1d20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBCChildNode_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xbc1d50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBCConfigObjMapInfo_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xbc1e30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBCConfigurationInfo_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xbc1fd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBCMate_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xbc20f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBCModeInfo_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xbc2fc0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBCNode_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xaf6a50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseCellArea_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xf5e630",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseStructMbrFeat_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1ab7ec0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBaseSwiftFeatureRef_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1afa940",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moBiographyRecord_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1e3f8c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCMMotionStudyBase_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1672820",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCSysRefPlnData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xc1eb70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCameraFeature_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff2250",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompBEntRef_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff2de0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompBucketData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff33b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompCoordAxis_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff3420",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompCoordPoint_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff3430",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompCoordSys_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff3950",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompFaceMeshFacetFin_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff3a40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompFaceMeshFacetVertex_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff3af0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompFaceMeshFacet_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff3c50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompFaceMeshFacets_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff4460",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompLoop_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff4a20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompRef_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff58c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompSilhEdge_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff5d40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompSketchEntHandle_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff5fd0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moCompTangChain_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1623ca0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moComponent_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xd21900",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConfigObjectWeldmemberFeatData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xbc3320",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConfigSpecificInfo"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x16fb0d0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConstraint_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xfaaa00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDateCodeState_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x9c23a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDeformCompFeature_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x9c2440",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDeformInstanceData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1ab3670",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDeformSIdKeeper_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xea1580",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDetailItem_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xfc5b80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayCellArea_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x7f3a80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayFlagNoteData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xea2460",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moDisplayItem_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xff6400",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEdgeSurfIdKeeper_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1675420",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moEndPointRef_w"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1c04800",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moExternDimHandle_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1675a60",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFaceRefPlnData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xc64a00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFacetedData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xadbf50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFeatureParameter_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xbc33a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moFutureVerAttachment_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x778a20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGraphicsConnectRefMgrData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x778c40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGraphicsMagneticConnectRefData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xc64ef0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moGraphicsRefWrapData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xaf7a30",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moIgnorableCompareBaseObj"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xaf7ad0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moIgnorableCompareObj"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xaf7c40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moIgnorableCompareObjInPart"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1b67f80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLWdataHelper_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xb12830",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLayoutNode_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xb12870",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moLayout_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x9a74c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moMeshElement_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xf6a220",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moModelFeature_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1589ab0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moNodeName_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xf6b6e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPSMeshToleranceHandler_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1677f70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPTSRefPlnData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x162ddb0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moParameterNameValuePair"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x16fb730",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moPointConstraint_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1c04b80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefDim1E_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1c05110",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefDim2E_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xf6e4b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moRefSurface_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x167c7c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moReferenceCurve_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1631ca0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSMAndFPFeatIdPair"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1e44f80",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSimSplineData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1c07000",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSkDimHandleCircularPattCnt_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x167dac0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchExtRef_w"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1974350",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchInferenceSolverImpl_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x199bf00",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSketchUserObject_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xebcd40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSplineLeaderData_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xfc8670",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSplittedDisplayCellAreaAlongColumn_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0xfc86b0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSplittedDisplayCellArea_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1afb4f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moStartEndRecord_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1ab7f50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moSwiftBaseSchema_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1ac5c40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moTaManagerBase_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1633320",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moView_c"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x196ac70",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sg3DConeHandle"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x1969d40",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgDim"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x196ea20",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLogDim"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x196eba0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLogG1Dim"
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x196f760",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sgLogG3Dim"
+    },
+    {
+      "module": "swccu.dll",
+      "rva": "0x14c0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "?$CTypedPtrMap@VCMapStringToPtr@@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@G"
+    },
+    {
+      "module": "swccu.dll",
+      "rva": "0xb9f0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "su_CByteArray"
     }
   ]
 }
