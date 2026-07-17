@@ -58,7 +58,8 @@ public:
     }
 
     uint64_t pending() const {
-        return commitPos_.load(std::memory_order_relaxed) - readPos_;
+        uint64_t diff = commitPos_.load(std::memory_order_relaxed) - readPos_;
+        return diff > capacity_ ? capacity_ : diff;
     }
 
     static double nowMicroseconds() {

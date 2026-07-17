@@ -69,6 +69,10 @@ target_link_libraries(test_perfetto_params PRIVATE hook_framework)
 target_include_directories(test_perfetto_params PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/generated)
 target_compile_definitions(test_perfetto_params PRIVATE WIN32_LEAN_AND_MEAN)
 
+add_executable(test_ring_buffer test_ring_buffer.cpp)
+target_link_libraries(test_ring_buffer PRIVATE hook_framework nlohmann_json)
+target_include_directories(test_ring_buffer PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/generated)
+
 add_executable(test_rva_scale test_rva_scale.cpp)
 target_link_libraries(test_rva_scale PRIVATE hook_framework)
 target_include_directories(test_rva_scale PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/generated)
