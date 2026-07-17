@@ -137596,6 +137596,63 @@
       "display_name": "sgLogG3Dim"
     },
     {
+      "module": "sldmodu.dll",
+      "rva": "0x158a5a0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "moConcept_c::SerializeLWData",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x158a7e0",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sub_4BFCA7E0",
+      "params": [
+        {
+          "name": "filedConcept",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
+      "module": "sldmodu.dll",
+      "rva": "0x158bb50",
+      "action": "capture",
+      "mode": "capture",
+      "collector": "typed",
+      "display_name": "sub_4BFCBB50",
+      "params": [
+        {
+          "name": "this",
+          "type": "pointer"
+        },
+        {
+          "name": "archive",
+          "type": "su_CArchivePtr",
+          "capture_on_exit": true
+        }
+      ]
+    },
+    {
       "module": "swccu.dll",
       "rva": "0x14c0",
       "action": "capture",
