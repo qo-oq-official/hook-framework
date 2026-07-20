@@ -12,6 +12,7 @@
 #include <Windows.h>
 #include <filesystem>
 #include <format>
+#include <optional>
 
 namespace hookfw {
 
@@ -142,36 +143,42 @@ bool HookEngine::initialize(const std::string& configPath) {
 
         LOG_INFO("HookEngine initializing...");
 
-        std::shared_ptr<OutputWriter> writer = std::make_shared<TraceOutputWriter>(impl_->outputDir);
-        HookEngineCore::instance().setOutputWriter(writer);
-
-        // Ensure all custom collectors are registered
         registerAllCollectors();
 
-        PerfettoTracer::instance().setOutputDir(impl_->outputDir);
-
+        std::optional<FrameworkConfig> configOpt;
         if (!configPath.empty()) {
             ConfigLoader loader;
-            auto configOpt = loader.load(configPath);
-            if (!configOpt) {
+            auto cfg = loader.load(configPath);
+            if (!cfg) {
                 LOG_ERROR("Failed to load config: {}", configPath);
                 return false;
             }
 
             ConfigValidator validator;
-            if (!validator.validate(*configOpt)) {
+            if (!validator.validate(*cfg)) {
                 LOG_ERROR("Config validation failed");
                 return false;
             }
+
+            configOpt = std::move(cfg);
 
             impl_->outputDir = configOpt->outputDir;
             if (!impl_->dllDir.empty() && std::filesystem::path(impl_->outputDir).is_relative()) {
                 impl_->outputDir = (std::filesystem::path(impl_->dllDir) / impl_->outputDir).string();
             }
-            writer = std::make_shared<TraceOutputWriter>(impl_->outputDir);
-            LOG_INFO("Output format: Perfetto");
-            HookEngineCore::instance().setOutputWriter(writer);
+        } else {
+            if (!impl_->dllDir.empty() && std::filesystem::path(impl_->outputDir).is_relative()) {
+                impl_->outputDir = (std::filesystem::path(impl_->dllDir) / impl_->outputDir).string();
+            }
+        }
 
+        std::shared_ptr<OutputWriter> writer = std::make_shared<TraceOutputWriter>(impl_->outputDir);
+        LOG_INFO("Output format: Perfetto, dir={}", impl_->outputDir);
+        HookEngineCore::instance().setOutputWriter(writer);
+
+        PerfettoTracer::instance().setOutputDir(impl_->outputDir);
+
+        if (configOpt) {
             int traceCount = 0, captureCount = 0;
             for (const auto& hookDesc : configOpt->hooks) {
                 std::string funcName;
@@ -231,8 +238,6 @@ bool HookEngine::initialize(const std::string& configPath) {
                 }
             }
             LOG_INFO("Hooks registered: {} trace, {} capture", traceCount, captureCount);
-
-            PerfettoTracer::instance().setOutputDir(impl_->outputDir);
         }
 
         impl_->initialized = true;
