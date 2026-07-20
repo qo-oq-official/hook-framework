@@ -45,6 +45,7 @@ target_link_libraries(hook_framework
         detours
         nlohmann_json
         spdlog
+        perfetto_sdk
         oleaut32
         ole32
         dbghelp
