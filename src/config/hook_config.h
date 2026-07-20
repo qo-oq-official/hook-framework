@@ -10,7 +10,6 @@ struct FrameworkConfig {
     std::string logFile = "hook_framework.log";
     std::string logLevel = "trace";
     std::vector<HookDescriptor> hooks;
-    size_t ringBufferCapacity = 100000;
 };
 
 }

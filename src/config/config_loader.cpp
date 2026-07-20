@@ -36,10 +36,6 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
         if (root.contains("log_level")) {
             config.logLevel = root["log_level"].get<std::string>();
         }
-        if (root.contains("ring_buffer_capacity")) {
-            config.ringBufferCapacity = root["ring_buffer_capacity"].get<size_t>();
-        }
-
         if (!root.contains("hooks") || !root["hooks"].is_array()) {
             LOG_ERROR("Config must contain 'hooks' array");
             return std::nullopt;
