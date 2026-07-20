@@ -36,6 +36,15 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
         if (root.contains("log_level")) {
             config.logLevel = root["log_level"].get<std::string>();
         }
+        if (root.contains("perfetto") && root["perfetto"].is_object()) {
+            auto& p = root["perfetto"];
+            if (p.contains("buffer_size_kb"))
+                config.perfetto.bufferSizeKb = p["buffer_size_kb"].get<uint32_t>();
+            if (p.contains("flush_period_ms"))
+                config.perfetto.flushPeriodMs = p["flush_period_ms"].get<uint32_t>();
+            if (p.contains("max_file_size_bytes"))
+                config.perfetto.maxFileSizeBytes = p["max_file_size_bytes"].get<uint32_t>();
+        }
         if (!root.contains("hooks") || !root["hooks"].is_array()) {
             LOG_ERROR("Config must contain 'hooks' array");
             return std::nullopt;

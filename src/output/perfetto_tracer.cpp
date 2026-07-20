@@ -27,23 +27,32 @@ bool PerfettoTracer::initialize(const std::string& outputDir) {
     outputDir_ = outputDir;
     std::filesystem::create_directories(outputDir_);
 
-    LOG_INFO("PerfettoTracer initializing...");
+    LOG_INFO("PerfettoTracer initializing (buffer={}KB flush={}ms)...",
+             config_.bufferSizeKb, config_.flushPeriodMs);
 
     perfetto::TracingInitArgs args;
     args.backends = perfetto::kInProcessBackend;
+    args.shmem_size_hint_kb = config_.bufferSizeKb;
     perfetto::Tracing::Initialize(args);
 
     HookDataSource::Register();
 
-    perfetto::TraceConfig cfg;
-    cfg.add_buffers()->set_size_kb(32 * 1024);
-    auto* ds = cfg.add_data_sources()->mutable_config();
+    perfetto::TraceConfig traceCfg;
+    auto* buf = traceCfg.add_buffers();
+    buf->set_size_kb(config_.bufferSizeKb);
+
+    auto* ds = traceCfg.add_data_sources()->mutable_config();
     ds->set_name("hookfw.HookDataSource");
-    cfg.set_duration_ms(0);
-    cfg.set_flush_period_ms(30000);
+
+    traceCfg.set_duration_ms(0);
+    traceCfg.set_flush_period_ms(config_.flushPeriodMs);
+
+    if (config_.maxFileSizeBytes > 0) {
+        traceCfg.set_max_file_size_bytes(config_.maxFileSizeBytes);
+    }
 
     session_ = perfetto::Tracing::NewTrace(perfetto::kInProcessBackend);
-    session_->Setup(cfg);
+    session_->Setup(traceCfg);
     session_->Start();
 
     active_ = true;
@@ -57,7 +66,6 @@ void PerfettoTracer::shutdown() {
     LOG_INFO("PerfettoTracer shutting down...");
 
     try {
-        session_->FlushBlocking(10000);
         session_->StopBlocking();
 
         auto data = session_->ReadTraceBlocking();
@@ -75,6 +83,8 @@ void PerfettoTracer::shutdown() {
             file.close();
 
             LOG_INFO("Perfetto trace saved: {} ({} bytes)", tracePath, data.size());
+        } else {
+            LOG_WARN("Perfetto trace is empty");
         }
     } catch (const std::exception& ex) {
         LOG_ERROR("PerfettoTracer::shutdown exception: {}", ex.what());

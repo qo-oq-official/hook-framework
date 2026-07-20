@@ -1,4 +1,5 @@
 #pragma once
+#include "config/perfetto_config.h"
 #include <memory>
 #include <string>
 #include <cstdint>
@@ -19,12 +20,14 @@ public:
 
     void setOutputDir(const std::string& dir) { outputDir_ = dir; }
     const std::string& outputDir() const { return outputDir_; }
+    void setConfig(const PerfettoConfig& cfg) { config_ = cfg; }
 
 private:
     PerfettoTracer() = default;
     ~PerfettoTracer();
 
     std::unique_ptr<perfetto::TracingSession> session_;
+    PerfettoConfig config_;
     std::string outputDir_;
     bool active_ = false;
 };

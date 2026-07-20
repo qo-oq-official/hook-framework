@@ -34,10 +34,9 @@ void HookDataSource::TraceSlice(const std::string& name,
                                 uint32_t threadId,
                                 const nlohmann::json& args) {
     if (!PerfettoTracer::instance().isActive()) {
-        PerfettoTracer::instance().initialize(
-            PerfettoTracer::instance().outputDir().empty()
-                ? "dump_data"
-                : PerfettoTracer::instance().outputDir());
+        auto& tracer = PerfettoTracer::instance();
+        tracer.initialize(
+            tracer.outputDir().empty() ? "dump_data" : tracer.outputDir());
     }
 
     HookDataSourceInternal::Trace(
