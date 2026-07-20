@@ -5,7 +5,6 @@
 #include "collector/collector_factory.h"
 #include "replacer/dll_replacer.h"
 #include "replacer/callback_replacer.h"
-#include "output/file_output_writer.h"
 #include "output/trace_output_writer.h"
 #include "output/trace_flusher.h"
 #include "logging/logger.h"
@@ -142,7 +141,7 @@ bool HookEngine::initialize(const std::string& configPath) {
 
         LOG_INFO("HookEngine initializing...");
 
-        std::shared_ptr<OutputWriter> writer = std::make_shared<FileOutputWriter>(impl_->outputDir);
+        std::shared_ptr<OutputWriter> writer = std::make_shared<TraceOutputWriter>(impl_->outputDir);
         HookEngineCore::instance().setOutputWriter(writer);
 
         // Ensure all custom collectors are registered
@@ -166,13 +165,8 @@ bool HookEngine::initialize(const std::string& configPath) {
             if (!impl_->dllDir.empty() && std::filesystem::path(impl_->outputDir).is_relative()) {
                 impl_->outputDir = (std::filesystem::path(impl_->dllDir) / impl_->outputDir).string();
             }
-            if (configOpt->outputFormat == OutputFormat::Perfetto) {
-                writer = std::make_shared<TraceOutputWriter>(impl_->outputDir);
-                LOG_INFO("Output format: Perfetto (trace.json)");
-            } else {
-                writer = std::make_shared<FileOutputWriter>(impl_->outputDir);
-                LOG_INFO("Output format: File (per-call files)");
-            }
+            writer = std::make_shared<TraceOutputWriter>(impl_->outputDir);
+            LOG_INFO("Output format: Perfetto");
             HookEngineCore::instance().setOutputWriter(writer);
 
             int traceCount = 0, captureCount = 0;
@@ -233,12 +227,10 @@ bool HookEngine::initialize(const std::string& configPath) {
             }
             LOG_INFO("Hooks registered: {} trace, {} capture", traceCount, captureCount);
 
-            if (configOpt->outputFormat == OutputFormat::Perfetto) {
-                auto traceWriter = std::dynamic_pointer_cast<TraceOutputWriter>(writer);
-                if (traceWriter) {
-                    RingBuffer::setGlobalCapacity(configOpt->ringBufferCapacity);
-                    TraceFlusher::instance().start(traceWriter);
-                }
+            auto traceWriter = std::dynamic_pointer_cast<TraceOutputWriter>(writer);
+            if (traceWriter) {
+                RingBuffer::setGlobalCapacity(configOpt->ringBufferCapacity);
+                TraceFlusher::instance().start(traceWriter);
             }
         }
 
@@ -296,7 +288,7 @@ void HookEngine::uninstallAll() {
 
 void HookEngine::setOutputDirectory(const std::string& path) {
     impl_->outputDir = path;
-    auto writer = std::make_shared<FileOutputWriter>(path);
+    auto writer = std::make_shared<TraceOutputWriter>(path);
     HookEngineCore::instance().setOutputWriter(writer);
 }
 

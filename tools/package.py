@@ -66,7 +66,7 @@ print("[4] Generating example hooks.json...")
 example = """
 {
   "output_dir": "dump_data",
-  "output_format": "file",
+  "output_format": "perfetto",
   "hooks": [
     {
       "module": "target.dll",

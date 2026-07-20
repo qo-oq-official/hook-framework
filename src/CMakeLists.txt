@@ -16,8 +16,6 @@ set(HOOK_FW_SOURCES
     com/com_interface_capture.cpp
     replacer/dll_replacer.cpp
     replacer/callback_replacer.cpp
-    output/file_output_writer.cpp
-    output/output_path_builder.cpp
     output/trace_output_writer.cpp
     output/trace_flusher.cpp
     config/config_loader.cpp

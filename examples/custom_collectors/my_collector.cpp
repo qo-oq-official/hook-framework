@@ -23,9 +23,7 @@ void MyAddCollector::onEntry(const HookContext& ctx) {
         j["b"] = b;
         j["expected_result"] = a + b;
 
-        auto* fileWriter = dynamic_cast<FileOutputWriter*>(outputWriter_.get());
-        uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
-        outputWriter_->writeJson(moduleName_, functionName_, seq, "entry", j);
+        outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", j);
     } catch (const std::exception& ex) {
         LOG_ERROR("MyAddCollector::onEntry exception: {}", ex.what());
     }
@@ -47,9 +45,7 @@ void MyAddCollector::onExit(const HookContext& ctx) {
         j["function"] = "add_numbers";
         j["result"] = result;
 
-        auto* fileWriter = dynamic_cast<FileOutputWriter*>(outputWriter_.get());
-        uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
-        outputWriter_->writeJson(moduleName_, functionName_, seq, "exit", j);
+        outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", j);
     } catch (const std::exception& ex) {
         LOG_ERROR("MyAddCollector::onExit exception: {}", ex.what());
     }

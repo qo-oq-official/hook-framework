@@ -36,14 +36,6 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
         if (root.contains("log_level")) {
             config.logLevel = root["log_level"].get<std::string>();
         }
-        if (root.contains("output_format")) {
-            std::string fmt = root["output_format"].get<std::string>();
-            if (fmt == "perfetto") {
-                config.outputFormat = OutputFormat::Perfetto;
-            } else {
-                config.outputFormat = OutputFormat::File;
-            }
-        }
         if (root.contains("ring_buffer_capacity")) {
             config.ringBufferCapacity = root["ring_buffer_capacity"].get<size_t>();
         }
@@ -81,7 +73,7 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
             if (hookJson.contains("mode")) {
                 std::string m = hookJson["mode"].get<std::string>();
                 desc.mode = (m == "capture") ? HookMode::Capture : HookMode::Trace;
-            } else if (config.outputFormat == OutputFormat::Perfetto) {
+            } else {
                 desc.mode = HookMode::Trace;
             }
 
