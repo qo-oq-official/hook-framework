@@ -18,6 +18,8 @@ set(HOOK_FW_SOURCES
     replacer/callback_replacer.cpp
     output/trace_output_writer.cpp
     output/trace_flusher.cpp
+    output/hook_data_source.cpp
+    output/perfetto_tracer.cpp
     config/config_loader.cpp
     config/config_validator.cpp
     logging/logger.cpp
@@ -49,6 +51,7 @@ target_link_libraries(hook_framework
         oleaut32
         ole32
         dbghelp
+        ws2_32
 )
 
 target_compile_definitions(hook_framework PRIVATE HOOKFW_EXPORTS)
