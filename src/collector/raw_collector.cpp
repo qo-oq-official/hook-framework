@@ -1,5 +1,7 @@
 #include "collector/raw_collector.h"
+#include "output/hook_data_source.h"
 #include "logging/logger.h"
+#include <Windows.h>
 
 namespace hookfw {
 
@@ -36,29 +38,20 @@ static nlohmann::json ctxToJson(const HookContext& ctx) {
 }
 
 void RawCollector::onEntry(const HookContext& ctx) {
-    if (!outputWriter_) {
-        LOG_ERROR("RawCollector::onEntry: no output writer set");
-        return;
-    }
-
     try {
-        nlohmann::json j = ctxToJson(ctx);
-        outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", j);
+        HookDataSource::TraceSlice(functionName_, moduleName_, 'B',
+                                    GetCurrentThreadId(), ctxToJson(ctx));
     } catch (const std::exception& ex) {
         LOG_ERROR("RawCollector::onEntry exception: {}", ex.what());
     }
 }
 
 void RawCollector::onExit(const HookContext& ctx) {
-    if (!outputWriter_) {
-        LOG_ERROR("RawCollector::onExit: no output writer set");
-        return;
-    }
-
     try {
         nlohmann::json j = ctxToJson(ctx);
         j["return_value"] = std::format("{:#x}", ctx.rax);
-        outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", j);
+        HookDataSource::TraceSlice(functionName_, moduleName_, 'E',
+                                    GetCurrentThreadId(), j);
     } catch (const std::exception& ex) {
         LOG_ERROR("RawCollector::onExit exception: {}", ex.what());
     }

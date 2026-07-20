@@ -13,7 +13,7 @@ class PreStructInjector : public hookfw::InjectorBase {
 public:
     std::string name() const override { return "pre_struct_injector"; }
 
-    void onInject(hookfw::HookContext& ctx, hookfw::TraceOutputWriter*) override {
+    void onInject(hookfw::HookContext& ctx) override {
         auto* obj = ctx.arg<TestObjectA*>(0);
         if (!obj) return;
 
@@ -29,7 +29,7 @@ class PostStructInjector : public hookfw::InjectorBase {
 public:
     std::string name() const override { return "post_struct_injector"; }
 
-    void onInject(hookfw::HookContext& ctx, hookfw::TraceOutputWriter*) override {
+    void onInject(hookfw::HookContext& ctx) override {
         auto* obj = ctx.arg<TestObjectA*>(0);
         if (!obj) return;
 

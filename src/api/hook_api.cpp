@@ -5,9 +5,9 @@
 #include "collector/collector_factory.h"
 #include "replacer/dll_replacer.h"
 #include "replacer/callback_replacer.h"
-#include "output/trace_output_writer.h"
 #include "output/perfetto_tracer.h"
 #include "output/hook_data_source.h"
+#include "output/trace_utils.h"
 #include "logging/logger.h"
 #include <Windows.h>
 #include <filesystem>
@@ -91,11 +91,6 @@ bool HookBuilder::install() {
             return false;
         }
 
-        auto writer = HookEngineCore::instance().getOutputWriter();
-        if (writer) {
-            collector->setOutputWriter(writer);
-        }
-
         std::string funcName = impl_->desc.target.useRva
             ? std::format("RVA_0x{:08x}", impl_->desc.target.rva)
             : impl_->desc.target.symbolName;
@@ -172,10 +167,6 @@ bool HookEngine::initialize(const std::string& configPath) {
             }
         }
 
-        std::shared_ptr<OutputWriter> writer = std::make_shared<TraceOutputWriter>(impl_->outputDir);
-        LOG_INFO("Output format: Perfetto, dir={}", impl_->outputDir);
-        HookEngineCore::instance().setOutputWriter(writer);
-
         PerfettoTracer::instance().setOutputDir(impl_->outputDir);
 
         if (configOpt) {
@@ -196,7 +187,6 @@ bool HookEngine::initialize(const std::string& configPath) {
                 if (hookDesc.mode == HookMode::Capture) {
                     collector = CollectorFactory::create(hookDesc);
                     if (collector) {
-                        collector->setOutputWriter(writer);
                         collector->setModuleName(hookDesc.target.moduleName);
                         collector->setFunctionName(funcName);
                     }
@@ -222,7 +212,7 @@ bool HookEngine::initialize(const std::string& configPath) {
                 }
 
                 if (hookDesc.mode == HookMode::Trace) {
-                    std::string displayName = TraceOutputWriter::undecorateName(funcName);
+                        std::string displayName = undecorateName(funcName);
                     if (rva > 0) {
                         displayName += std::format(" @RVA_0x{:08x}", rva);
                     }
@@ -230,7 +220,7 @@ bool HookEngine::initialize(const std::string& configPath) {
                     traceCount++;
                 } else {
                     if (collector && rva > 0) {
-                        std::string demangled = TraceOutputWriter::undecorateName(funcName);
+                        std::string demangled = undecorateName(funcName);
                         std::string nameWithRva = demangled + std::format(" @RVA_0x{:08x}", rva);
                         collector->setFunctionName(nameWithRva);
                     }
@@ -255,11 +245,6 @@ void HookEngine::shutdown() {
         LOG_INFO("HookEngine shutting down...");
         PerfettoTracer::instance().shutdown();
         HookEngineCore::instance().uninstallAll();
-
-        auto writer = HookEngineCore::instance().getOutputWriter();
-        if (writer) {
-            writer->finalize();
-        }
 
         impl_->initialized = false;
         Logger::instance().shutdown();
@@ -294,8 +279,6 @@ void HookEngine::uninstallAll() {
 
 void HookEngine::setOutputDirectory(const std::string& path) {
     impl_->outputDir = path;
-    auto writer = std::make_shared<TraceOutputWriter>(path);
-    HookEngineCore::instance().setOutputWriter(writer);
 }
 
 void HookEngine::setDllDirectory(const std::string& path) {

@@ -1,6 +1,5 @@
 #include "hook_framework/injector_base.h"
 #include "thunk/hook_context.h"
-#include "output/trace_output_writer.h"
 #include "test_stack_vals.h"
 #include <Windows.h>
 #include <format>
@@ -13,7 +12,7 @@ class StackTraceInjector : public hookfw::InjectorBase {
 public:
     std::string name() const override { return "stack_trace_injector"; }
 
-    void onInject(hookfw::HookContext& ctx, hookfw::TraceOutputWriter* trace) override {
+    void onInject(hookfw::HookContext& ctx) override {
         ctx.captureCallStack(16);
         g_stackData.callCount++;
 
@@ -22,16 +21,6 @@ public:
         for (uint32_t i = 0; i < ctx.stackFrameCount; i++) {
             g_stackData.lastFrames.push_back(
                 hookfw::HookContext::resolveFrame(ctx.stackFrames[i]));
-        }
-
-        if (trace) {
-            nlohmann::json jframes = nlohmann::json::array();
-            for (const auto& f : g_stackData.lastFrames)
-                jframes.push_back(f);
-            trace->addTraceEvent("Stack", "hookfw", 'i',
-                hookfw::TraceOutputWriter::nowMicroseconds(),
-                GetCurrentProcessId(), GetCurrentThreadId(),
-                {{"frames", jframes}});
         }
     }
 };

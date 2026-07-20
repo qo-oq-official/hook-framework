@@ -4,7 +4,6 @@
 #include "thunk/thunk_manager.h"
 #include "collector/collector_base.h"
 #include "replacer/replacer_base.h"
-#include "output/output_writer.h"
 #include <string>
 #include <vector>
 #include <memory>
@@ -36,8 +35,6 @@ public:
 
     InstalledHook* getHookById(uint32_t id);
     uint32_t lastHookId() const { return nextId_ - 1; }
-    void setOutputWriter(std::shared_ptr<OutputWriter> writer);
-    std::shared_ptr<OutputWriter> getOutputWriter();
 
 private:
     HookEngineCore() = default;
@@ -47,7 +44,6 @@ private:
 
     std::mutex mutex_;
     std::vector<std::unique_ptr<InstalledHook>> hooks_;
-    std::shared_ptr<OutputWriter> outputWriter_;
     uint32_t nextId_ = 1;
     bool installed_ = false;
 };

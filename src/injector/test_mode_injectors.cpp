@@ -1,6 +1,5 @@
 #include "hook_framework/injector_base.h"
 #include "thunk/hook_context.h"
-#include "output/trace_output_writer.h"
 #include <Windows.h>
 #include <format>
 #include <atomic>
@@ -12,27 +11,12 @@ class PreCheckInjector : public hookfw::InjectorBase {
 public:
     std::string name() const override { return "pre_check_injector"; }
 
-    void onInject(hookfw::HookContext& ctx, hookfw::TraceOutputWriter* trace) override {
-        // Read param before original execution
+    void onInject(hookfw::HookContext& ctx) override {
         auto a = ctx.arg<int>(0);
         auto b = ctx.arg<int>(1);
 
-        // Store a key into return value slot as a marker
-        // (the original function will overwrite this)
         ctx.setReturnValue(-999);
-        ctx.setArg(0, a + 1000);  // modify argument for test validation
-
-        if (trace) {
-            nlohmann::json args;
-            args["mode"] = "pre";
-            args["param_a"] = a;
-            args["param_b"] = b;
-            trace->addTraceEvent(
-                "Injector: pre_check",
-                "hookfw", 'i',
-                hookfw::TraceOutputWriter::nowMicroseconds(),
-                GetCurrentProcessId(), GetCurrentThreadId(), args);
-        }
+        ctx.setArg(0, a + 1000);
     }
 };
 
@@ -41,30 +25,13 @@ class PostCheckInjector : public hookfw::InjectorBase {
 public:
     std::string name() const override { return "post_check_injector"; }
 
-    void onInject(hookfw::HookContext& ctx, hookfw::TraceOutputWriter* trace) override {
-        // At exit: ctx.rax holds the original return value
+    void onInject(hookfw::HookContext& ctx) override {
         auto retval = ctx.returnValue<int>();
-
-        // Read the original args (still in rcx/rdx at exit phase)
         auto a = ctx.arg<int>(0);
         auto b = ctx.arg<int>(1);
 
-        // Verify original function returned correctly
         if (retval == a + b) {
-            // Override return value to prove injector-visible modification
             ctx.setReturnValue(retval * 10);
-        }
-
-        if (trace) {
-            nlohmann::json args;
-            args["mode"] = "post";
-            args["original_return"] = retval;
-            args["modified_to"] = retval * 10;
-            trace->addTraceEvent(
-                "Injector: post_check",
-                "hookfw", 'i',
-                hookfw::TraceOutputWriter::nowMicroseconds(),
-                GetCurrentProcessId(), GetCurrentThreadId(), args);
         }
     }
 };
@@ -77,7 +44,7 @@ public:
     static std::atomic<int> s_preCount;
     static std::atomic<int> s_postCount;
 
-    void onInject(hookfw::HookContext&, hookfw::TraceOutputWriter*) override {
+    void onInject(hookfw::HookContext&) override {
         s_preCount++;
     }
 
@@ -92,7 +59,7 @@ class OrderTrackerPost : public hookfw::InjectorBase {
 public:
     std::string name() const override { return "order_tracker_post"; }
 
-    void onInject(hookfw::HookContext&, hookfw::TraceOutputWriter*) override {
+    void onInject(hookfw::HookContext&) override {
         OrderTracker::s_postCount++;
     }
 };

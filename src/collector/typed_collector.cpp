@@ -56,11 +56,6 @@ void TypedCollector::setReturnType(ParamType type) {
 }
 
 void TypedCollector::onEntry(const HookContext& ctx) {
-    if (!outputWriter_) {
-        LOG_ERROR("TypedCollector::onEntry: no output writer set");
-        return;
-    }
-
     try {
         nlohmann::json argsJson = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
@@ -93,11 +88,6 @@ void TypedCollector::onEntry(const HookContext& ctx) {
 }
 
 void TypedCollector::onExit(const HookContext& ctx) {
-    if (!outputWriter_) {
-        LOG_ERROR("TypedCollector::onExit: no output writer set");
-        return;
-    }
-
     try {
         nlohmann::json returnValue = extractReturnValue(ctx);
 

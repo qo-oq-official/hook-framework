@@ -1,7 +1,6 @@
 #include "thunk/thunk_manager.h"
 #include "thunk/hook_context.h"
 #include "engine/hook_engine.h"
-#include "output/trace_output_writer.h"
 #include "output/hook_data_source.h"
 #include "logging/crash_log.h"
 #include <Windows.h>
@@ -71,11 +70,8 @@ static void doDispatchBody(hookfw::ThunkData* data,
             }
         }
 
-        auto writer = std::dynamic_pointer_cast<hookfw::TraceOutputWriter>(
-            hookfw::HookEngineCore::instance().getOutputWriter());
-
         if (hook->injector && hook->descriptor.injectorMode == hookfw::InjectorMode::Pre) {
-            hook->injector->onInject(ctx, writer.get());
+            hook->injector->onInject(ctx);
         }
 
         if (hook->collector) {
@@ -91,11 +87,8 @@ static void doDispatchBody(hookfw::ThunkData* data,
             memcpy(ctx.xmm0, xmmPtr, 16);
         }
 
-        auto writer = std::dynamic_pointer_cast<hookfw::TraceOutputWriter>(
-            hookfw::HookEngineCore::instance().getOutputWriter());
-
         if (hook->injector && hook->descriptor.injectorMode == hookfw::InjectorMode::Post) {
-            hook->injector->onInject(ctx, writer.get());
+            hook->injector->onInject(ctx);
         }
 
         if (hook->collector) {

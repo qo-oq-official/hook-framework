@@ -1,6 +1,5 @@
 #pragma once
 #include "thunk/hook_context.h"
-#include "output/output_writer.h"
 #include "hook_framework/types.h"
 #include <memory>
 #include <string>
@@ -16,13 +15,11 @@ public:
     virtual void onEntry(const HookContext& ctx) = 0;
     virtual void onExit(const HookContext& ctx) = 0;
 
-    void setOutputWriter(std::shared_ptr<OutputWriter> writer) { outputWriter_ = writer; }
     void setModuleName(const std::string& name) { moduleName_ = name; }
     void setFunctionName(const std::string& name) { functionName_ = name; }
     void setModuleBase(uintptr_t base) { moduleBase_ = base; }
 
 protected:
-    std::shared_ptr<OutputWriter> outputWriter_;
     std::string moduleName_;
     std::string functionName_;
     uintptr_t moduleBase_ = 0;

@@ -1,19 +1,17 @@
 #include "com/com_interface_capture.h"
 #include "com/com_registry.h"
 #include "com/com_hook_engine.h"
+#include "output/hook_data_source.h"
 #include "logging/logger.h"
 #include <nlohmann/json.hpp>
 #include <format>
+#include <Windows.h>
 
 namespace hookfw {
 
 void ComInterfaceCaptureCollector::onEntry(const HookContext& ctx) {
-    // CoCreateInstance: args are rclsid(0), pUnkOuter(1), dwClsContext(2), riid(3), ppv(4)
-    // QueryInterface: args are this(0), riid(1), ppv(2)
-    if (!outputWriter_) return;
-
-    auto* riid = ctx.arg<void*>(1);  // riid is typically arg1 for QI
-    if (!riid) riid = ctx.arg<void*>(3);  // or arg3 for CoCreateInstance
+    auto* riid = ctx.arg<void*>(1);
+    if (!riid) riid = ctx.arg<void*>(3);
     
     if (riid) {
         // IID is 16 bytes. Read as GUID string for logging.
@@ -35,11 +33,11 @@ void ComInterfaceCaptureCollector::onEntry(const HookContext& ctx) {
     j["hook_id"] = ctx.hookId;
     j["phase"] = "entry";
     j["function"] = functionName_;
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "entry", j);
+    HookDataSource::TraceSlice(functionName_, moduleName_, 'B',
+                                GetCurrentThreadId(), j);
 }
 
 void ComInterfaceCaptureCollector::onExit(const HookContext& ctx) {
-    if (!outputWriter_) return;
 
     // Read IID
     auto* riid = ctx.arg<void*>(1);  // QueryInterface: riid at index 1
@@ -79,7 +77,8 @@ void ComInterfaceCaptureCollector::onExit(const HookContext& ctx) {
                  patched, ppv, iidStr);
     }
 
-    outputWriter_->writeJson(moduleName_, functionName_, 0, "exit", j);
+    HookDataSource::TraceSlice(functionName_, moduleName_, 'E',
+                                GetCurrentThreadId(), j);
 }
 
 REGISTER_COLLECTOR("com_interface_capture", ComInterfaceCaptureCollector);

@@ -169,13 +169,12 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
 
 static bool safeDetourAttach(void** ppOriginal, void* detourTarget,
                              uint32_t hookId, void* resolvedAddr) {
-    LONG r = ERROR_INVALID_BLOCK;
+    LONG r = NO_ERROR;
     DWORD sehCode = 0;
     __try {
         r = DetourAttach(ppOriginal, detourTarget);
     } __except (EXCEPTION_EXECUTE_HANDLER) {
         sehCode = GetExceptionCode();
-        r = ERROR_INVALID_BLOCK;
     }
     if (r != NO_ERROR) {
         static FILE* s_f = nullptr;
@@ -244,7 +243,7 @@ bool HookEngineCore::installAll() {
         }
         attached++;
 
-        if (attached % 500 == 0) {
+        if (attached % 2 == 0) {
             LONG r = DetourTransactionCommit();
             if (r == NO_ERROR) {
                 DetourTransactionBegin();
@@ -275,7 +274,7 @@ bool HookEngineCore::installAll() {
     installed_ = true;
     LOG_INFO("{} hooks installed, {} failed (total configured: {})", attached, failed, hooks_.size());
     if (failed > 0) {
-        LOG_WARN("{} hooks could not be attached (functions too short?)", failed);
+        LOG_WARN("{} hooks could not be attached", failed);
     }
     return attached > 0;
 }
@@ -284,10 +283,6 @@ void HookEngineCore::uninstallAll() {
     std::lock_guard lock(mutex_);
 
     if (!installed_) return;
-
-    if (outputWriter_) {
-        outputWriter_->flush();
-    }
 
     HookTransaction txn;
     if (!txn.isValid()) {
@@ -322,16 +317,6 @@ InstalledHook* HookEngineCore::getHookById(uint32_t id) {
         if (hook->id == id) return hook.get();
     }
     return nullptr;
-}
-
-void HookEngineCore::setOutputWriter(std::shared_ptr<OutputWriter> writer) {
-    std::lock_guard lock(mutex_);
-    outputWriter_ = std::move(writer);
-}
-
-std::shared_ptr<OutputWriter> HookEngineCore::getOutputWriter() {
-    std::lock_guard lock(mutex_);
-    return outputWriter_;
 }
 
 }

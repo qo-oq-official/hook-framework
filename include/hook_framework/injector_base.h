@@ -9,13 +9,12 @@
 namespace hookfw {
 
 struct HookContext;
-class TraceOutputWriter;
 
 class InjectorBase {
 public:
     virtual ~InjectorBase() = default;
     virtual std::string name() const = 0;
-    virtual void onInject(HookContext& ctx, TraceOutputWriter* trace) = 0;
+    virtual void onInject(HookContext& ctx) = 0;
 };
 
 using InjectorCreator = std::function<std::shared_ptr<InjectorBase>()>;
