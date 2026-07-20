@@ -10,14 +10,6 @@ OutputPathBuilder::OutputPathBuilder(const std::string& baseDir)
     LOG_INFO("Output path builder initialized, baseDir={}", baseDir);
 }
 
-std::filesystem::path OutputPathBuilder::buildRawPath(
-    const std::string& moduleName, const std::string& functionName,
-    uint64_t seq, const std::string& phase) const {
-
-    return baseDir_ / sanitizeName(moduleName) / sanitizeName(functionName)
-           / (formatSeq(seq) + "_" + phase + ".raw");
-}
-
 std::filesystem::path OutputPathBuilder::buildJsonPath(
     const std::string& moduleName, const std::string& functionName,
     uint64_t seq, const std::string& phase) const {

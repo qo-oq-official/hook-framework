@@ -9,11 +9,6 @@ class OutputPathBuilder {
 public:
     explicit OutputPathBuilder(const std::string& baseDir);
 
-    std::filesystem::path buildRawPath(const std::string& moduleName,
-                                       const std::string& functionName,
-                                       uint64_t seq,
-                                       const std::string& phase) const;
-
     std::filesystem::path buildJsonPath(const std::string& moduleName,
                                         const std::string& functionName,
                                         uint64_t seq,

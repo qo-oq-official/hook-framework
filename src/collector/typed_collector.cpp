@@ -62,9 +62,6 @@ void TypedCollector::onEntry(const HookContext& ctx) {
     }
 
     try {
-        auto* fileWriter = dynamic_cast<FileOutputWriter*>(outputWriter_.get());
-        uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
-
         nlohmann::json argsJson = nlohmann::json::array();
         for (int i = 0; i < static_cast<int>(params_.size()); ++i) {
             try {
@@ -106,9 +103,6 @@ void TypedCollector::onExit(const HookContext& ctx) {
     }
 
     try {
-        auto* fileWriter = dynamic_cast<FileOutputWriter*>(outputWriter_.get());
-        uint64_t seq = fileWriter ? fileWriter->nextSeq() : 0;
-
         nlohmann::json returnValue = extractReturnValue(ctx);
 
         nlohmann::json argsJson = nlohmann::json::array();
@@ -344,7 +338,7 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                 nlohmann::json state;
                 uint64_t bufCur   = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x38);
                 uint64_t bufStart = *reinterpret_cast<uint64_t*>((uint8_t*)archive + 0x48);
-                state["buf_pos"] = bufCur - bufStart;
+                state["buf_pos"] = std::format("0x{:016x}", bufCur - bufStart);
                 state["counter"] = *reinterpret_cast<uint32_t*>((uint8_t*)archive + 0x50);
                 param["state"] = state;
             }
@@ -386,7 +380,7 @@ nlohmann::json TypedCollector::extractParam(const HookContext& ctx, int index,
                 nlohmann::json state;
                 uint64_t start = *reinterpret_cast<uint64_t*>((uint8_t*)stream + 0x20);
                 uint64_t end   = *reinterpret_cast<uint64_t*>((uint8_t*)stream + 0x28);
-                state["buf_pos"] = end - start;
+                state["buf_pos"] = std::format("0x{:016x}", end - start);
                 state["count"]   = *reinterpret_cast<uint32_t*>((uint8_t*)stream + 0x10);
                 param["state"] = state;
             }

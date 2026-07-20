@@ -1,6 +1,5 @@
 #pragma once
 #include "collector/collector_base.h"
-#include "output/file_output_writer.h"
 
 namespace hookfw {
 

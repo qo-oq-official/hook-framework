@@ -11,13 +11,6 @@ public:
     explicit FileOutputWriter(const std::string& baseDir);
     ~FileOutputWriter() override = default;
 
-    bool writeRaw(const std::string& moduleName,
-                  const std::string& functionName,
-                  uint64_t seq,
-                  const std::string& phase,
-                  const uint8_t* data,
-                  size_t size) override;
-
     bool writeJson(const std::string& moduleName,
                    const std::string& functionName,
                    uint64_t seq,

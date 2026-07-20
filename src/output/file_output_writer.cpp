@@ -9,38 +9,6 @@ FileOutputWriter::FileOutputWriter(const std::string& baseDir)
     LOG_INFO("FileOutputWriter created, baseDir={}", baseDir);
 }
 
-bool FileOutputWriter::writeRaw(const std::string& moduleName,
-                                const std::string& functionName,
-                                uint64_t seq,
-                                const std::string& phase,
-                                const uint8_t* data,
-                                size_t size) {
-    try {
-        auto path = pathBuilder_.buildRawPath(moduleName, functionName, seq, phase);
-        if (!pathBuilder_.ensureDirectory(path.parent_path())) {
-            return false;
-        }
-
-        std::ofstream file(path, std::ios::binary);
-        if (!file.is_open()) {
-            LOG_ERROR("Cannot open file for writing: {}", path.string());
-            return false;
-        }
-
-        file.write(reinterpret_cast<const char*>(data), static_cast<std::streamsize>(size));
-        if (!file.good()) {
-            LOG_ERROR("Write failed: {}", path.string());
-            return false;
-        }
-
-        LOG_TRACE("Raw output written: {} ({} bytes)", path.string(), size);
-        return true;
-    } catch (const std::exception& ex) {
-        LOG_ERROR("Exception in writeRaw: {}", ex.what());
-        return false;
-    }
-}
-
 bool FileOutputWriter::writeJson(const std::string& moduleName,
                                  const std::string& functionName,
                                  uint64_t seq,

@@ -117,12 +117,6 @@ void TraceOutputWriter::writeEvent(const std::string& name,
     addTraceEvent(name, category, phase, nowMicroseconds(), pid, tid, args);
 }
 
-bool TraceOutputWriter::writeRaw(const std::string&, const std::string&,
-                                 uint64_t, const std::string&,
-                                 const uint8_t*, size_t) {
-    return true;
-}
-
 bool TraceOutputWriter::writeJson(const std::string& moduleName,
                                   const std::string& functionName,
                                   uint64_t,

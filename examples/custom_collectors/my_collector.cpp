@@ -1,6 +1,5 @@
 #include "my_collector.h"
 #include "logging/logger.h"
-#include "output/file_output_writer.h"
 #include <nlohmann/json.hpp>
 
 namespace hookfw {

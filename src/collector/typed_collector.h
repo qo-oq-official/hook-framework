@@ -1,6 +1,5 @@
 #pragma once
 #include "collector/collector_base.h"
-#include "output/file_output_writer.h"
 #include "hook_framework/types.h"
 #include <nlohmann/json.hpp>
 #include <vector>
