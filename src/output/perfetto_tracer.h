@@ -29,6 +29,7 @@ private:
     std::unique_ptr<perfetto::TracingSession> session_;
     PerfettoConfig config_;
     std::string outputDir_;
+    std::string tracePath_;
     bool active_ = false;
 };
 
