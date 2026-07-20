@@ -44,7 +44,7 @@ bool PerfettoTracer::initialize(const std::string& outputDir) {
 
     session_ = perfetto::Tracing::NewTrace(perfetto::kInProcessBackend);
     session_->Setup(cfg);
-    session_->StartBlocking();
+    session_->Start();
 
     active_ = true;
     LOG_INFO("PerfettoTracer started, output={}", outputDir_);

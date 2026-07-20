@@ -6,7 +6,8 @@
 #include "replacer/dll_replacer.h"
 #include "replacer/callback_replacer.h"
 #include "output/trace_output_writer.h"
-#include "output/trace_flusher.h"
+#include "output/perfetto_tracer.h"
+#include "output/hook_data_source.h"
 #include "logging/logger.h"
 #include <Windows.h>
 #include <filesystem>
@@ -147,6 +148,8 @@ bool HookEngine::initialize(const std::string& configPath) {
         // Ensure all custom collectors are registered
         registerAllCollectors();
 
+        PerfettoTracer::instance().setOutputDir(impl_->outputDir);
+
         if (!configPath.empty()) {
             ConfigLoader loader;
             auto configOpt = loader.load(configPath);
@@ -212,9 +215,11 @@ bool HookEngine::initialize(const std::string& configPath) {
                 }
 
                 if (hookDesc.mode == HookMode::Trace) {
-                    TraceFlusher::instance().registerHookName(
-                        hookId, hookDesc.target.moduleName, funcName, rva,
-                        ih ? ih->moduleBase : 0);
+                    std::string displayName = TraceOutputWriter::undecorateName(funcName);
+                    if (rva > 0) {
+                        displayName += std::format(" @RVA_0x{:08x}", rva);
+                    }
+                    HookDataSource::registerHookName(hookId, displayName);
                     traceCount++;
                 } else {
                     if (collector && rva > 0) {
@@ -227,11 +232,7 @@ bool HookEngine::initialize(const std::string& configPath) {
             }
             LOG_INFO("Hooks registered: {} trace, {} capture", traceCount, captureCount);
 
-            auto traceWriter = std::dynamic_pointer_cast<TraceOutputWriter>(writer);
-            if (traceWriter) {
-                RingBuffer::setGlobalCapacity(configOpt->ringBufferCapacity);
-                TraceFlusher::instance().start(traceWriter);
-            }
+            PerfettoTracer::instance().setOutputDir(impl_->outputDir);
         }
 
         impl_->initialized = true;
@@ -247,7 +248,7 @@ void HookEngine::shutdown() {
     try {
         if (!impl_->initialized) return;
         LOG_INFO("HookEngine shutting down...");
-        TraceFlusher::instance().stop();
+        PerfettoTracer::instance().shutdown();
         HookEngineCore::instance().uninstallAll();
 
         auto writer = HookEngineCore::instance().getOutputWriter();

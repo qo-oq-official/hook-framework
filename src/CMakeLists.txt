@@ -17,7 +17,6 @@ set(HOOK_FW_SOURCES
     replacer/dll_replacer.cpp
     replacer/callback_replacer.cpp
     output/trace_output_writer.cpp
-    output/trace_flusher.cpp
     output/hook_data_source.cpp
     output/perfetto_tracer.cpp
     config/config_loader.cpp

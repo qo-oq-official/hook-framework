@@ -1,13 +1,13 @@
 #include "thunk/thunk_manager.h"
 #include "thunk/hook_context.h"
 #include "engine/hook_engine.h"
-#include "output/trace_flusher.h"
-#include "output/ring_buffer.h"
 #include "output/trace_output_writer.h"
+#include "output/hook_data_source.h"
 #include "logging/crash_log.h"
 #include <Windows.h>
 #include <cstring>
 #include <cstdio>
+#include <format>
 
 static thread_local bool g_inHookDispatch = false;
 static thread_local int g_hookDepth = 0;
@@ -106,64 +106,33 @@ static void doDispatchBody(hookfw::ThunkData* data,
 
 extern "C" {
 
-static volatile uint64_t g_quickTraceCallCount = 0;
-static volatile bool g_quickTraceFirstLogged = false;
-static const uint32_t FLUSH_INTERVAL = 50000;
-
 void hookfw_quick_trace(hookfw::ThunkData* data,
                         uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
     if (!data) return;
 
-    static volatile uint64_t diagCount = 0;
-    diagCount++;
-    if (diagCount <= 5 || diagCount % 50000 == 0) {
-        char buf[128];
-        wsprintfA(buf, "[hookfw] trace call #%llu hook_id=%u\n", diagCount, data->hookId);
-        dispCrashLog(buf);
-    }
+    std::string name = hookfw::HookDataSource::getHookName(data->hookId);
+    nlohmann::json args;
+    args["arg0"] = std::format("{:#x}", a0);
+    args["arg1"] = std::format("{:#x}", a1);
+    args["arg2"] = std::format("{:#x}", a2);
+    args["arg3"] = std::format("{:#x}", a3);
 
-    g_quickTraceCallCount++;
-    if (!g_quickTraceFirstLogged) {
-        g_quickTraceFirstLogged = true;
-        char buf[128];
-        wsprintfA(buf, "[hookfw] quick_trace FIRST CALL hook_id=%u\n", data->hookId);
-        dispCrashLog(buf);
-    }
-
-    hookfw::TraceRecord rec{};
-    rec.hookId = data->hookId;
-    rec.threadId = GetCurrentThreadId();
-    rec.timestampUs = hookfw::RingBuffer::nowMicroseconds();
-    rec.arg0 = a0;
-    rec.arg1 = a1;
-    rec.arg2 = a2;
-    rec.arg3 = a3;
-    rec.phase = 0;
-    hookfw::TraceFlusher::instance().ringBuffer().push(rec);
-
-    static thread_local uint32_t t_counter = 0;
-    if (++t_counter >= FLUSH_INTERVAL) {
-        t_counter = 0;
-        hookfw::TraceFlusher::instance().syncFlush();
-    }
+    hookfw::HookDataSource::TraceSlice(name, "trace", 'B',
+                                        GetCurrentThreadId(), args);
 }
 
 void hookfw_quick_trace_exit(hookfw::ThunkData* data,
                              uint64_t retval, uint64_t, uint64_t, uint64_t) {
     if (!data) return;
-    hookfw::TraceRecord rec{};
-    rec.hookId = data->hookId;
-    rec.threadId = GetCurrentThreadId();
-    rec.timestampUs = hookfw::RingBuffer::nowMicroseconds();
-    rec.arg0 = retval;
-    rec.phase = 1;
-    hookfw::TraceFlusher::instance().ringBuffer().push(rec);
 
-    static thread_local uint32_t t_counter = 0;
-    if (++t_counter >= FLUSH_INTERVAL) {
-        t_counter = 0;
-        hookfw::TraceFlusher::instance().syncFlush();
+    std::string name = hookfw::HookDataSource::getHookName(data->hookId);
+    nlohmann::json args;
+    if (retval != 0) {
+        args["return"] = std::format("{:#x}", retval);
     }
+
+    hookfw::HookDataSource::TraceSlice(name, "trace", 'E',
+                                        GetCurrentThreadId(), args);
 }
 
 void hookfw_dispatch(hookfw::ThunkData* data,

@@ -1,4 +1,5 @@
 #include "output/hook_data_source.h"
+#include "output/perfetto_tracer.h"
 #include "perfetto.h"
 #include "logging/logger.h"
 
@@ -32,6 +33,13 @@ void HookDataSource::TraceSlice(const std::string& name,
                                 char phase,
                                 uint32_t threadId,
                                 const nlohmann::json& args) {
+    if (!PerfettoTracer::instance().isActive()) {
+        PerfettoTracer::instance().initialize(
+            PerfettoTracer::instance().outputDir().empty()
+                ? "dump_data"
+                : PerfettoTracer::instance().outputDir());
+    }
+
     HookDataSourceInternal::Trace(
         [&](HookDataSourceInternal::TraceContext ctx) {
             auto pkt = ctx.NewTracePacket();

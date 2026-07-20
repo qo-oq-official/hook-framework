@@ -17,6 +17,9 @@ public:
     void shutdown();
     bool isActive() const { return active_; }
 
+    void setOutputDir(const std::string& dir) { outputDir_ = dir; }
+    const std::string& outputDir() const { return outputDir_; }
+
 private:
     PerfettoTracer() = default;
     ~PerfettoTracer();

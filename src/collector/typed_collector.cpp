@@ -1,5 +1,5 @@
 #include "collector/typed_collector.h"
-#include "output/trace_output_writer.h"
+#include "output/hook_data_source.h"
 #include "logging/logger.h"
 #include <format>
 #include <Windows.h>
@@ -83,14 +83,10 @@ void TypedCollector::onEntry(const HookContext& ctx) {
         nlohmann::json customData;
         onEntryCustom(ctx, customData);
 
-
-        auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
-        if (traceWriter) {
-            nlohmann::json perfettoArgs;
-            buildPerfettoArgs(argsJson, customData, perfettoArgs["Entry"]);
-            traceWriter->writeEvent(functionName_, moduleName_, 'B',
-                                    GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
-        }
+        nlohmann::json perfettoArgs;
+        buildPerfettoArgs(argsJson, customData, perfettoArgs["Entry"]);
+        HookDataSource::TraceSlice(functionName_, moduleName_, 'B',
+                                    GetCurrentThreadId(), perfettoArgs);
     } catch (const std::exception& ex) {
         LOG_ERROR("TypedCollector::onEntry exception: {}", ex.what());
     }
@@ -126,15 +122,12 @@ void TypedCollector::onExit(const HookContext& ctx) {
         nlohmann::json customData;
         onExitCustom(ctx, customData);
 
-        auto* traceWriter = dynamic_cast<TraceOutputWriter*>(outputWriter_.get());
-        if (traceWriter) {
-            nlohmann::json perfettoArgs;
-            buildPerfettoArgs(argsJson, customData, perfettoArgs["Exit"]);
-            perfettoArgs["return"] = returnValue;
-            perfettoArgs["hook_id"] = ctx.hookId;
-            traceWriter->writeEvent(functionName_, moduleName_, 'E',
-                                    GetCurrentProcessId(), GetCurrentThreadId(), perfettoArgs);
-        }
+        nlohmann::json perfettoArgs;
+        buildPerfettoArgs(argsJson, customData, perfettoArgs["Exit"]);
+        perfettoArgs["return"] = returnValue;
+        perfettoArgs["hook_id"] = ctx.hookId;
+        HookDataSource::TraceSlice(functionName_, moduleName_, 'E',
+                                    GetCurrentThreadId(), perfettoArgs);
     } catch (const std::exception& ex) {
         LOG_ERROR("TypedCollector::onExit exception: {}", ex.what());
     }
