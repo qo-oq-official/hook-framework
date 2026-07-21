@@ -41,6 +41,24 @@ void HookDataSource::TraceSlice(const std::string& name,
 
     HookDataSourceInternal::Trace(
         [&](HookDataSourceInternal::TraceContext ctx) {
+            thread_local bool s_descriptorSent = false;
+            if (!s_descriptorSent) {
+                uint32_t pid = GetCurrentProcessId();
+                uint64_t trackUuid = (static_cast<uint64_t>(pid) << 32)
+                                     | (threadId & 0xFFFFFFFFULL);
+                auto descPkt = ctx.NewTracePacket();
+                auto* td = descPkt->set_track_descriptor();
+                td->set_uuid(trackUuid);
+                auto* thd = td->set_thread();
+                thd->set_pid(static_cast<int32_t>(pid));
+                thd->set_tid(static_cast<int64_t>(threadId));
+                s_descriptorSent = true;
+            }
+
+            uint32_t pid = GetCurrentProcessId();
+            uint64_t trackUuid = (static_cast<uint64_t>(pid) << 32)
+                                 | (threadId & 0xFFFFFFFFULL);
+
             auto pkt = ctx.NewTracePacket();
             pkt->set_timestamp(
                 static_cast<uint64_t>(perfetto::base::GetWallTimeNs().count()));
@@ -50,6 +68,7 @@ void HookDataSource::TraceSlice(const std::string& name,
             te->set_type(phase == 'B'
                 ? perfetto::protos::pbzero::TrackEvent::TYPE_SLICE_BEGIN
                 : perfetto::protos::pbzero::TrackEvent::TYPE_SLICE_END);
+            te->set_track_uuid(trackUuid);
 
             for (const auto& [key, val] : args.items()) {
                 auto* da = te->add_debug_annotations();
