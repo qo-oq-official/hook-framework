@@ -81,3 +81,11 @@ target_compile_options(test_pdb_target PRIVATE /Oy- /Zi)
 target_link_options(test_pdb_target PRIVATE /DEBUG:FULL)
 
 add_executable(test_pdb_runner test_pdb_runner.cpp)
+
+# ── Perfetto in-process PoC ────────────────────────────────────────────
+
+add_executable(test_perfetto_poc test_perfetto_poc.cpp)
+target_link_libraries(test_perfetto_poc PRIVATE perfetto_sdk ws2_32)
+target_include_directories(test_perfetto_poc PRIVATE ${CMAKE_SOURCE_DIR}/third_party/perfetto-cpp-sdk)
+target_compile_definitions(test_perfetto_poc PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX)
+target_compile_options(test_perfetto_poc PRIVATE /bigobj)
