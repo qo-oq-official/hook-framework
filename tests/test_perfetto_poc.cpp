@@ -83,27 +83,32 @@ int main() {
     }
     CHECK(true, "3 events written");
 
-    // 5. Flush data source
+    // 5. Flush data source (same as HookDataSource::flush())
     printf("[5] Flushing data source...\n");
     TestDataSource::Trace([](TestDataSource::TraceContext ctx) {
         ctx.Flush();
     });
     CHECK(true, "DataSource::Flush OK");
 
-    // 6. Stop
-    printf("[6] StopBlocking...\n");
+    // 6. FlushBlocking (sync data to consumer buffer)
+    printf("[6] FlushBlocking(3000)...\n");
     fflush(stdout);
-    session->StopBlocking();
-    CHECK(true, "StopBlocking OK (did not hang)");
+    bool flushed = session->FlushBlocking(3000);
+    printf("       FlushBlocking result = %s\n", flushed ? "true" : "false");
 
-    // 7. Read trace
-    printf("[7] ReadTraceBlocking...\n");
+    // 7. Stop (async)
+    printf("[7] Stop...\n");
+    session->Stop();
+    CHECK(true, "Stop OK");
+
+    // 8. ReadTraceBlocking
+    printf("[8] ReadTraceBlocking...\n");
     auto data = session->ReadTraceBlocking();
     CHECK(!data.empty(), "ReadTraceBlocking returned data");
     printf("       data.size() = %zu bytes\n", data.size());
 
-    // 8. Write to file
-    printf("[8] Writing trace file...\n");
+    // 9. Write to file
+    printf("[9] Writing trace file...\n");
     std::filesystem::create_directories("dump_data");
     {
         std::ofstream file("dump_data/test_poc.perfetto", std::ios::binary);
@@ -112,6 +117,12 @@ int main() {
     bool fileOk = std::filesystem::exists("dump_data/test_poc.perfetto") &&
                   std::filesystem::file_size("dump_data/test_poc.perfetto") > 0;
     CHECK(fileOk, "Perfetto file written to dump_data/test_poc.perfetto");
+
+    // 10. Tracing::Shutdown (kill service thread)
+    printf("[10] Tracing::Shutdown...\n");
+    session.reset();
+    perfetto::Tracing::Shutdown();
+    CHECK(true, "Tracing::Shutdown OK");
 
     printf("\n=== %d passed, %d failed ===\n", g_pass, g_fail);
     return g_fail;
