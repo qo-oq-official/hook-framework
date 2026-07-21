@@ -3,6 +3,7 @@
 #include "perfetto.h"
 #include "logging/logger.h"
 #include <Windows.h>
+#include <io.h>
 #include <fstream>
 #include <filesystem>
 #include <chrono>
@@ -86,6 +87,15 @@ bool PerfettoTracer::initialize(const std::string& outputDir) {
     oss << "trace_" << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".perfetto";
     tracePath_ = (std::filesystem::path(outputDir_) / oss.str()).string();
 
+    traceFileHandle_ = CreateFileA(tracePath_.c_str(), GENERIC_WRITE,
+                                   FILE_SHARE_READ, nullptr, CREATE_ALWAYS,
+                                   FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (traceFileHandle_ == INVALID_HANDLE_VALUE) {
+        tlog("PerfettoTracer: failed to create trace file");
+        LOG_ERROR("Failed to create trace file: {}", tracePath_);
+        return false;
+    }
+
     perfetto::TraceConfig traceCfg;
     auto* buf = traceCfg.add_buffers();
     buf->set_size_kb(config_.bufferSizeKb);
@@ -103,8 +113,10 @@ bool PerfettoTracer::initialize(const std::string& outputDir) {
     tlog("PerfettoTracer: creating session");
     session_ = perfetto::Tracing::NewTrace(perfetto::kInProcessBackend);
 
-    tlog("PerfettoTracer: calling Setup");
-    session_->Setup(traceCfg);
+    int fd = _open_osfhandle(reinterpret_cast<intptr_t>(traceFileHandle_), 0);
+
+    tlog("PerfettoTracer: calling Setup with fd");
+    session_->Setup(traceCfg, fd);
 
     tlog("PerfettoTracer: calling Start");
     session_->Start();
@@ -134,35 +146,19 @@ void PerfettoTracer::shutdown() {
         LOG_ERROR("PerfettoTracer::Stop exception: {}", ex.what());
     }
 
-    tlog("PerfettoTracer: calling ReadTraceBlocking");
-    try {
-        auto data = session_->ReadTraceBlocking();
-        tlog("PerfettoTracer: ReadTraceBlocking done");
-
-        if (!data.empty()) {
-            std::ofstream file(tracePath_, std::ios::binary);
-            file.write(data.data(), static_cast<std::streamsize>(data.size()));
-            file.close();
-
-            LOG_INFO("Perfetto trace saved: {} ({} bytes)", tracePath_, data.size());
-            tlog("PerfettoTracer: file written");
-        } else {
-            LOG_WARN("Perfetto trace is empty");
-            tlog("PerfettoTracer: trace empty");
-        }
-    } catch (const std::exception& ex) {
-        tlog("PerfettoTracer: ReadTraceBlocking EXCEPTION");
-        LOG_ERROR("PerfettoTracer::ReadTraceBlocking exception: {}", ex.what());
-    }
-
-    LOG_INFO("PerfettoTracer stopped");
-
     tlog("PerfettoTracer: resetting session");
     session_.reset();
 
     tlog("PerfettoTracer: calling Tracing::Shutdown");
     perfetto::Tracing::Shutdown();
     tlog("PerfettoTracer: Tracing::Shutdown done");
+
+    if (traceFileHandle_ != INVALID_HANDLE_VALUE) {
+        CloseHandle(traceFileHandle_);
+        traceFileHandle_ = INVALID_HANDLE_VALUE;
+        LOG_INFO("Perfetto trace saved: {}", tracePath_);
+        tlog("PerfettoTracer: file closed");
+    }
 
     active_ = false;
     tlog("PerfettoTracer::shutdown exit");
