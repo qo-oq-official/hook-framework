@@ -95,6 +95,8 @@ void PerfettoTracer::shutdown() {
     try {
         HookDataSource::flush();
 
+        session_->FlushBlocking(3000);
+
         session_->Stop();
 
         auto data = session_->ReadTraceBlocking();
@@ -113,6 +115,7 @@ void PerfettoTracer::shutdown() {
     }
 
     session_.reset();
+    perfetto::Tracing::Shutdown();
     active_ = false;
 }
 
