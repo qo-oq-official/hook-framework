@@ -31,6 +31,8 @@ private:
     std::string outputDir_;
     std::string tracePath_;
     void* traceFileHandle_ = nullptr;
+    void* shutdownEvent_ = nullptr;   // HANDLE, signaled at shutdown
+    void* shutdownThread_ = nullptr;  // HANDLE, runs Tracing::Shutdown
     bool active_ = false;
 };
 

@@ -128,6 +128,14 @@ bool PerfettoTracer::initialize(const std::string& outputDir) {
     tlog("PerfettoTracer: calling Start");
     session_->Start();
 
+    shutdownEvent_ = CreateEventA(nullptr, TRUE, FALSE, nullptr);
+    shutdownThread_ = CreateThread(nullptr, 0, [](LPVOID param) -> DWORD {
+        auto* event = static_cast<HANDLE>(param);
+        WaitForSingleObject(event, INFINITE);
+        perfetto::Tracing::Shutdown();
+        return 0;
+    }, shutdownEvent_, 0, nullptr);
+
     active_ = true;
     LOG_INFO("PerfettoTracer started, output={}", tracePath_);
     tlog("PerfettoTracer::initialize done");
@@ -157,9 +165,24 @@ void PerfettoTracer::shutdown() {
     session_.reset();
     tlog("PerfettoTracer: session reset done", outputDir_.c_str());
 
-    tlog("PerfettoTracer: calling Tracing::Shutdown", outputDir_.c_str());
-    perfetto::Tracing::Shutdown();
-    tlog("PerfettoTracer: Tracing::Shutdown done", outputDir_.c_str());
+    if (shutdownEvent_) {
+        tlog("PerfettoTracer: signaling shutdown thread", outputDir_.c_str());
+        SetEvent(static_cast<HANDLE>(shutdownEvent_));
+    }
+    if (shutdownThread_) {
+        tlog("PerfettoTracer: waiting for shutdown thread (2s timeout)", outputDir_.c_str());
+        DWORD r = WaitForSingleObject(static_cast<HANDLE>(shutdownThread_), 2000);
+        if (r == WAIT_OBJECT_0)
+            tlog("PerfettoTracer: shutdown thread completed", outputDir_.c_str());
+        else
+            tlog("PerfettoTracer: shutdown thread timeout, continuing", outputDir_.c_str());
+        CloseHandle(static_cast<HANDLE>(shutdownThread_));
+        shutdownThread_ = nullptr;
+    }
+    if (shutdownEvent_) {
+        CloseHandle(static_cast<HANDLE>(shutdownEvent_));
+        shutdownEvent_ = nullptr;
+    }
 
     if (traceFileHandle_) {
         CloseHandle(static_cast<HANDLE>(traceFileHandle_));
