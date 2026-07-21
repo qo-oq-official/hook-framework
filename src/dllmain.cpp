@@ -73,8 +73,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
         }
         case DLL_PROCESS_DETACH: {
             try {
+                hookfw::crash_log::write("[DETACH] DLL unloading, starting shutdown...\n");
                 LOG_INFO("=== Hook Framework DLL unloading ===");
                 hookfw::shutdownFramework();
+                hookfw::crash_log::write("[DETACH] shutdownFramework returned\n");
             } catch (const std::exception& ex) {
                 OutputDebugStringA(("DllMain DETACH exception: " + std::string(ex.what()) + "\n").c_str());
             } catch (...) {

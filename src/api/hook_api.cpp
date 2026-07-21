@@ -9,6 +9,7 @@
 #include "output/hook_data_source.h"
 #include "output/trace_utils.h"
 #include "logging/logger.h"
+#include "logging/crash_log.h"
 #include <Windows.h>
 #include <filesystem>
 #include <format>
@@ -243,8 +244,11 @@ bool HookEngine::initialize(const std::string& configPath) {
 void HookEngine::shutdown() {
     try {
         if (!impl_->initialized) return;
+        crash_log::write("HookEngine::shutdown enter\n");
         LOG_INFO("HookEngine shutting down...");
+        crash_log::write("HookEngine: calling PerfettoTracer::shutdown\n");
         PerfettoTracer::instance().shutdown();
+        crash_log::write("HookEngine: PerfettoTracer::shutdown returned\n");
         HookEngineCore::instance().uninstallAll();
 
         impl_->initialized = false;
