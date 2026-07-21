@@ -19,7 +19,6 @@ public:
 
     static void registerHookName(uint32_t hookId, const std::string& name);
     static std::string getHookName(uint32_t hookId);
-    static void flush();
 
 private:
     static std::unordered_map<uint32_t, std::string> hookNames_;

@@ -80,9 +80,4 @@ std::string HookDataSource::getHookName(uint32_t hookId) {
     return (it != hookNames_.end()) ? it->second : std::to_string(hookId);
 }
 
-void HookDataSource::flush() {
-    HookDataSourceInternal::Trace(
-        [](HookDataSourceInternal::TraceContext ctx) { ctx.Flush(); });
-}
-
 }

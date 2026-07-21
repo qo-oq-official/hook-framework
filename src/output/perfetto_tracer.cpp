@@ -93,8 +93,6 @@ void PerfettoTracer::shutdown() {
     LOG_INFO("PerfettoTracer shutting down...");
 
     try {
-        HookDataSource::flush();
-
         session_->FlushBlocking(3000);
 
         session_->Stop();
