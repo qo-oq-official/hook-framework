@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 #include <cstdint>
-#include <Windows.h>
 
 namespace perfetto {
 class TracingSession;
@@ -31,7 +30,7 @@ private:
     PerfettoConfig config_;
     std::string outputDir_;
     std::string tracePath_;
-    HANDLE traceFileHandle_ = INVALID_HANDLE_VALUE;
+    void* traceFileHandle_ = nullptr;
     bool active_ = false;
 };
 

@@ -87,10 +87,11 @@ bool PerfettoTracer::initialize(const std::string& outputDir) {
     oss << "trace_" << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".perfetto";
     tracePath_ = (std::filesystem::path(outputDir_) / oss.str()).string();
 
-    traceFileHandle_ = CreateFileA(tracePath_.c_str(), GENERIC_WRITE,
-                                   FILE_SHARE_READ, nullptr, CREATE_ALWAYS,
-                                   FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (traceFileHandle_ == INVALID_HANDLE_VALUE) {
+    traceFileHandle_ = reinterpret_cast<void*>(CreateFileA(tracePath_.c_str(),
+        GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS,
+        FILE_ATTRIBUTE_NORMAL, nullptr));
+    auto traceHandle = static_cast<HANDLE>(traceFileHandle_);
+    if (traceHandle == INVALID_HANDLE_VALUE) {
         tlog("PerfettoTracer: failed to create trace file");
         LOG_ERROR("Failed to create trace file: {}", tracePath_);
         return false;
@@ -153,9 +154,9 @@ void PerfettoTracer::shutdown() {
     perfetto::Tracing::Shutdown();
     tlog("PerfettoTracer: Tracing::Shutdown done");
 
-    if (traceFileHandle_ != INVALID_HANDLE_VALUE) {
-        CloseHandle(traceFileHandle_);
-        traceFileHandle_ = INVALID_HANDLE_VALUE;
+    if (traceFileHandle_) {
+        CloseHandle(static_cast<HANDLE>(traceFileHandle_));
+        traceFileHandle_ = nullptr;
         LOG_INFO("Perfetto trace saved: {}", tracePath_);
         tlog("PerfettoTracer: file closed");
     }
