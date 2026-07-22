@@ -38,7 +38,7 @@ static void perfettoLog(perfetto::base::LogMessageCallbackArgs args) {
 
 static void doStartTracing() {
     crashLog("[TCP] doStartTracing entered\n");
-    printf("\n[TCP] start — Perfetto init + session...\n");
+    printf("\n[TCP] start — Perfetto init (kInProcessBackend)...\n");
 
     perfetto::TracingInitArgs args;
     args.backends = perfetto::kInProcessBackend;
