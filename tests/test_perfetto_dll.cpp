@@ -99,11 +99,29 @@ extern "C" __declspec(dllexport) void WriteMultiThreaded() {
                 name << "thread_" << t << "_fn_" << i;
 
                 // BEGIN
-                TestDataSource::Trace([&](TestDataSource::TraceContext ctx) {
+                TestDataSource::Trace([&, tid = GetCurrentThreadId()](TestDataSource::TraceContext ctx) {
+                    // Per-thread TrackDescriptor (once per thread)
+                    thread_local bool s_desc = false;
+                    if (!s_desc) {
+                        uint32_t pid = GetCurrentProcessId();
+                        uint64_t uuid = (static_cast<uint64_t>(pid) << 32) | (static_cast<uint64_t>(tid) & 0xFFFFFFFFULL);
+                        auto dp = ctx.NewTracePacket();
+                        auto* td = dp->set_track_descriptor();
+                        td->set_uuid(uuid);
+                        auto* thd = td->set_thread();
+                        thd->set_pid(static_cast<int32_t>(pid));
+                        thd->set_tid(static_cast<int64_t>(tid));
+                        s_desc = true;
+                    }
+
+                    uint32_t pid = GetCurrentProcessId();
+                    uint64_t uuid = (static_cast<uint64_t>(pid) << 32) | (static_cast<uint64_t>(tid) & 0xFFFFFFFFULL);
+
                     auto pkt = ctx.NewTracePacket();
                     pkt->set_timestamp(
                         static_cast<uint64_t>(perfetto::base::GetWallTimeNs().count()));
                     auto* te = pkt->set_track_event();
+                    te->set_track_uuid(uuid);
                     te->set_name(name.str());
                     te->set_type(TrackEvent::TYPE_SLICE_BEGIN);
                     te->add_categories("poc_mt");
@@ -118,11 +136,15 @@ extern "C" __declspec(dllexport) void WriteMultiThreaded() {
                 std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
                 // END
-                TestDataSource::Trace([t, i, &name](TestDataSource::TraceContext ctx) {
+                TestDataSource::Trace([t, i, &name, tid = GetCurrentThreadId()](TestDataSource::TraceContext ctx) {
+                    uint32_t pid = GetCurrentProcessId();
+                    uint64_t uuid = (static_cast<uint64_t>(pid) << 32) | (static_cast<uint64_t>(tid) & 0xFFFFFFFFULL);
+
                     auto pkt = ctx.NewTracePacket();
                     pkt->set_timestamp(
                         static_cast<uint64_t>(perfetto::base::GetWallTimeNs().count()));
                     auto* te = pkt->set_track_event();
+                    te->set_track_uuid(uuid);
                     te->set_name(name.str());
                     te->set_type(TrackEvent::TYPE_SLICE_END);
                     te->add_categories("poc_mt");
