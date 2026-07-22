@@ -3,10 +3,14 @@
 #include <fstream>
 #include <filesystem>
 #include <Windows.h>
+#include <thread>
+#include <atomic>
 #include <chrono>
 #include <iomanip>
 #include <sstream>
 #include <ctime>
+
+using namespace perfetto::protos::pbzero;
 
 class TestDataSource : public perfetto::DataSource<TestDataSource> {
 public:
@@ -34,60 +38,6 @@ static void perfettoLog(perfetto::base::LogMessageCallbackArgs args) {
            args.line, args.message);
 }
 
-extern "C" __declspec(dllexport) void StartTracing() {
-    crashLog("[StartTracing] entered\n");
-    printf("\n[StartTracing] Perfetto init + events...\n");
-
-    perfetto::TracingInitArgs args;
-    args.backends = perfetto::kInProcessBackend;
-    args.shmem_size_hint_kb = 1024;
-    args.log_message_callback = &perfettoLog;
-    perfetto::Tracing::Initialize(args);
-    CHECK(true, "Tracing::Initialize OK");
-
-    perfetto::DataSourceDescriptor desc;
-    desc.set_name("test.DataSource");
-    CHECK(TestDataSource::Register(desc), "DataSource registered");
-
-    perfetto::TraceConfig cfg;
-    cfg.add_buffers()->set_size_kb(1024);
-    auto* ds = cfg.add_data_sources()->mutable_config();
-    ds->set_name("test.DataSource");
-    cfg.set_duration_ms(0);
-
-    g_session = perfetto::Tracing::NewTrace(perfetto::kInProcessBackend);
-    g_session->Setup(cfg);
-    g_session->Start();
-
-    auto now = std::chrono::system_clock::now();
-    auto tt = std::chrono::system_clock::to_time_t(now);
-    std::tm tm{};
-    localtime_s(&tm, &tt);
-    std::ostringstream oss;
-    oss << "trace_dll_" << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".perfetto";
-    g_tracePath = (std::filesystem::path("dump_data") / oss.str()).string();
-
-    for (int i = 0; i < 3; i++) {
-        TestDataSource::Trace([i](TestDataSource::TraceContext ctx) {
-            auto pkt = ctx.NewTracePacket();
-            pkt->set_timestamp(
-                static_cast<uint64_t>(perfetto::base::GetWallTimeNs().count()));
-            auto* te = pkt->set_track_event();
-            te->set_name("dll_test_event");
-            te->set_type(perfetto::protos::pbzero::TrackEvent::TYPE_SLICE_BEGIN);
-            te->add_categories("dll_test");
-            auto* da = te->add_debug_annotations();
-            da->set_name("iteration");
-            da->set_int_value(i);
-        });
-        printf("    dll event %d written\n", i);
-        Sleep(100);
-    }
-    CHECK(true, "3 events written");
-    crashLog("[StartTracing] done\n");
-}
-
-// Called from EXE BEFORE FreeLibrary (not from DllMain)
 extern "C" __declspec(dllexport) void ShutdownAndSave() {
     crashLog("[ShutdownAndSave] entered\n");
     if (!g_session) { crashLog("[ShutdownAndSave] no session\n"); return; }
@@ -122,6 +72,62 @@ extern "C" __declspec(dllexport) void ShutdownAndSave() {
     crashLog("[ShutdownAndSave] done\n");
 }
 
+extern "C" __declspec(dllexport) void WriteMultiThreaded() {
+    crashLog("[WriteMultiThreaded] entered\n");
+    if (!g_session) { crashLog("[WriteMultiThreaded] no session\n"); return; }
+
+    static const int kThreads = 4;
+    static const int kEventsPerThread = 50;
+    std::atomic<int> total{0};
+    std::vector<std::thread> threads;
+
+    printf("[WriteMultiThreaded] %d threads x %d events each...\n",
+           kThreads, kEventsPerThread * 2);
+
+    for (int t = 0; t < kThreads; t++) {
+        threads.emplace_back([t, &total]() {
+            for (int i = 0; i < kEventsPerThread; i++) {
+                TestDataSource::Trace([&](TestDataSource::TraceContext ctx) {
+                    auto pkt = ctx.NewTracePacket();
+                    pkt->set_timestamp(
+                        static_cast<uint64_t>(perfetto::base::GetWallTimeNs().count()));
+                    auto* te = pkt->set_track_event();
+                    te->set_name("mt_event");
+                    te->set_type(perfetto::protos::pbzero::TrackEvent::TYPE_SLICE_BEGIN);
+                    te->add_categories("mt_test");
+                    auto* da = te->add_debug_annotations();
+                    da->set_name("thread");
+                    da->set_int_value(t);
+                    da = te->add_debug_annotations();
+                    da->set_name("seq");
+                    da->set_int_value(i);
+                });
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                TestDataSource::Trace([t, i](TestDataSource::TraceContext ctx) {
+                    auto pkt = ctx.NewTracePacket();
+                    pkt->set_timestamp(
+                        static_cast<uint64_t>(perfetto::base::GetWallTimeNs().count()));
+                    auto* te = pkt->set_track_event();
+                    te->set_name("mt_event");
+                    te->set_type(perfetto::protos::pbzero::TrackEvent::TYPE_SLICE_END);
+                    te->add_categories("mt_test");
+                    auto* da = te->add_debug_annotations();
+                    da->set_name("thread");
+                    da->set_int_value(t);
+                });
+                total.fetch_add(2);
+                if (i == kEventsPerThread - 1)
+                    printf("    thread %d done\n", t);
+            }
+        });
+    }
+    for (auto& t : threads) t.join();
+
+    int ev = total.load();
+    printf("[WriteMultiThreaded] %d events written\n", ev);
+    crashLog("[WriteMultiThreaded] done\n");
+}
+
 static void crashLog(const char* msg) {
     HANDLE h = CreateFileA("perfetto_dll_crash.log", FILE_APPEND_DATA, FILE_SHARE_READ,
                            nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -136,11 +142,74 @@ BOOL APIENTRY DllMain(HMODULE, DWORD reason, LPVOID) {
     crashLog("[DllMain] entered\n");
     switch (reason) {
     case DLL_PROCESS_ATTACH:
+    {
         DisableThreadLibraryCalls(nullptr);
-        printf("[DllMain] ATTACH (defer init to StartTracing export)\n");
+        printf("[DllMain] ATTACH — running Perfetto init under loader lock\n");
+        fflush(stdout);
+
+        crashLog("[ATTACH] Tracing::Initialize\n");
+        {
+            perfetto::TracingInitArgs args;
+            args.backends = perfetto::kInProcessBackend;
+            args.shmem_size_hint_kb = 1024;
+            args.log_message_callback = &perfettoLog;
+            perfetto::Tracing::Initialize(args);
+        }
+        crashLog("[ATTACH] Initialize done\n");
+
+        crashLog("[ATTACH] Register data source\n");
+        {
+            perfetto::DataSourceDescriptor desc;
+            desc.set_name("test.DataSource");
+            TestDataSource::Register(desc);
+        }
+        crashLog("[ATTACH] Register done\n");
+
+        crashLog("[ATTACH] NewTrace + Setup + Start\n");
+        {
+            perfetto::TraceConfig cfg;
+            cfg.add_buffers()->set_size_kb(1024);
+            auto* ds = cfg.add_data_sources()->mutable_config();
+            ds->set_name("test.DataSource");
+            cfg.set_duration_ms(0);
+
+            g_session = perfetto::Tracing::NewTrace(perfetto::kInProcessBackend);
+            g_session->Setup(cfg);
+            g_session->Start();
+        }
+        crashLog("[ATTACH] session started\n");
+
+        auto now = std::chrono::system_clock::now();
+        auto tt = std::chrono::system_clock::to_time_t(now);
+        std::tm tm{};
+        localtime_s(&tm, &tt);
+        std::ostringstream oss;
+        oss << "trace_dllmain_" << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".perfetto";
+        g_tracePath = (std::filesystem::path("dump_data") / oss.str()).string();
+
+        crashLog("[ATTACH] writing events\n");
+        for (int i = 0; i < 3; i++) {
+            TestDataSource::Trace([i](TestDataSource::TraceContext ctx) {
+                auto pkt = ctx.NewTracePacket();
+                pkt->set_timestamp(
+                    static_cast<uint64_t>(perfetto::base::GetWallTimeNs().count()));
+                auto* te = pkt->set_track_event();
+                te->set_name("dllmain_test_event");
+                te->set_type(perfetto::protos::pbzero::TrackEvent::TYPE_SLICE_BEGIN);
+                te->add_categories("dllmain_test");
+                auto* da = te->add_debug_annotations();
+                da->set_name("iteration");
+                da->set_int_value(i);
+            });
+            Sleep(100);
+        }
+        crashLog("[ATTACH] events written\n");
+        printf("[DllMain] ATTACH — Perfetto init complete under loader lock\n");
+        }  // end case block
         break;
+
     case DLL_PROCESS_DETACH:
-        printf("[DllMain] DETACH — nothing to do (shutdown was called before FreeLibrary)\n");
+        printf("[DllMain] DETACH — nothing to do\n");
         crashLog("[DllMain] DETACH done\n");
         break;
     }

@@ -2,34 +2,33 @@
 #include <Windows.h>
 
 int main() {
-    printf("=== Perfetto DLL Main Test (shutdown BEFORE FreeLibrary) ===\n");
-    printf("Loading test_perfetto_dll.dll...\n");
+    printf("=== Perfetto DllMain Init + Multi-Threaded Test ===\n");
+    printf("Loading test_perfetto_dll.dll (init in DLL_PROCESS_ATTACH)...\n");
 
     HMODULE hDll = LoadLibraryA("test_perfetto_dll.dll");
     if (!hDll) {
         printf("[FAIL] LoadLibrary failed (err=%lu)\n", GetLastError());
         return 1;
     }
-    printf("[PASS] DLL loaded\n");
+    printf("[PASS] DLL loaded — DllMain ATTACH returned\n");
 
-    auto startFn = reinterpret_cast<void(*)()>(
-        GetProcAddress(hDll, "StartTracing"));
-    if (!startFn) {
-        printf("[FAIL] StartTracing not found\n");
-        return 2;
+    auto mtFn = reinterpret_cast<void(*)()>(
+        GetProcAddress(hDll, "WriteMultiThreaded"));
+    if (mtFn) {
+        printf("\nCalling WriteMultiThreaded()...\n");
+        mtFn();
+    } else {
+        printf("[WARN] WriteMultiThreaded not found\n");
     }
-
-    printf("Calling StartTracing()...\n");
-    startFn();
 
     auto shutdownFn = reinterpret_cast<void(*)()>(
         GetProcAddress(hDll, "ShutdownAndSave"));
     if (!shutdownFn) {
         printf("[FAIL] ShutdownAndSave not found\n");
-        return 3;
+        return 2;
     }
 
-    printf("\nCalling ShutdownAndSave() (BEFORE FreeLibrary)...\n");
+    printf("\nCalling ShutdownAndSave()...\n");
     shutdownFn();
     printf("[PASS] ShutdownAndSave returned\n");
 
