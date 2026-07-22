@@ -38,17 +38,19 @@ static void perfettoLog(perfetto::base::LogMessageCallbackArgs args) {
 
 static void doStartTracing() {
     crashLog("[TCP] doStartTracing entered\n");
-    printf("\n[TCP] start — Perfetto init...\n");
+    printf("\n[TCP] start — Perfetto init + session...\n");
 
     perfetto::TracingInitArgs args;
     args.backends = perfetto::kInProcessBackend;
     args.shmem_size_hint_kb = 4096;
     args.log_message_callback = &perfettoLog;
     perfetto::Tracing::Initialize(args);
+    crashLog("[TCP] Initialize done\n");
 
     perfetto::DataSourceDescriptor desc;
     desc.set_name("test.DataSource");
     TestDataSource::Register(desc);
+    crashLog("[TCP] Register done\n");
 
     auto now = std::chrono::system_clock::now();
     auto tt = std::chrono::system_clock::to_time_t(now);
@@ -235,6 +237,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD reason, LPVOID) {
     case DLL_PROCESS_ATTACH:
         DisableThreadLibraryCalls(nullptr);
         printf("[DllMain] ATTACH — starting TCP listener on port 12345\n");
+        crashLog("[ATTACH] starting TCP listener\n");
         std::thread(tcpListener).detach();
         Sleep(200);
         break;
