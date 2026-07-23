@@ -14,7 +14,6 @@ public:
     static void TraceSlice(const std::string& name,
                            const std::string& category,
                            char phase,
-                           uint32_t threadId,
                            const nlohmann::json& args);
 
     static void registerHookName(uint32_t hookId, const std::string& name);

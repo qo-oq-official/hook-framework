@@ -51,15 +51,13 @@ extern "C" __declspec(dllexport)  void StartTracing() {
 }
 
 extern "C" __declspec(dllexport)  void MultiThreaded() {
-    crashLog("[TCP] doMultiThreaded entered\n");
-
-
+    crashLog("[DLL] doMultiThreaded entered\n");
     static const int kThreads = 4;
     static const int kEvents = 100;
     std::atomic<int> total{0};
     std::vector<std::thread> threads;
 
-    printf("[TCP] multi — %d threads x %d events...\n", kThreads, kEvents * 2);
+    printf("[DLL] multi — %d threads x %d events...\n", kThreads, kEvents * 2);
 
     for (int t = 0; t < kThreads; t++) {
         threads.emplace_back([t, &total]() {
@@ -81,19 +79,19 @@ extern "C" __declspec(dllexport)  void MultiThreaded() {
                     debug_annotation->set_name("key_o");
                     debug_annotation->set_int_value(i);
                 });
-
+                perfetto::TrackEvent::Flush();
                 total.fetch_add(2);
             }
         });
     }
     for (auto& t : threads) t.join();
-    printf("[DLL] multi — %d events written\n", total.load());
+    printf("[DLL] multi  %d events written\n", total.load());
     crashLog("[DLL] doMultiThreaded done\n");
 }
 
 extern "C" __declspec(dllexport)  void ShutdownAndSave() {
     crashLog("[DLL] doShutdown entered\n");
-    crashLog("[TCP] doShutdown done\n");
+    crashLog("[DLL] doShutdown done\n");
 }
 
 static void crashLog(const char* msg) {
@@ -110,7 +108,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD reason, LPVOID) {
     crashLog("[DllMain] entered\n");
     switch (reason) {
     case DLL_PROCESS_ATTACH:
-        printf("[DllMain] ATTACH — starting TCP listener on port 12345\n");
+        printf("[DllMain] ATTACH — starting DLL listener on port 12345\n");
         break;
     case DLL_PROCESS_DETACH:
         printf("[DllMain] DETACH — signaling listener to stop\n");

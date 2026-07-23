@@ -11,31 +11,9 @@
 #include <sstream>
 #include <ctime>
 
+PERFETTO_TRACK_EVENT_STATIC_STORAGE();
+
 namespace hookfw {
-
-static void tlog(const char* msg, const char* dir = nullptr) {
-    OutputDebugStringA(msg);
-    char path[MAX_PATH];
-    if (dir && dir[0]) {
-        wsprintfA(path, "%s\\perfetto_shutdown.log", dir);
-    } else {
-        wsprintfA(path, "perfetto_shutdown.log");
-    }
-    HANDLE h = CreateFileA(path, FILE_APPEND_DATA,
-                           FILE_SHARE_READ, nullptr, OPEN_ALWAYS,
-                           FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (h != INVALID_HANDLE_VALUE) {
-        DWORD w;
-        SYSTEMTIME st;
-        GetLocalTime(&st);
-        char buf[256];
-        int len = wsprintfA(buf, "%02d:%02d:%02d.%03d %s\r\n",
-                            st.wHour, st.wMinute, st.wSecond, st.wMilliseconds, msg);
-        WriteFile(h, buf, len, &w, nullptr);
-        CloseHandle(h);
-    }
-}
-
 PerfettoTracer& PerfettoTracer::instance() {
     static PerfettoTracer inst;
     return inst;
@@ -63,136 +41,25 @@ static void perfettoLogCallback(perfetto::base::LogMessageCallbackArgs args) {
     }
 }
 
-bool PerfettoTracer::initialize(const std::string& outputDir) {
+bool PerfettoTracer::initialize() {
     if (active_) return true;
-
-    tlog("PerfettoTracer::initialize enter");
-
-    outputDir_ = outputDir;
-    std::filesystem::create_directories(outputDir_);
-
-    LOG_INFO("PerfettoTracer initializing (buffer={}KB flush={}ms)...",
-             config_.bufferSizeKb, config_.flushPeriodMs);
-
+    active_ = true;
     perfetto::TracingInitArgs args;
-    args.backends = perfetto::kInProcessBackend;
-    args.shmem_size_hint_kb = config_.bufferSizeKb;
+    args.backends = perfetto::kSystemBackend;
+    args.shmem_size_hint_kb = 32768;
+    args.shmem_page_size_hint_kb = 64;  
     args.log_message_callback = &perfettoLogCallback;
 
-    tlog("PerfettoTracer: calling Tracing::Initialize");
+    LOG_INFO("PerfettoTracer: calling Tracing::Initialize");
     perfetto::Tracing::Initialize(args);
-    tlog("PerfettoTracer: Tracing::Initialize done");
-
-    HookDataSource::Register();
-
-    auto now = std::chrono::system_clock::now();
-    auto tt = std::chrono::system_clock::to_time_t(now);
-    std::tm tm{};
-    localtime_s(&tm, &tt);
-    std::ostringstream oss;
-    oss << "trace_" << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S") << ".perfetto";
-    tracePath_ = (std::filesystem::path(outputDir_) / oss.str()).string();
-
-    traceFileHandle_ = reinterpret_cast<void*>(CreateFileA(tracePath_.c_str(),
-        GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL, nullptr));
-    auto traceHandle = static_cast<HANDLE>(traceFileHandle_);
-    if (traceHandle == INVALID_HANDLE_VALUE) {
-        tlog("PerfettoTracer: failed to create trace file");
-        LOG_ERROR("Failed to create trace file: {}", tracePath_);
-        return false;
-    }
-
-    perfetto::TraceConfig traceCfg;
-    auto* buf = traceCfg.add_buffers();
-    buf->set_size_kb(config_.bufferSizeKb);
-
-    auto* ds = traceCfg.add_data_sources()->mutable_config();
-    ds->set_name("hookfw.HookDataSource");
-
-    traceCfg.set_duration_ms(0);
-    traceCfg.set_flush_period_ms(config_.flushPeriodMs);
-
-    if (config_.maxFileSizeBytes > 0) {
-        traceCfg.set_max_file_size_bytes(config_.maxFileSizeBytes);
-    }
-
-    tlog("PerfettoTracer: creating session");
-    session_ = perfetto::Tracing::NewTrace(perfetto::kInProcessBackend);
-
-    int fd = _open_osfhandle(reinterpret_cast<intptr_t>(traceFileHandle_), 0);
-
-    tlog("PerfettoTracer: calling Setup with fd");
-    session_->Setup(traceCfg, fd);
-
-    tlog("PerfettoTracer: calling Start");
-    session_->Start();
-
-    shutdownEvent_ = CreateEventA(nullptr, TRUE, FALSE, nullptr);
-    shutdownThread_ = CreateThread(nullptr, 0, [](LPVOID param) -> DWORD {
-        auto* event = static_cast<HANDLE>(param);
-        WaitForSingleObject(event, INFINITE);
-        perfetto::Tracing::Shutdown();
-        return 0;
-    }, shutdownEvent_, 0, nullptr);
-
-    active_ = true;
-    LOG_INFO("PerfettoTracer started, output={}", tracePath_);
-    tlog("PerfettoTracer::initialize done");
+    LOG_INFO("PerfettoTracer: Tracing::Initialize done");
+    perfetto::TrackEvent::Register();
+    LOG_INFO("PerfettoTracer: TrackEvent::Register done");
     return true;
 }
 
 void PerfettoTracer::shutdown() {
-    tlog("PerfettoTracer::shutdown enter", outputDir_.c_str());
-
-    if (!active_) {
-        tlog("PerfettoTracer::shutdown SKIP (not active)", outputDir_.c_str());
-        return;
-    }
-
-    LOG_INFO("PerfettoTracer shutting down...");
-
-    tlog("PerfettoTracer: calling Stop", outputDir_.c_str());
-    try {
-        session_->Stop();
-        tlog("PerfettoTracer: Stop done", outputDir_.c_str());
-    } catch (const std::exception& ex) {
-        tlog("PerfettoTracer: Stop EXCEPTION", outputDir_.c_str());
-        LOG_ERROR("PerfettoTracer::Stop exception: {}", ex.what());
-    }
-
-    tlog("PerfettoTracer: resetting session", outputDir_.c_str());
-    session_.reset();
-    tlog("PerfettoTracer: session reset done", outputDir_.c_str());
-
-    if (shutdownEvent_) {
-        tlog("PerfettoTracer: signaling shutdown thread", outputDir_.c_str());
-        SetEvent(static_cast<HANDLE>(shutdownEvent_));
-    }
-    if (shutdownThread_) {
-        tlog("PerfettoTracer: waiting for shutdown thread (2s timeout)", outputDir_.c_str());
-        DWORD r = WaitForSingleObject(static_cast<HANDLE>(shutdownThread_), 2000);
-        if (r == WAIT_OBJECT_0)
-            tlog("PerfettoTracer: shutdown thread completed", outputDir_.c_str());
-        else
-            tlog("PerfettoTracer: shutdown thread timeout, continuing", outputDir_.c_str());
-        CloseHandle(static_cast<HANDLE>(shutdownThread_));
-        shutdownThread_ = nullptr;
-    }
-    if (shutdownEvent_) {
-        CloseHandle(static_cast<HANDLE>(shutdownEvent_));
-        shutdownEvent_ = nullptr;
-    }
-
-    if (traceFileHandle_) {
-        CloseHandle(static_cast<HANDLE>(traceFileHandle_));
-        traceFileHandle_ = nullptr;
-        LOG_INFO("Perfetto trace saved: {}", tracePath_);
-        tlog("PerfettoTracer: file closed", outputDir_.c_str());
-    }
-
-    active_ = false;
-    tlog("PerfettoTracer::shutdown exit", outputDir_.c_str());
+    
 }
 
 }

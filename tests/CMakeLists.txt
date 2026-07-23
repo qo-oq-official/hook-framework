@@ -87,7 +87,7 @@ add_executable(test_pdb_runner test_pdb_runner.cpp)
 add_library(test_perfetto_dll SHARED test_perfetto_dll.cpp)
 target_link_libraries(test_perfetto_dll PRIVATE perfetto_sdk ws2_32)
 target_include_directories(test_perfetto_dll PRIVATE ${CMAKE_SOURCE_DIR}/third_party/perfetto-cpp-sdk)
-target_compile_definitions(test_perfetto_dll PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX)
+target_compile_definitions(test_perfetto_dll PRIVATE PERFETTO_SDK_DISABLE_SHLIB_EXPORT WIN32_LEAN_AND_MEAN NOMINMAX)
 target_compile_options(test_perfetto_dll PRIVATE /bigobj)
 
 add_executable(test_perfetto_dll_runner test_perfetto_dll_runner.cpp)

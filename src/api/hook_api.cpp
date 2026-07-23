@@ -167,11 +167,7 @@ bool HookEngine::initialize(const std::string& configPath) {
                 impl_->outputDir = (std::filesystem::path(impl_->dllDir) / impl_->outputDir).string();
             }
         }
-
-        PerfettoTracer::instance().setOutputDir(impl_->outputDir);
-
         if (configOpt) {
-            PerfettoTracer::instance().setConfig(configOpt->perfetto);
             int traceCount = 0, captureCount = 0;
             for (const auto& hookDesc : configOpt->hooks) {
                 std::string funcName;

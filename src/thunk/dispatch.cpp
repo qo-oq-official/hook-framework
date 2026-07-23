@@ -2,6 +2,7 @@
 #include "thunk/hook_context.h"
 #include "engine/hook_engine.h"
 #include "output/hook_data_source.h"
+#include "output/perfetto_tracer.h"
 #include "logging/crash_log.h"
 #include <Windows.h>
 #include <cstring>
@@ -110,8 +111,7 @@ void hookfw_quick_trace(hookfw::ThunkData* data,
     args["arg2"] = std::format("{:#x}", a2);
     args["arg3"] = std::format("{:#x}", a3);
 
-    hookfw::HookDataSource::TraceSlice(name, "trace", 'B',
-                                        GetCurrentThreadId(), args);
+    hookfw::HookDataSource::TraceSlice(name, "trace", 'B', args);
 }
 
 void hookfw_quick_trace_exit(hookfw::ThunkData* data,
@@ -124,8 +124,7 @@ void hookfw_quick_trace_exit(hookfw::ThunkData* data,
         args["return"] = std::format("{:#x}", retval);
     }
 
-    hookfw::HookDataSource::TraceSlice(name, "trace", 'E',
-                                        GetCurrentThreadId(), args);
+    hookfw::HookDataSource::TraceSlice(name, "trace", 'E', args);
 }
 
 void hookfw_dispatch(hookfw::ThunkData* data,

@@ -80,8 +80,7 @@ void TypedCollector::onEntry(const HookContext& ctx) {
 
         nlohmann::json perfettoArgs;
         buildPerfettoArgs(argsJson, customData, perfettoArgs["Entry"]);
-        HookDataSource::TraceSlice(functionName_, moduleName_, 'B',
-                                    GetCurrentThreadId(), perfettoArgs);
+        HookDataSource::TraceSlice(functionName_, moduleName_, 'B', perfettoArgs);
     } catch (const std::exception& ex) {
         LOG_ERROR("TypedCollector::onEntry exception: {}", ex.what());
     }
@@ -116,8 +115,7 @@ void TypedCollector::onExit(const HookContext& ctx) {
         buildPerfettoArgs(argsJson, customData, perfettoArgs["Exit"]);
         perfettoArgs["return"] = returnValue;
         perfettoArgs["hook_id"] = ctx.hookId;
-        HookDataSource::TraceSlice(functionName_, moduleName_, 'E',
-                                    GetCurrentThreadId(), perfettoArgs);
+        HookDataSource::TraceSlice(functionName_, moduleName_, 'E', perfettoArgs);
     } catch (const std::exception& ex) {
         LOG_ERROR("TypedCollector::onExit exception: {}", ex.what());
     }

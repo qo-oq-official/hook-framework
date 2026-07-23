@@ -11,9 +11,6 @@ set(HOOK_FW_SOURCES
     collector/typed_collector.cpp
     collector/collector_factory.cpp
     collector/class_cache_collector.cpp
-    com/com_registry.cpp
-    com/com_hook_engine.cpp
-    com/com_interface_capture.cpp
     replacer/dll_replacer.cpp
     replacer/callback_replacer.cpp
     output/hook_data_source.cpp

@@ -1,5 +1,7 @@
 #include "collector/class_cache_collector.h"
 #include "collector/typed_collector.h"
+#include "collector/sw_class/CObject.h"
+#include "collector/sw_class/CRuntimeClass.h"
 #include "logging/logger.h"
 #include <nlohmann/json.hpp>
 #include <format>
@@ -64,33 +66,6 @@ static nlohmann::json readClassName(void* crt) {
         for (char ch : s) { if (static_cast<unsigned char>(ch) < 0x20 && ch != '\0') { allPrintable = false; break; } }
         if (allPrintable) j["str"] = s;
     }
-
-    // 2. std::wstring display (wide char → UTF-8)
-    if (actualLen >= 2) {
-        auto* wptr = reinterpret_cast<const wchar_t*>(namePtr);
-        size_t wlen = actualLen / 2;
-        size_t nullPos = wlen;
-        for (size_t i = 0; i < wlen && isReadableMemory(wptr + i, 2); i++) {
-            if (wptr[i] == 0) { nullPos = i; break; }
-        }
-        if (nullPos > 0 && nullPos <= wlen) {
-            std::string utf8 = wideToUtf8(wptr, nullPos);
-            if (!utf8.empty()) j["wstr"] = utf8;
-        }
-    }
-
-    // 3. Hex dump (first 32 bytes)
-    size_t hexLen = actualLen < 32 ? actualLen : 32;
-    std::string hex;
-    for (size_t i = 0; i < hexLen; i++) {
-        if (!isReadableMemory(namePtr + i, 1)) break;
-        char buf[4];
-        sprintf_s(buf, "%02X ", static_cast<unsigned int>(namePtr[i]));
-        hex += buf;
-    }
-    if (!hex.empty()) hex.pop_back();
-    j["hex"] = hex;
-
     return j;
 }
 
@@ -262,11 +237,43 @@ void ReadObjectCollector::onExitCustom(const HookContext& ctx, nlohmann::json& a
     auto* obj = ctx.returnValue<void*>();
     if (obj && isReadableMemory(obj, 8)) {
         uint64_t vt = *reinterpret_cast<uint64_t*>(obj);
-        if (isReadableMemory(reinterpret_cast<void*>(vt), 24)) {
+        if (isReadableMemory(reinterpret_cast<void*>(vt), 8 * 3)) {
             uint64_t serializeAddr = *reinterpret_cast<uint64_t*>(
                 reinterpret_cast<uint8_t*>(vt) + 0x10);
+            HMODULE hModule = NULL;
+            GetModuleHandleEx(
+                GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                (LPCTSTR)serializeAddr,
+                &hModule
+            );
+            // hModule IS the DLL base address (HMODULE == base address in process space)
+
+            // Get DLL path:
+            CHAR path[MAX_PATH];
+            GetModuleFileName(hModule, path, MAX_PATH);
             args["serializeAddr"] = std::format("{:#x}", serializeAddr);
-        } else {
+            args["dllAddr"] = std::format("{:#x}",  (uintptr_t)hModule);
+            args["dll"] = std::string(path);
+        }         
+        if (isReadableMemory(reinterpret_cast<void*>(vt), 8 * 6)) {
+            uint64_t serializeAddr = *reinterpret_cast<uint64_t*>(
+                reinterpret_cast<uint8_t*>(vt) + 0x28);
+            HMODULE hModule = NULL;
+            GetModuleHandleEx(
+                GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                (LPCTSTR)serializeAddr,
+                &hModule
+            );
+            // hModule IS the DLL base address (HMODULE == base address in process space)
+
+            // Get DLL path:
+            CHAR path[MAX_PATH];
+            GetModuleFileName(hModule, path, MAX_PATH);
+            args["serializeAddr2"] = std::format("{:#x}", serializeAddr);
+            args["dllAddr2"] = std::format("{:#x}",  (uintptr_t)hModule);
+            args["dll2"] = std::string(path);
+        } 
+        else {
             LOG_WARN("ReadObjectCollector: vtable unreadable at {:#x}", vt);
         }
     } else if (obj) {

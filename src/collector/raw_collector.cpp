@@ -39,8 +39,7 @@ static nlohmann::json ctxToJson(const HookContext& ctx) {
 
 void RawCollector::onEntry(const HookContext& ctx) {
     try {
-        HookDataSource::TraceSlice(functionName_, moduleName_, 'B',
-                                    GetCurrentThreadId(), ctxToJson(ctx));
+        HookDataSource::TraceSlice(functionName_, moduleName_, 'B', ctxToJson(ctx));
     } catch (const std::exception& ex) {
         LOG_ERROR("RawCollector::onEntry exception: {}", ex.what());
     }
@@ -50,8 +49,7 @@ void RawCollector::onExit(const HookContext& ctx) {
     try {
         nlohmann::json j = ctxToJson(ctx);
         j["return_value"] = std::format("{:#x}", ctx.rax);
-        HookDataSource::TraceSlice(functionName_, moduleName_, 'E',
-                                    GetCurrentThreadId(), j);
+        HookDataSource::TraceSlice(functionName_, moduleName_, 'E', j);
     } catch (const std::exception& ex) {
         LOG_ERROR("RawCollector::onExit exception: {}", ex.what());
     }

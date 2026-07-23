@@ -1,12 +1,14 @@
 #pragma once
 #include "config/perfetto_config.h"
+#define PERFETTO_LOG_LEVEL 0 
+#include "perfetto.h"
 #include <memory>
 #include <string>
 #include <cstdint>
 
-namespace perfetto {
-class TracingSession;
-}
+PERFETTO_DEFINE_CATEGORIES(
+    perfetto::Category("SW").SetDescription("")
+);
 
 namespace hookfw {
 
@@ -14,25 +16,13 @@ class PerfettoTracer {
 public:
     static PerfettoTracer& instance();
 
-    bool initialize(const std::string& outputDir);
+    bool initialize();
     void shutdown();
     bool isActive() const { return active_; }
-
-    void setOutputDir(const std::string& dir) { outputDir_ = dir; }
-    const std::string& outputDir() const { return outputDir_; }
-    void setConfig(const PerfettoConfig& cfg) { config_ = cfg; }
 
 private:
     PerfettoTracer() = default;
     ~PerfettoTracer();
-
-    std::unique_ptr<perfetto::TracingSession> session_;
-    PerfettoConfig config_;
-    std::string outputDir_;
-    std::string tracePath_;
-    void* traceFileHandle_ = nullptr;
-    void* shutdownEvent_ = nullptr;   // HANDLE, signaled at shutdown
-    void* shutdownThread_ = nullptr;  // HANDLE, runs Tracing::Shutdown
     bool active_ = false;
 };
 
