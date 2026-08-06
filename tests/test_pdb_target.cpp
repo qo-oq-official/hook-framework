@@ -9,6 +9,12 @@
 #else
 #define TEST_API __declspec(dllimport)
 #endif
+namespace {
+int pdb_deep_l3(int x) { 
+    throw;
+    return x * 2; 
+}
+}
 
 extern "C" {
 
@@ -97,7 +103,6 @@ TEST_API __declspec(noinline) int pdb_is_positive(int x) {
 
 // ── deep call chain for stack trace test ──────────────────────────────
 
-TEST_API __declspec(noinline) int pdb_deep_l3(int x) { return x * 2; }
 
 static int __declspec(noinline) pdb_deep_l2(int x) { return pdb_deep_l3(x) + 1; }
 static int __declspec(noinline) pdb_deep_l1(int x) { return pdb_deep_l2(x) + 1; }
@@ -107,3 +112,5 @@ TEST_API __declspec(noinline) int pdb_deep_call(int x) {
 }
 
 }
+
+

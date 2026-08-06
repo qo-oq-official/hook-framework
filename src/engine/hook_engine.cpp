@@ -141,14 +141,6 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
             hook->id, hook->resolvedAddress, replacement, callOriginal);
     }
 
-    if (!desc.injectorName.empty()) {
-        hook->injector = InjectorRegistry::instance().create(desc.injectorName);
-        if (!hook->injector) {
-            LOG_WARN("Injector '{}' not found for hook id={}, continuing without injector",
-                     desc.injectorName, hook->id);
-        }
-    }
-
     if (!hook->thunkSlot) {
         LOG_ERROR("Failed to allocate thunk for hook id={}", hook->id);
         return 0;
@@ -246,6 +238,7 @@ bool HookEngineCore::installAll() {
         if (attached % 2 == 0) {
             LONG r = DetourTransactionCommit();
             if (r == NO_ERROR) {
+                LOG_DEBUG("Commit succeeded hook->id {}", hook->id);
                 DetourTransactionBegin();
                 DetourUpdateThread(GetCurrentThread());
             } else {
@@ -263,6 +256,8 @@ bool HookEngineCore::installAll() {
         LONG r = DetourTransactionCommit();
         if (r != NO_ERROR) {
             LOG_ERROR("Final commit failed, error={}", r);
+        } else {
+            LOG_DEBUG("Commit succeeded");
         }
     }
 

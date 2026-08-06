@@ -49,21 +49,6 @@ add_executable(test_rva_integration test_rva_integration.cpp)
 target_link_libraries(test_rva_integration PRIVATE nlohmann_json)
 target_compile_definitions(test_rva_integration PRIVATE WIN32_LEAN_AND_MEAN)
 
-add_executable(test_injector test_injector.cpp)
-target_link_libraries(test_injector PRIVATE hook_framework nlohmann_json)
-target_include_directories(test_injector PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/generated)
-target_compile_definitions(test_injector PRIVATE WIN32_LEAN_AND_MEAN)
-
-add_executable(test_injector_modes test_injector_modes.cpp)
-target_link_libraries(test_injector_modes PRIVATE hook_framework nlohmann_json)
-target_include_directories(test_injector_modes PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/generated)
-target_compile_definitions(test_injector_modes PRIVATE WIN32_LEAN_AND_MEAN)
-
-add_executable(test_injector_struct test_injector_struct.cpp)
-target_link_libraries(test_injector_struct PRIVATE hook_framework nlohmann_json)
-target_include_directories(test_injector_struct PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src/injector ${CMAKE_BINARY_DIR}/generated)
-target_compile_definitions(test_injector_struct PRIVATE WIN32_LEAN_AND_MEAN)
-
 add_executable(test_perfetto_params test_perfetto_params.cpp)
 target_link_libraries(test_perfetto_params PRIVATE hook_framework)
 target_include_directories(test_perfetto_params PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_BINARY_DIR}/generated)

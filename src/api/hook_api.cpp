@@ -67,22 +67,6 @@ HookBuilder& HookBuilder::replace(void* replacementFunc) {
     return *this;
 }
 
-HookBuilder& HookBuilder::replaceFromDll(const std::string& dllPath, const std::string& funcName) {
-    impl_->desc.replacerModule = dllPath;
-    impl_->desc.replacerSymbol = funcName;
-    impl_->desc.action = HookAction::Replace;
-    return *this;
-}
-
-HookBuilder& HookBuilder::injector(const std::string& name) {
-    impl_->desc.injectorName = name;
-    return *this;
-}
-
-HookBuilder& HookBuilder::injectorMode(InjectorMode mode) {
-    impl_->desc.injectorMode = mode;
-    return *this;
-}
 
 bool HookBuilder::install() {
     try {
@@ -102,10 +86,7 @@ bool HookBuilder::install() {
         std::shared_ptr<ReplacerBase> replacer;
         if (impl_->replacePtr) {
             replacer = std::make_shared<CallbackReplacer>(impl_->replacePtr);
-        } else if (!impl_->desc.replacerModule.empty()) {
-            replacer = std::make_shared<DllReplacer>(
-                impl_->desc.replacerModule, impl_->desc.replacerSymbol);
-        }
+        } 
 
         return HookEngineCore::instance().addHook(impl_->desc, collector, replacer) != 0;
     } catch (const std::exception& ex) {

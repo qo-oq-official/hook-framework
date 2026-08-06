@@ -39,7 +39,7 @@ static void doDispatchBody(hookfw::ThunkData* data,
                            uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3,
                            uint64_t origRSP, uint64_t phase, void* xmmPtr) {
     auto* hook = hookfw::HookEngineCore::instance().getHookById(data->hookId);
-    if (!hook || (!hook->collector && !hook->injector)) return;
+    if (!hook || !hook->collector) return;
 
     hookfw::HookContext ctx{};
     ctx.hookId = data->hookId;
@@ -71,10 +71,6 @@ static void doDispatchBody(hookfw::ThunkData* data,
             }
         }
 
-        if (hook->injector && hook->descriptor.injectorMode == hookfw::InjectorMode::Pre) {
-            hook->injector->onInject(ctx);
-        }
-
         if (hook->collector) {
             hook->collector->onEntry(ctx);
         }
@@ -86,10 +82,6 @@ static void doDispatchBody(hookfw::ThunkData* data,
         ctx.r9 = origRSP;
         if (xmmPtr) {
             memcpy(ctx.xmm0, xmmPtr, 16);
-        }
-
-        if (hook->injector && hook->descriptor.injectorMode == hookfw::InjectorMode::Post) {
-            hook->injector->onInject(ctx);
         }
 
         if (hook->collector) {

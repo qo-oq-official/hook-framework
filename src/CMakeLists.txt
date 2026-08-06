@@ -1,10 +1,6 @@
 set(HOOK_FW_SOURCES
     dllmain.cpp
     engine/hook_engine.cpp
-    injector/injector_registry.cpp
-    injector/test_read_injector.cpp
-    injector/test_mode_injectors.cpp
-    injector/test_struct_injectors.cpp
     thunk/thunk_manager.cpp
     thunk/dispatch.cpp
     collector/raw_collector.cpp

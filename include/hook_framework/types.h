@@ -49,11 +49,6 @@ enum class HookMode : uint8_t {
     Capture,
 };
 
-enum class InjectorMode : uint8_t {
-    Pre,     // injector runs before original function
-    Post,    // injector runs after original function (can modify return value)
-};
-
 struct ParamDescriptor {
     std::string name;
     ParamType type;
@@ -81,7 +76,6 @@ struct HookDescriptor {
     std::string replacerSymbol;
     std::string customCollectorName;
     std::string injectorName;
-    InjectorMode injectorMode = InjectorMode::Pre;
     std::string displayName;
 };
 

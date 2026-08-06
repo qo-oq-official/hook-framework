@@ -107,7 +107,7 @@ EXAMPLES:
   injector --pid 1234 --dll hook_framework.dll
   injector --name notepad.exe --dll hook_framework.dll
   injector --exe target.exe --dll hook_framework.dll
-  injector --exe target.exe --dll hook_framework.dll --args "-config hooks.json"
+  injector --exe target.exe --dll hook_framework.dll --args "the target args"
 )";
         return argc < 3 ? 1 : 0;
     }

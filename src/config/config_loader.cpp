@@ -90,14 +90,6 @@ std::optional<FrameworkConfig> ConfigLoader::load(const std::string& filePath) {
                 desc.customCollectorName = hookJson["custom_collector_name"].get<std::string>();
             }
 
-            if (hookJson.contains("injector")) {
-                desc.injectorName = hookJson["injector"].get<std::string>();
-            }
-            if (hookJson.contains("injector_mode")) {
-                std::string m = hookJson["injector_mode"].get<std::string>();
-                desc.injectorMode = (m == "post") ? InjectorMode::Post : InjectorMode::Pre;
-            }
-
             if (hookJson.contains("params") && hookJson["params"].is_array()) {
                 for (const auto& paramJson : hookJson["params"]) {
                     ParamDescriptor param;
