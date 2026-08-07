@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cmath>
+#include <stdexcept>
 
 #ifdef TEST_PDB_EXPORTS
 #define TEST_API __declspec(dllexport)
@@ -10,10 +11,26 @@
 #define TEST_API __declspec(dllimport)
 #endif
 namespace {
-int pdb_deep_l3(int x) { 
+// ── deep call chain with exception ─────────────────────────────────────
+__declspec(noinline) int pdb_deep_l3(int x) { 
     throw;
     return x * 2; 
 }
+}
+__declspec(noinline) int pdb_deep_l2(int x) {
+    return pdb_deep_l3(x) + 1;
+}
+
+__declspec(noinline) int pdb_deep_l1(int x) {
+    return pdb_deep_l2(x) + 1;
+}
+
+__declspec(noinline) int pdb_deep_call(int x) {
+    try {
+        return pdb_deep_l1(x) + 1;
+    } catch (...) {
+        return -1;  // exception indicator
+    }
 }
 
 extern "C" {
@@ -101,14 +118,15 @@ TEST_API __declspec(noinline) int pdb_is_positive(int x) {
     return x > 0 ? 1 : 0;
 }
 
-// ── deep call chain for stack trace test ──────────────────────────────
 
+// ── >4 args test (exercises stack parameter path) ─────────────────────
 
-static int __declspec(noinline) pdb_deep_l2(int x) { return pdb_deep_l3(x) + 1; }
-static int __declspec(noinline) pdb_deep_l1(int x) { return pdb_deep_l2(x) + 1; }
+TEST_API __declspec(noinline) int pdb_sum6(int a, int b, int c, int d, int e, int f) {
+    return a + b + c + d + e + f;
+}
 
-TEST_API __declspec(noinline) int pdb_deep_call(int x) {
-    return pdb_deep_l1(x) + 1;
+TEST_API __declspec(noinline) int pdb_sum9(int a, int b, int c, int d, int e, int f, double j, double i, double k) {
+    return a + b + c + d + e + f + i + j +k;
 }
 
 }

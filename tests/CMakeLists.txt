@@ -62,7 +62,7 @@ target_include_directories(test_rva_scale PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAK
 
 add_library(test_pdb_target SHARED test_pdb_target.cpp)
 target_compile_definitions(test_pdb_target PRIVATE TEST_PDB_EXPORTS)
-target_compile_options(test_pdb_target PRIVATE /Oy- /Zi)
+target_compile_options(test_pdb_target PRIVATE /Oy- /Zi /EHa)
 target_link_options(test_pdb_target PRIVATE /DEBUG:FULL)
 
 add_executable(test_pdb_runner test_pdb_runner.cpp)

@@ -4,6 +4,7 @@
 
 extern "C" void hookfw_thunk_entry();
 extern "C" void hookfw_light_entry();
+extern "C" void hookfw_universal_entry();
 
 namespace hookfw {
 
@@ -33,7 +34,7 @@ ThunkManager::ThunkSlot* ThunkManager::allocateThunk(
     slot->data.postCallback = nullptr;
     std::memset(slot->data.padding1, 0, sizeof(slot->data.padding1));
 
-    slot->executableStub = generateStub(&slot->data, &hookfw_thunk_entry);
+    slot->executableStub = generateStub(&slot->data, &hookfw_universal_entry);
     if (!slot->executableStub) {
         LOG_ERROR("Failed to generate executable stub for hook {}", hookId);
         return nullptr;
@@ -47,6 +48,30 @@ ThunkManager::ThunkSlot* ThunkManager::allocateThunk(
     return ptr;
 }
 
+/**
+ * @brief 生成一段动态可执行的机器码跳板(Thunk Stub)，用于跳转至目标入口函数，并携带自定义Thunk上下文数据
+ * @param data 指向Thunk上下文数据结构体 ThunkData 的指针，会硬编码写入生成的机器码中
+ * @param entryFunc 跳板最终要跳转执行的目标函数地址
+ * @return void*  返回新分配的可执行内存起始地址；分配失败返回 nullptr
+ *
+ * @note 运行环境：Windows x64 平台，仅适配64位程序，依赖Windows内存API
+ * @note 生成的x64汇编指令对应机器码：
+ *  0: 48 B8 [8字节data指针]      mov rax, data        // 将ThunkData*载入rax寄存器
+ *  A: FF 25 00 00 00 00          jmp qword ptr [rip+0]
+ * 10: [8字节entryFunc地址]       // jmp间接寻址的目标函数地址
+ *
+ * 完整汇编示意：
+ * mov rax, ThunkData指针
+ * jmp qword ptr [rip]
+ * .dq entryFunc
+ *
+ * @attention 内存分配大小固定64字节，预留充足冗余空间；
+ *            初始权限 PAGE_EXECUTE_READWRITE 用于写入机器码，写入完成后收紧为 PAGE_EXECUTE_READ，移除写权限，符合内存保护最佳实践
+ * @attention 调用方职责：
+ *            1. 不再使用该stub时，必须调用 VirtualFree 释放内存，否则内存泄漏
+ *            2. 保证 ThunkData 对象生命周期长于本stub，机器码内保存裸指针，无自动生命周期管理
+ * @warning 禁止在非x64 Windows平台调用；禁止直接修改返回内存内代码；不要跨进程传递此stub地址
+ */
 void* ThunkManager::generateStub(ThunkData* data, void* entryFunc) {
     constexpr size_t stubSize = 64;
     void* mem = VirtualAlloc(nullptr, stubSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
@@ -57,13 +82,17 @@ void* ThunkManager::generateStub(ThunkData* data, void* entryFunc) {
 
     uint8_t* code = static_cast<uint8_t*>(mem);
 
+    // mov rax, data    48 B8 <64位立即数>
     code[0] = 0x48;
     code[1] = 0xB8;
+    // 将 data 指针作为 64 位立即数写入 code[2] ~ code[9]
     *reinterpret_cast<uint64_t*>(code + 2) = reinterpret_cast<uint64_t>(data);
 
+    // jmp qword ptr [rip+0]    FF 25 00 00 00 00
     code[10] = 0xFF;
     code[11] = 0x25;
     *reinterpret_cast<uint32_t*>(code + 12) = 0;
+    // rip相对间接跳转指向此处，保存目标入口函数地址
     *reinterpret_cast<uint64_t*>(code + 16) = reinterpret_cast<uint64_t>(entryFunc);
 
     DWORD oldProtect;
@@ -102,7 +131,7 @@ ThunkManager::ThunkSlot* ThunkManager::allocateLightThunk(uint32_t hookId, void*
     slot->data.postCallback = nullptr;
     std::memset(slot->data.padding1, 0, sizeof(slot->data.padding1));
 
-    slot->executableStub = generateStub(&slot->data, &hookfw_light_entry);
+    slot->executableStub = generateStub(&slot->data, &hookfw_universal_entry);
     if (!slot->executableStub) {
         LOG_ERROR("Failed to generate light stub for hook {}", hookId);
         return nullptr;

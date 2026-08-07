@@ -3,6 +3,7 @@ set(HOOK_FW_SOURCES
     engine/hook_engine.cpp
     thunk/thunk_manager.cpp
     thunk/dispatch.cpp
+    thunk/universal_bridge.cpp
     collector/raw_collector.cpp
     collector/typed_collector.cpp
     collector/collector_factory.cpp
@@ -20,6 +21,7 @@ set(HOOK_FW_SOURCES
 set(HOOK_FW_ASM_SOURCES
     thunk/thunk_x64.asm
     thunk/light_thunk_x64.asm
+    thunk/universal_stub.asm
 )
 
 add_library(hook_framework SHARED ${HOOK_FW_SOURCES} ${HOOK_FW_ASM_SOURCES})

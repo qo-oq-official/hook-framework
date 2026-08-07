@@ -28,6 +28,8 @@ typedef void     (*FnSetFlag)(int*,int);
 typedef int      (*FnIsPositive)(int);
 typedef int      (*FnDeepL3)(int);
 typedef int      (*FnDeepCall)(int);
+typedef int      (*FnSum6)(int,int,int,int,int,int);
+typedef int      (*FnSum9)(int,int,int,int,int,int,double,double,double);
 
 static std::string g_dllDir;
 
@@ -84,6 +86,8 @@ int main(int argc, char* argv[]) {
     auto fnSetFlag     = getProc<FnSetFlag>(h, "pdb_set_flag");
     auto fnIsPositive  = getProc<FnIsPositive>(h, "pdb_is_positive");
     auto fnDeepCall    = getProc<FnDeepCall>(h, "pdb_deep_call");
+    auto fnSum6        = getProc<FnSum6>(h, "pdb_sum6");
+    auto fnSum9        = getProc<FnSum9>(h, "pdb_sum9");
 
     CHECK(fnAdd != nullptr, "pdb_add resolved");
     CHECK(fnSub != nullptr, "pdb_sub resolved");
@@ -97,6 +101,8 @@ int main(int argc, char* argv[]) {
     CHECK(fnSetFlag != nullptr, "pdb_set_flag resolved");
     CHECK(fnIsPositive != nullptr, "pdb_is_positive resolved");
     CHECK(fnDeepCall != nullptr, "pdb_deep_call resolved");
+    CHECK(fnSum6 != nullptr, "pdb_sum6 resolved");
+    CHECK(fnSum9 != nullptr, "pdb_sum9 resolved");
 
     // Call functions and verify
     std::cout << "\n[1] Calling all functions ...\n";
@@ -126,7 +132,9 @@ int main(int argc, char* argv[]) {
     CHECK(fnIsPositive(5) == 1, "pdb_is_positive(5) == 1");
     CHECK(fnIsPositive(-1) == 0, "pdb_is_positive(-1) == 0");
 
-    CHECK(fnDeepCall(5) == 13, "pdb_deep_call(5) == 13 (5*2+3)");
+    CHECK(fnDeepCall(5) == -1, "pdb_deep_call(5) == -1 (l3 threw, caught by l0)");
+    CHECK(fnSum6(1, 2, 3, 4, 5, 6) == 21, "pdb_sum6(1,2,3,4,5,6) == 21");
+    CHECK(fnSum9(1, 2, 3, 4, 5, 6, 7, 8, 9) == 21, "pdb_sum9(1,2,3,4,5,6,7,8,9) == 45");
 
     std::cout << "\n=== Results: " << g_ok << " passed, " << g_bad << " failed ===\n";
 
