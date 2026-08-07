@@ -5,6 +5,7 @@
 #include "logging/crash_log.h"
 #include <Windows.h>
 #include <format>
+#include <nlohmann/json.hpp>
 
 namespace hookfw {
 
@@ -17,6 +18,8 @@ uint64_t CallOriginal(ThunkData* data, RegisterContext* ctx, size_t /*stackArgBy
 }  // namespace hookfw
 
 extern "C" void UniversalCxxBridge(hookfw::ThunkData* data, RegisterContext* ctx) {
+    using namespace hookfw;
+
     auto* hook = HookEngineCore::instance().getHookById(data->hookId);
     uint64_t retval = 0;
     bool threw = false;
