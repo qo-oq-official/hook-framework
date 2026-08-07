@@ -12,6 +12,7 @@ set(HOOK_FW_SOURCES
     replacer/callback_replacer.cpp
     output/hook_data_source.cpp
     output/perfetto_tracer.cpp
+    output/track_event_observer.cpp
     config/config_loader.cpp
     config/config_validator.cpp
     logging/logger.cpp

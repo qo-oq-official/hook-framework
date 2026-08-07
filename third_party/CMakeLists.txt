@@ -16,6 +16,7 @@ add_library(perfetto_sdk STATIC perfetto-cpp-sdk/perfetto.cc)
 target_include_directories(perfetto_sdk PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/perfetto-cpp-sdk")
 target_compile_definitions(perfetto_sdk PUBLIC
     PERFETTO_SDK_DISABLE_SHLIB_EXPORT
+    DCHECK_ALWAYS_ON
     WIN32_LEAN_AND_MEAN
     NOMINMAX
 )

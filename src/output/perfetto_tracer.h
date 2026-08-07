@@ -2,6 +2,7 @@
 #include "config/perfetto_config.h"
 #define PERFETTO_LOG_LEVEL 0 
 #include "perfetto.h"
+#include "output/track_event_observer.h"
 #include <memory>
 #include <string>
 #include <cstdint>
@@ -24,6 +25,8 @@ private:
     PerfettoTracer() = default;
     ~PerfettoTracer();
     bool active_ = false;
+    
+    TrackEventObserver track_event_observer_;
 };
 
 }

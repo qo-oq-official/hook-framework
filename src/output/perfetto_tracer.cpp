@@ -38,6 +38,9 @@ static void perfettoLogCallback(perfetto::base::LogMessageCallbackArgs args) {
     case perfetto::base::kLogError:
         LOG_ERROR("[perfetto] {}:{} {}", file, args.line, args.message);
         break;
+    default:
+        LOG_DEBUG("[perfetto] {}:{} {}", file, args.line, args.message);
+        break;
     }
 }
 
@@ -47,14 +50,23 @@ bool PerfettoTracer::initialize() {
     perfetto::TracingInitArgs args;
     args.backends = perfetto::kSystemBackend;
     args.shmem_size_hint_kb = 32768;
-    args.shmem_page_size_hint_kb = 64;  
+    args.shmem_page_size_hint_kb = 32;  
+    args.track_event_buffer_exhausted_policy = perfetto::BufferExhaustedPolicy::kStall;  
     args.log_message_callback = &perfettoLogCallback;
-
-    LOG_INFO("PerfettoTracer: calling Tracing::Initialize");
-    perfetto::Tracing::Initialize(args);
-    LOG_INFO("PerfettoTracer: Tracing::Initialize done");
-    perfetto::TrackEvent::Register();
-    LOG_INFO("PerfettoTracer: TrackEvent::Register done");
+    try {
+        LOG_INFO("PerfettoTracer: calling Tracing::Initialize");
+        perfetto::Tracing::Initialize(args);
+        LOG_INFO("PerfettoTracer: Tracing::Initialize done");
+        bool res = perfetto::TrackEvent::AddSessionObserver(&track_event_observer_);
+        LOG_INFO("PerfettoTracer: TrackEvent::AddSessionObserver done res {}", res);
+        perfetto::TrackEvent::Register();
+        LOG_INFO("PerfettoTracer: TrackEvent::Register done");
+        bool ready = track_event_observer_.WaitReady(std::chrono::milliseconds(500));
+        LOG_INFO("PerfettoTracer: {}", ready);
+    } catch(...) {
+        LOG_ERROR("PerfettoTracer: Failed to initialize");
+        throw;
+    }
     return true;
 }
 

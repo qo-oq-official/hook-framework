@@ -39,6 +39,7 @@ void HookDataSource::TraceSlice(const std::string& name,
         //             }
         //         }
         // });
+        LOG_TRACE("Entry function {}", name);
         TRACE_EVENT_BEGIN("SW", perfetto::DynamicString{name});
     } else if (phase == 'E') {
         // TRACE_EVENT_END("SW", 
@@ -59,6 +60,7 @@ void HookDataSource::TraceSlice(const std::string& name,
         //             }
         //         }
         // });
+        LOG_TRACE("Exit function {}", name);
         TRACE_EVENT_END("SW");
     } else {
         LOG_ERROR("unknown phase {}", phase);
