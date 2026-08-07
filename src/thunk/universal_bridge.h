@@ -12,9 +12,13 @@ struct RegisterContext {
 };
 #pragma pack(pop)
 
-namespace hookfw {
+extern "C" {
 
-void __fastcall UniversalCxxBridge(ThunkData* data, RegisterContext* ctx);
+void UniversalCxxBridge(hookfw::ThunkData* data, RegisterContext* ctx);
+
+}
+
+namespace hookfw {
 
 uint64_t CallOriginal(ThunkData* data, RegisterContext* ctx, size_t stackArgBytes);
 

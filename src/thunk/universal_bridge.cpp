@@ -14,7 +14,9 @@ uint64_t CallOriginal(ThunkData* data, RegisterContext* ctx, size_t /*stackArgBy
     return fn(ctx->rcx, ctx->rdx, ctx->r8, ctx->r9);
 }
 
-void __fastcall UniversalCxxBridge(ThunkData* data, RegisterContext* ctx) {
+}  // namespace hookfw
+
+extern "C" void UniversalCxxBridge(hookfw::ThunkData* data, RegisterContext* ctx) {
     auto* hook = HookEngineCore::instance().getHookById(data->hookId);
     uint64_t retval = 0;
     bool threw = false;
@@ -79,6 +81,4 @@ void __fastcall UniversalCxxBridge(ThunkData* data, RegisterContext* ctx) {
 
     if (threw)
         throw;
-}
-
 }
