@@ -24,24 +24,24 @@ hookfw_universal_entry PROC FRAME
     .pushreg rbp
     mov rbp, rsp
     .setframe rbp, 0
-    sub rsp, 0x70
-    .allocstack 0x70
+    sub rsp, 70h
+    .allocstack 70h
     .endprolog
 
-    ;; Save registers to RegisterContext at [rsp + 0x20] (past shadow space)
-    mov [rsp+20h+00h], rax          ; ctx.rax
-    mov [rsp+20h+08h], rcx          ; ctx.rcx
-    mov [rsp+20h+10h], rdx          ; ctx.rdx
-    mov [rsp+20h+18h], r8           ; ctx.r8
-    mov [rsp+20h+20h], r9           ; ctx.r9
-    movq [rsp+20h+30h], xmm0        ; ctx.xmm0
-    movq [rsp+20h+38h], xmm1        ; ctx.xmm1
-    movq [rsp+20h+40h], xmm2        ; ctx.xmm2
-    movq [rsp+20h+48h], xmm3        ; ctx.xmm3
+    ;; Save registers to RegisterContext at [rsp + 20h] (past shadow space)
+    mov [rsp+20h], rax              ; ctx.rax
+    mov [rsp+28h], rcx              ; ctx.rcx
+    mov [rsp+30h], rdx              ; ctx.rdx
+    mov [rsp+38h], r8               ; ctx.r8
+    mov [rsp+40h], r9               ; ctx.r9
+    movq qword ptr [rsp+50h], xmm0  ; ctx.xmm0
+    movq qword ptr [rsp+58h], xmm1  ; ctx.xmm1
+    movq qword ptr [rsp+60h], xmm2  ; ctx.xmm2
+    movq qword ptr [rsp+68h], xmm3  ; ctx.xmm3
 
     ;; Caller RSP = our RBP + 16 (8 for pushed rbp + 8 for return address)
     lea rcx, [rbp + 16]
-    mov [rsp+20h+28h], rcx          ; ctx.rsp
+    mov [rsp+48h], rcx              ; ctx.rsp
 
     ;; Prepare args for UniversalCxxBridge
     ;; rcx = ThunkData* (from saved rax = original entry rax)
@@ -53,11 +53,11 @@ hookfw_universal_entry PROC FRAME
     add rsp, 32
 
     ;; Restore return values from RegisterContext
-    movq xmm0, [rsp+20h+30h]
-    mov rax, [rsp+20h+00h]
+    movq xmm0, qword ptr [rsp+50h]
+    mov rax, [rsp+20h]
 
     ;; Epilog
-    add rsp, 0x70
+    add rsp, 70h
     pop rbp
     ret
 

@@ -1,11 +1,10 @@
 #include "thunk/universal_bridge.h"
-#include "output/ring_buffer.h"
-#include "output/trace_flusher.h"
+#include "output/hook_data_source.h"
 #include "engine/hook_engine.h"
 #include "thunk/hook_context.h"
 #include "logging/crash_log.h"
 #include <Windows.h>
-#include <cstring>
+#include <format>
 
 namespace hookfw {
 
@@ -22,16 +21,13 @@ void __fastcall UniversalCxxBridge(ThunkData* data, RegisterContext* ctx) {
 
     // --- Pre-hook ---
     if (hook && hook->descriptor.mode == HookMode::Trace) {
-        TraceRecord rec{};
-        rec.hookId = data->hookId;
-        rec.threadId = GetCurrentThreadId();
-        rec.timestampUs = RingBuffer::nowMicroseconds();
-        rec.arg0 = ctx->rcx;
-        rec.arg1 = ctx->rdx;
-        rec.arg2 = ctx->r8;
-        rec.arg3 = ctx->r9;
-        rec.phase = 0;
-        TraceFlusher::instance().ringBuffer().push(rec);
+        std::string name = HookDataSource::getHookName(data->hookId);
+        nlohmann::json args;
+        args["arg0"] = std::format("{:#x}", ctx->rcx);
+        args["arg1"] = std::format("{:#x}", ctx->rdx);
+        args["arg2"] = std::format("{:#x}", ctx->r8);
+        args["arg3"] = std::format("{:#x}", ctx->r9);
+        HookDataSource::TraceSlice(name, "trace", 'B', args);
     } else if (hook && hook->collector) {
         HookContext hctx{};
         hctx.hookId = data->hookId;
@@ -40,9 +36,6 @@ void __fastcall UniversalCxxBridge(ThunkData* data, RegisterContext* ctx) {
         hctx.r8 = ctx->r8;
         hctx.r9 = ctx->r9;
         hctx.rsp = ctx->rsp;
-        if (hook->injector && hook->descriptor.injectorMode == InjectorMode::Pre) {
-            hook->injector->onInject(hctx);
-        }
         try {
             hook->collector->onEntry(hctx);
         } catch (...) {
@@ -50,7 +43,7 @@ void __fastcall UniversalCxxBridge(ThunkData* data, RegisterContext* ctx) {
         }
     }
 
-    // --- Call original function with full exception handling ---
+    // --- Call original function with exception handling ---
     try {
         retval = CallOriginal(data, ctx, 0);
     } catch (...) {
@@ -60,18 +53,15 @@ void __fastcall UniversalCxxBridge(ThunkData* data, RegisterContext* ctx) {
 
     ctx->rax = threw ? 0 : retval;
 
-    // --- Post-hook (executed for BOTH normal and exception paths) ---
+    // --- Post-hook ---
     if (hook && hook->descriptor.mode == HookMode::Trace) {
-        TraceRecord rec{};
-        rec.hookId = data->hookId;
-        rec.threadId = GetCurrentThreadId();
-        rec.timestampUs = RingBuffer::nowMicroseconds();
-        rec.arg0 = threw ? 0 : retval;
-        rec.arg1 = 0;
-        rec.arg2 = 0;
-        rec.arg3 = 0;
-        rec.phase = 1;
-        TraceFlusher::instance().ringBuffer().push(rec);
+        std::string name = HookDataSource::getHookName(data->hookId);
+        nlohmann::json args;
+        if (!threw && retval != 0)
+            args["return"] = std::format("{:#x}", retval);
+        if (threw)
+            args["exception"] = true;
+        HookDataSource::TraceSlice(name, "trace", 'E', args);
     } else if (hook && hook->collector) {
         HookContext hctx{};
         hctx.hookId = data->hookId;
@@ -80,9 +70,6 @@ void __fastcall UniversalCxxBridge(ThunkData* data, RegisterContext* ctx) {
         hctx.rdx = ctx->rdx;
         hctx.r8 = ctx->r8;
         hctx.r9 = ctx->r9;
-        if (hook->injector && hook->descriptor.injectorMode == InjectorMode::Post) {
-            hook->injector->onInject(hctx);
-        }
         try {
             hook->collector->onExit(hctx);
         } catch (...) {
@@ -90,14 +77,6 @@ void __fastcall UniversalCxxBridge(ThunkData* data, RegisterContext* ctx) {
         }
     }
 
-    // Per-thread flush
-    static thread_local uint32_t t_counter = 0;
-    if (++t_counter >= 50000) {
-        t_counter = 0;
-        TraceFlusher::instance().syncFlush();
-    }
-
-    // Re-throw original exception
     if (threw)
         throw;
 }
