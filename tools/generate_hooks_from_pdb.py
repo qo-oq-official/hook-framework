@@ -14,6 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 from dataclasses import dataclass
+import hashlib
 
 @dataclass
 class PdbParserConfig:
@@ -59,6 +60,30 @@ def find_dia2dump(override: str = "") -> str:
     return "DIA2Dump.exe"
 
 
+def get_pdb_hash(pdb_path: str):
+    with open(pdb_path, "rb") as f:
+        # Calculate the SHA-256 hash (or use hashlib.md5, hashlib.sha1, etc.)
+        digest = hashlib.file_digest(f, hashlib.sha256)
+        return digest
+
+def get_pdb_caceh_filename(pdb_path: str):
+    return f"{get_pdb_hash(pdb_path).hexdigest()}-pdb-cache"
+
+
+def get_cache_file_content(cache_filename: str):
+    res = []
+    with open(cache_filename, "r") as file:
+        for line in file:
+            sig, rva = line.strip().split("||")
+            res.append([sig, int(rva)])
+    return res
+
+
+def caceh_dia2dump_result(caceh_file: Path, function_line: list[(str, str)]):
+    with open(caceh_file, "w") as file:
+        for sig, rva in function_line:
+            file.write(f"{sig}||{rva}\n")
+
 def run_dia2dump(dia2dump: str, pdb_path: str) -> str:
     result = subprocess.run(
         [dia2dump, "-s", pdb_path],
@@ -69,10 +94,8 @@ def run_dia2dump(dia2dump: str, pdb_path: str) -> str:
     return result.stdout
 
 
-def parse_functions(output: str, containing: str, function_pattern: str, module: str) -> list[dict]:
-    hooks = []
-    seen_rva = set()
-
+def parse_functions(output: str, cache_file: str) -> list[(str, str)]:
+    cache_list = []
     for line in output.splitlines():
         m = re.match(
             r"^\s*Function\s*:\s*(?:\w+)\s*,\s*\[([0-9A-Fa-f]+)\]\[[^\]]+\]\s*,\s*len\s*=\s*[0-9A-Fa-f]+\s*,\s*(.+)\s*$",
@@ -84,26 +107,29 @@ def parse_functions(output: str, containing: str, function_pattern: str, module:
         rva_hex = m.group(1)
         sig = m.group(2).strip()
         sig = re.sub(r"\s+", " ", sig)
-        print(f"sig {sig}")
+        rva = int(rva_hex, 16)
+        cache_list.append([sig, rva])
+
+    caceh_dia2dump_result(cache_file, cache_list)
+    return cache_list
+
+
+def build_hook_config(rva_list, containing: str, module: str) -> list[dict]:
+    hooks = []
+    seen_rva = set()
+    for sig, rva in rva_list:
+        print(f"{sig=} {rva=}")
         hit = False
         if containing:
             for sub_string in containing:
-                if sub_string in sig:
+                if re.match(sub_string, sig):
                     hit = True
                     break
-
-        if not hit and not re.match(function_pattern, sig):
-            print(f"not match {sig}")
-            hit = False
-        else:
-            hit = True
-
         if not hit:
             continue
 
-        rva = int(rva_hex, 16)
         if rva in seen_rva or rva == 0:
-            print(f"skip {sig} rva {rva}")
+            print(f"skip {sig=} {rva=}")
             continue
         seen_rva.add(rva)
 
@@ -154,11 +180,17 @@ def main():
     hooks = []
     for pdb_config in config.pdb_config:
         module = Path(pdb_config.pdb_path).stem + ".dll"
-        dia2dump = find_dia2dump(dia2dump_override)
-        print(f"Running DIA2Dump: {dia2dump} on {pdb_config.pdb_path}")
-        out = run_dia2dump(dia2dump, pdb_config.pdb_path)
-
-        hooks += parse_functions(out, pdb_config.function_list, pdb_config.function_pattern, module)
+        cache_filename = get_pdb_caceh_filename(pdb_config.pdb_path)
+        rva_list = []
+        if not Path(cache_filename).exists():
+            dia2dump = find_dia2dump(dia2dump_override)
+            print(f"Running DIA2Dump: {dia2dump} on {pdb_config.pdb_path}")
+            out = run_dia2dump(dia2dump, pdb_config.pdb_path)
+            rva_list = parse_functions(out, cache_filename)
+        else:
+            print(f"Read PDB caceh: {pdb_config.pdb_path} {cache_filename}")
+            rva_list = get_cache_file_content(cache_filename)
+        hooks += build_hook_config(rva_list, pdb_config.function_list, module)
         print(f"Found {len(hooks)} functions")
 
     config = {
