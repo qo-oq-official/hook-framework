@@ -37,5 +37,13 @@ inline void write(const char* msg) {
     FlushFileBuffers(g_handle);
 }
 
+inline void write(const wchar_t* msg) {
+    if (g_handle == INVALID_HANDLE_VALUE) return;
+    DWORD bytesToWrite = static_cast<DWORD>(wcslen(msg) * sizeof(wchar_t));
+    DWORD bytesWritten = 0;
+    WriteFile(g_handle, msg, bytesToWrite, &bytesWritten, nullptr);
+    FlushFileBuffers(g_handle);
+}
+
 }
 }

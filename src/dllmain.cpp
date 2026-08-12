@@ -2,7 +2,9 @@
 #include "logging/logger.h"
 #include "logging/crash_log.h"
 #include "git_hash.h"
+#include <cstdlib>
 #include <Windows.h>
+#include <shellapi.h>
 #include <filesystem>
 
 namespace {
@@ -17,6 +19,33 @@ std::filesystem::path getDllDirectory() {
     return std::filesystem::path(dllPath).parent_path();
 }
 
+std::filesystem::path getConfigDirectory() {
+    const char* path_val = std::getenv("HOOK_CONFIG_DIR");
+    if (path_val != nullptr) {
+        hookfw::crash_log::write(("HOOK_CONFIG_DIR: " + std::string{path_val} + "\n").c_str());
+        return std::filesystem::path(path_val);
+    }
+    hookfw::crash_log::write("HOOK_CONFIG_DIR: null\n");
+    return getDllDirectory();
+}
+
+std::wstring GetProcessNameViaCmd() {
+    int argc;
+    // 将整个命令行拆分为标准的参数数组
+    LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    if (argv != NULL && argc > 0) {
+        std::wstring fullPath(argv[0]);
+        LocalFree(argv); // 必须释放内存
+
+        size_t lastSlash = fullPath.find_last_of(L"\\/");
+        if (lastSlash != std::wstring::npos) {
+            return fullPath.substr(lastSlash + 1);
+        }
+        return fullPath;
+    }
+    return L"";
+}
+
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
@@ -28,27 +57,29 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
             auto earlyLogPath = (dllDir / "hook_early.log").string();
             hookfw::crash_log::init(earlyLogPath.c_str(), false);
             hookfw::crash_log::write("[1] DllMain ATTACH entered\n");
-
+            auto configDir = getConfigDirectory();
             try {
                 hookfw::crash_log::write("[2] getDllDirectory OK\n");
-
-                auto configPath = (dllDir / "hooks.json").string();
+                std::wstring processName = GetProcessNameViaCmd();
+                std::wstring processCmd {GetCommandLineW()};
+                auto configPath = (configDir / (std::filesystem::path(processName).stem().generic_string() + "_hooks_config.json")).string();
                 auto logPath = (dllDir / "hook_framework.log").string();
 
-            hookfw::crash_log::write(("dllDir: " + dllDir.string() + "\n").c_str());
-            hookfw::crash_log::write(("Git hash: " + std::string(HOOKFW_GIT_HASH) + "\n").c_str());
-            hookfw::crash_log::write("Log paths:\n");
-            hookfw::crash_log::write(("  early: " + earlyLogPath + "\n").c_str());
-            hookfw::crash_log::write(("  main:  " + logPath + "\n").c_str());
-            hookfw::crash_log::write(("  crash: " + (dllDir / "hook_crash.log").string() + "\n").c_str());
-            hookfw::crash_log::write(("  attach: " + (dllDir / "hook_attach_err.log").string() + "\n").c_str());
-            hookfw::Logger::instance().initialize(logPath);
-            hookfw::crash_log::write("[3] Logger initialized\n");
-            LOG_INFO("=== Hook Framework DLL loaded ===");
-            LOG_INFO("Git hash: {}", HOOKFW_GIT_HASH);
-            LOG_INFO("DLL directory: {}", dllDir.string());
+                hookfw::crash_log::write(("dllDir: " + dllDir.string() + "\n").c_str());
+                hookfw::crash_log::write(("Git hash: " + std::string(HOOKFW_GIT_HASH) + "\n").c_str());
+                hookfw::crash_log::write("Log paths:\n");
+                hookfw::crash_log::write(("  early: " + earlyLogPath + "\n").c_str());
+                hookfw::crash_log::write(("  main:  " + logPath + "\n").c_str());
+                hookfw::crash_log::write(("  crash: " + (dllDir / "hook_crash.log").string() + "\n").c_str());
+                hookfw::crash_log::write(("  attach: " + (dllDir / "hook_attach_err.log").string() + "\n").c_str());
+                hookfw::Logger::instance().initialize(logPath);
+                hookfw::crash_log::write("[3] Logger initialized\n");
+                LOG_INFO("=== Hook Framework DLL loaded ===");
+                LOG_INFO("Git hash: {}", HOOKFW_GIT_HASH);
+                LOG_INFO("DLL directory: {}", dllDir.string());
                 LOG_INFO("Config path: {}", configPath);
                 LOG_INFO("Process ID: {}", GetCurrentProcessId());
+                LOG_INFO(L"Process CMD: {}", processCmd);
 
                 if (std::filesystem::exists(configPath)) {
                     hookfw::HookEngine::instance().setDllDirectory(dllDir.string());

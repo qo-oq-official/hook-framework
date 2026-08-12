@@ -118,7 +118,6 @@ def build_hook_config(rva_list, containing: str, module: str) -> list[dict]:
     hooks = []
     seen_rva = set()
     for sig, rva in rva_list:
-        print(f"{sig=} {rva=}")
         hit = False
         if containing:
             for sub_string in containing:
