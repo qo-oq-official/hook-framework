@@ -13,6 +13,35 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from dataclasses import dataclass
+
+@dataclass
+class PdbParserConfig:
+    pdb_path: str
+    function_list: list[str]
+    function_pattern: str
+
+@dataclass
+class ParserConfig:
+    pdb_config: list[PdbParserConfig]
+
+    def __post_init__(self):
+        if isinstance(self.pdb_config, list):
+            self.pdb_config = [
+                (
+                    PdbParserConfig(**item)
+                    if isinstance(item, dict)
+                    else item
+                )
+                for item in self.pdb_config
+        ]
+
+    @classmethod
+    def from_json_file(cls, file_path: str):
+        """解析 JSON 文件并填充配置类"""
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return cls(**data)
 
 
 def find_dia2dump(override: str = "") -> str:
@@ -40,7 +69,7 @@ def run_dia2dump(dia2dump: str, pdb_path: str) -> str:
     return result.stdout
 
 
-def parse_functions(output: str, containing: str, module: str) -> list[dict]:
+def parse_functions(output: str, containing: str, function_pattern: str, module: str) -> list[dict]:
     hooks = []
     seen_rva = set()
 
@@ -55,12 +84,26 @@ def parse_functions(output: str, containing: str, module: str) -> list[dict]:
         rva_hex = m.group(1)
         sig = m.group(2).strip()
         sig = re.sub(r"\s+", " ", sig)
+        print(f"sig {sig}")
+        hit = False
+        if containing:
+            for sub_string in containing:
+                if sub_string in sig:
+                    hit = True
+                    break
 
-        if containing and containing not in sig:
+        if not hit and not re.match(function_pattern, sig):
+            print(f"not match {sig}")
+            hit = False
+        else:
+            hit = True
+
+        if not hit:
             continue
 
         rva = int(rva_hex, 16)
         if rva in seen_rva or rva == 0:
+            print(f"skip {sig} rva {rva}")
             continue
         seen_rva.add(rva)
 
@@ -78,10 +121,9 @@ def parse_functions(output: str, containing: str, module: str) -> list[dict]:
 
 def main():
     dia2dump_override = ""
-    containing = ""
+    config_file = ""
     module = ""
     output_path = "hooks_pdb.json"
-    pdb_path = None
     args = sys.argv[1:]
 
     i = 0
@@ -89,39 +131,35 @@ def main():
         if args[i] == "--dia2dump":
             i += 1
             dia2dump_override = args[i]
-        elif args[i] == "--contain":
+        elif args[i] == "--config":
             i += 1
-            containing = args[i]
-        elif args[i] == "--module":
-            i += 1
-            module = args[i]
+            config_file = args[i]
         elif args[i].startswith("--output="):
             output_path = args[i][9:]
         elif args[i].startswith("-"):
             print(f"Unknown flag: {args[i]}")
             sys.exit(1)
-        elif pdb_path is None:
-            pdb_path = args[i]
         elif output_path == "hooks_pdb.json":
             output_path = args[i]
         i += 1
 
-    if not pdb_path or not module:
-        print("Usage: generate_hooks_from_pdb.py --module <dll> [--contain <s>] [--dia2dump <path>] <pdb> [output.json]")
+    if not config_file:
+        print("Usage: generate_hooks_from_pdb.py --config_file <config> [--dia2dump <path>] <pdb> [output.json]")
         print("")
-        print("  --module <dll>    Target module name in hooks.json (required)")
-        print("  --contain <s>     Only include functions whose name contains <s>")
         print("  --dia2dump <p>    Path to DIA2Dump.exe (default: DIA2Dump.exe)")
         print("  --output <file>   Output path (default: hooks_pdb.json)")
         sys.exit(1)
 
-    dia2dump = find_dia2dump(dia2dump_override)
-    print(f"Running DIA2Dump: {dia2dump} on {pdb_path}")
-    out = run_dia2dump(dia2dump, pdb_path)
+    config = ParserConfig.from_json_file(config_file)
+    hooks = []
+    for pdb_config in config.pdb_config:
+        module = Path(pdb_config.pdb_path).stem + ".dll"
+        dia2dump = find_dia2dump(dia2dump_override)
+        print(f"Running DIA2Dump: {dia2dump} on {pdb_config.pdb_path}")
+        out = run_dia2dump(dia2dump, pdb_config.pdb_path)
 
-    hooks = parse_functions(out, containing, module)
-    filter_info = f"(contain='{containing}')" if containing else "(no filter)"
-    print(f"Found {len(hooks)} functions {filter_info}")
+        hooks += parse_functions(out, pdb_config.function_list, pdb_config.function_pattern, module)
+        print(f"Found {len(hooks)} functions")
 
     config = {
         "output_dir": "dump_data",

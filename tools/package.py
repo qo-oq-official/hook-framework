@@ -27,7 +27,8 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT = SCRIPT_DIR.parent
 BUILD_DIR = ROOT / "build" / "bin" / "Release"
 TOOLBOX = Path(r"C:\Users\zwsoft\toolbox")
-PKG_ROOT = ROOT / "package" / f"hook-framework-{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}-{get_git_hash()[:6]}"
+PACK_NAME = f"hook-framework-{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}-{get_git_hash()[:8]}"
+PKG_ROOT = ROOT / "package" / PACK_NAME
 
 # Clean old package
 shutil.rmtree(str(PKG_ROOT), ignore_errors=True)
@@ -142,6 +143,8 @@ python tools\\validate_hooks.py
 (PKG_ROOT / "README.md").write_text(readme.strip() + "\n")
 print("     README.md")
 
+print("[6] Archive")
+shutil.make_archive(PKG_ROOT, "zip", PKG_ROOT)
 # ── Summary ─────────────────────────────────────────────────────────────
 
 print(f"\nPackage created: {PKG_ROOT}")
