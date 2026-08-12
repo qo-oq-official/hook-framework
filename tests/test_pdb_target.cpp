@@ -13,7 +13,7 @@
 namespace {
 // ── deep call chain with exception ─────────────────────────────────────
 __declspec(noinline) int pdb_deep_l3(int x) { 
-    throw;
+    throw std::runtime_error("test throw");
     return x * 2; 
 }
 }
@@ -22,16 +22,14 @@ __declspec(noinline) int pdb_deep_l2(int x) {
 }
 
 __declspec(noinline) int pdb_deep_l1(int x) {
-    return pdb_deep_l2(x) + 1;
-}
-
-__declspec(noinline) int pdb_deep_call(int x) {
     try {
-        return pdb_deep_l1(x) + 1;
+        return pdb_deep_l2(x) + 1;
     } catch (...) {
-        return -1;  // exception indicator
+        return 0;
     }
 }
+
+
 
 extern "C" {
 
@@ -129,6 +127,13 @@ TEST_API __declspec(noinline) int pdb_sum9(int a, int b, int c, int d, int e, in
     return a + b + c + d + e + f + i + j +k;
 }
 
+TEST_API __declspec(noinline) int pdb_deep_call(int x) {
+    try {
+        return pdb_deep_l1(x) + 1;
+    } catch (...) {
+        return -1;  // exception indicator
+    }
+}
 }
 
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include "git_hash.h"
 
 DWORD findProcessByName(const std::string& name) {
     HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -89,7 +90,7 @@ bool injectDll(DWORD pid, const std::string& dllPath) {
 int main(int argc, char* argv[]) {
     std::cout << "=== Hook Framework Injector ===\n";
 
-    if (argc < 3 || strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
+    if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
         std::cout << R"(DESCRIPTION:
   Injects a DLL into a target process for API hooking.
 
@@ -101,6 +102,7 @@ MODES:
 OPTIONS:
   --dll <PATH>      Path to DLL to inject (required)
   --args <ARGS>     Arguments passed to target exe (--exe mode only)
+  --version, -v     Show version hash
   --help, -h        Show this help
 
 EXAMPLES:
@@ -109,6 +111,10 @@ EXAMPLES:
   injector --exe target.exe --dll hook_framework.dll
   injector --exe target.exe --dll hook_framework.dll --args "the target args"
 )";
+        return argc < 3 ? 1 : 0;
+    }
+    if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0) {
+        std::cout << "Git hash: " + std::string(HOOKFW_GIT_HASH);
         return argc < 3 ? 1 : 0;
     }
 
