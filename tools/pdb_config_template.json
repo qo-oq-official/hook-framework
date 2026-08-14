@@ -1,12 +1,12 @@
 {
     "pdb_config": [
         {
-            "pdb_path": "C:/Users/zwsoft/hook-framework-perfetto-api/build/bin/Release/test_pdb_target.pdb",
-            "function_list": [
-                ".+_read_.+",
-                ".+_deep_.+"
+            "pdb_path": "",
+            "function_white_list": [
             ],
-            "function_pattern": ""
+            "function_black_list": [
+
+            ]
         }
     ]
 }

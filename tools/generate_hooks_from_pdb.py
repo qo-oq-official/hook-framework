@@ -19,8 +19,8 @@ import hashlib
 @dataclass
 class PdbParserConfig:
     pdb_path: str
-    function_list: list[str]
-    function_pattern: str
+    function_white_list: list[str]
+    function_black_list: list[str]
 
 @dataclass
 class ParserConfig:
@@ -114,15 +114,20 @@ def parse_functions(output: str, cache_file: str) -> list[(str, str)]:
     return cache_list
 
 
-def build_hook_config(rva_list, containing: str, module: str) -> list[dict]:
+def build_hook_config(rva_list, function_white_list: list[str], function_black_list: list[str], module: str) -> list[dict]:
     hooks = []
     seen_rva = set()
     for sig, rva in rva_list:
         hit = False
-        if containing:
-            for sub_string in containing:
-                if re.match(sub_string, sig):
+        if function_white_list:
+            for pattern in function_white_list:
+                if re.match(pattern, sig):
                     hit = True
+                    break
+        if hit and function_black_list:
+            for pattern in function_black_list:
+                if re.match(pattern, sig):
+                    hit = False
                     break
         if not hit:
             continue
@@ -189,7 +194,10 @@ def main():
         else:
             print(f"Read PDB caceh: {pdb_config.pdb_path} {cache_filename}")
             rva_list = get_cache_file_content(cache_filename)
-        hooks += build_hook_config(rva_list, pdb_config.function_list, module)
+        hooks += build_hook_config(rva_list, 
+                                   pdb_config.function_white_list,
+                                   pdb_config.function_black_list,
+                                   module)
         print(f"Found {len(hooks)} functions")
 
     config = {
