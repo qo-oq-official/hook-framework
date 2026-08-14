@@ -1,0 +1,9 @@
+{
+  "session_name": "HookFramework-DllLoader",
+  "rules": [
+    {
+      "on_load": ["test_pdb_target.dll"],
+      "inject": ["C:\\Users\\zwsoft\\hook-framework-perfetto-api\\build\\bin\\Release\\test_etw_loader.dll"]
+    }
+  ]
+}

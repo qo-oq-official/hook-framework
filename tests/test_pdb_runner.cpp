@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
     CHECK(fnSum9(1, 2, 3, 4, 5, 6, 7, 8, 9) == 21, "pdb_sum9(1,2,3,4,5,6,7,8,9) == 45");
 
     std::cout << "\n=== Results: " << g_ok << " passed, " << g_bad << " failed ===\n";
-
+    Sleep(2000);
     FreeLibrary(h);
     return g_bad > 0 ? 1 : 0;
 }

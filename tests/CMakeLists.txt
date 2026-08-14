@@ -77,3 +77,7 @@ target_compile_options(test_perfetto_dll PRIVATE /bigobj)
 
 add_executable(test_perfetto_dll_runner test_perfetto_dll_runner.cpp)
 target_compile_definitions(test_perfetto_dll_runner PRIVATE WIN32_LEAN_AND_MEAN)
+
+
+add_library(test_etw_loader SHARED test_etw_loader.cpp)
+
