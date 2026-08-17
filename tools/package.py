@@ -115,7 +115,7 @@ hooks/      hooks.json configuration files
 ### 1. Generate hooks.json from PDB
 
 powershell
-python tools\\generate_hooks_from_pdb.py target.pdb hooks\\hooks.json --prefix "my_prefix_"
+python tools\\generate_hooks_from_pdb.py --config pdb_config.json hooks\\hooks.json"
 
 
 ### 2. Hook a running process
@@ -145,6 +145,9 @@ print("     README.md")
 
 print("[6] Archive")
 shutil.make_archive(PKG_ROOT, "zip", PKG_ROOT)
+
+print("[7] Dispatch")
+shutil.copy(PKG_ROOT.with_suffix(".zip"), '\\\\pubshares.zwcax.com\\FTPServer\\FileTransfer\\Gesic\\chensonghui\\downloads')
 # ── Summary ─────────────────────────────────────────────────────────────
 
 print(f"\nPackage created: {PKG_ROOT}")

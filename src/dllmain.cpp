@@ -19,13 +19,13 @@ std::filesystem::path getDllDirectory() {
     return std::filesystem::path(dllPath).parent_path();
 }
 
-std::filesystem::path getConfigDirectory() {
-    const char* path_val = std::getenv("HOOK_CONFIG_DIR");
+std::filesystem::path getDirectoryByEnv(const std::string &envName ) {
+    const char* path_val = std::getenv(envName.c_str());
     if (path_val != nullptr) {
-        hookfw::crash_log::write(("HOOK_CONFIG_DIR: " + std::string{path_val} + "\n").c_str());
+        hookfw::crash_log::write((envName + ": " + std::string{path_val} + "\n").c_str());
         return std::filesystem::path(path_val);
     }
-    hookfw::crash_log::write("HOOK_CONFIG_DIR: null\n");
+    hookfw::crash_log::write((envName + ": null\n").c_str());
     return getDllDirectory();
 }
 
@@ -54,16 +54,18 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
             DisableThreadLibraryCalls(hModule);
 
             auto dllDir = getDllDirectory();
-            auto earlyLogPath = (dllDir / "hook_early.log").string();
+            auto configDir = getDirectoryByEnv("HOOK_CONFIG_DIR");
+            auto outputDir = getDirectoryByEnv("HOOK_OUTPUT_DIR");
+            auto earlyLogPath = (outputDir / "hook_early.log").string();
+            auto logPath = (outputDir / "hook_framework.log").string();
             hookfw::crash_log::init(earlyLogPath.c_str(), false);
             hookfw::crash_log::write("[1] DllMain ATTACH entered\n");
-            auto configDir = getConfigDirectory();
+
             try {
                 hookfw::crash_log::write("[2] getDllDirectory OK\n");
                 std::wstring processName = GetProcessNameViaCmd();
                 std::wstring processCmd {GetCommandLineW()};
                 auto configPath = (configDir / (std::filesystem::path(processName).stem().generic_string() + "_hooks_config.json")).string();
-                auto logPath = (dllDir / "hook_framework.log").string();
 
                 hookfw::crash_log::write(("dllDir: " + dllDir.string() + "\n").c_str());
                 hookfw::crash_log::write(("Git hash: " + std::string(HOOKFW_GIT_HASH) + "\n").c_str());
