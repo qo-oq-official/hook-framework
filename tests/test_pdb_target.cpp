@@ -4,6 +4,12 @@
 #include <cstdio>
 #include <cmath>
 #include <stdexcept>
+#include <vector>
+#include <map>
+#include <functional>
+#include <string>
+#include <set>
+#include <memory>
 
 #ifdef TEST_PDB_EXPORTS
 #define TEST_API __declspec(dllexport)
@@ -27,6 +33,32 @@ __declspec(noinline) int pdb_deep_l1(int x) {
     } catch (...) {
         return 0;
     }
+}
+
+
+__declspec(noinline) int pdb_func_param(
+    int &a, 
+    // std::vector<std::wstring> &b, 
+    // std::map<std::wstring, std::set<std::wstring>> &c, 
+    // std::map<std::wstring, std::wstring> &d, 
+    std::function<void(int, int)> e) {
+    // std::wstring res;
+    // for (const auto bb : b) {
+    //     res += bb;
+    // }
+    // for (const auto cc : c) {
+    //     res += cc.first;
+    //     for (const auto ccc : cc.second) {
+    //         res += ccc;
+    //     }
+    // }
+    // for (const auto dd : d) {
+    //     res += dd.first;
+    //     res += dd.second;
+    // }
+    e(a + 1, a + 2);
+        
+    return a;
 }
 
 
@@ -125,6 +157,26 @@ TEST_API __declspec(noinline) int pdb_sum6(int a, int b, int c, int d, int e, in
 
 TEST_API __declspec(noinline) int pdb_sum9(int a, int b, int c, int d, int e, int f, double j, double i, double k) {
     return a + b + c + d + e + f + i + j +k;
+}
+
+struct A {
+    int a;
+};
+
+TEST_API __declspec(noinline) int pdb_func_param_wrap() {
+    int a = 1;
+    std::shared_ptr<A> context = std::make_shared<A>();
+    context->a = 2;
+    std::vector<std::wstring> b {L"a", L"b", L"c"}; 
+    std::map<std::wstring, std::set<std::wstring>> c{{L"a", {L"b", L"c"},}};
+    std::map<std::wstring, std::wstring> d {{L"a", L"b"}, {L"c", L"d"}};
+    return pdb_func_param(
+        a, 
+        // b, c, d,
+        [&](int a, int aa) {
+        context->a += a;
+        context->a += aa;
+    });
 }
 
 TEST_API __declspec(noinline) int pdb_deep_call(int x) {

@@ -3,6 +3,7 @@
 #include "engine/hook_engine.h"
 #include "thunk/hook_context.h"
 #include "logging/crash_log.h"
+#include "logging/logger.h"
 #include <Windows.h>
 #include <format>
 #include <nlohmann/json.hpp>
@@ -15,16 +16,8 @@ uint64_t CallOriginal(ThunkData* data, RegisterContext* ctx, size_t /*stackArgBy
     return fn(ctx->rcx, ctx->rdx, ctx->r8, ctx->r9);
 }
 
-}  // namespace hookfw
-
-extern "C" void UniversalCxxBridge(hookfw::ThunkData* data, RegisterContext* ctx) {
-    using namespace hookfw;
-
-    auto* hook = HookEngineCore::instance().getHookById(data->hookId);
-    uint64_t retval = 0;
-    bool threw = false;
-
-    // --- Pre-hook ---
+void Prehook(InstalledHook *hook, hookfw::ThunkData* data, RegisterContext* ctx)
+{
     if (hook && hook->descriptor.mode == HookMode::Trace) {
         std::string name = HookDataSource::getHookName(data->hookId);
         nlohmann::json args;
@@ -44,21 +37,13 @@ extern "C" void UniversalCxxBridge(hookfw::ThunkData* data, RegisterContext* ctx
         try {
             hook->collector->onEntry(hctx);
         } catch (...) {
-            crash_log::write("UniversalCxxBridge: onEntry crashed\n");
+            LOG_ERROR("UniversalCxxBridge: onEntry crashed");
         }
     }
+}
 
-    // --- Call original function with exception handling ---
-    try {
-        retval = CallOriginal(data, ctx, 0);
-    } catch (...) {
-        threw = true;
-        retval = 0;
-    }
-
-    ctx->rax = threw ? 0 : retval;
-
-    // --- Post-hook ---
+void Posthook(InstalledHook *hook, hookfw::ThunkData* data, RegisterContext* ctx, bool threw, uint64_t retval)
+{
     if (hook && hook->descriptor.mode == HookMode::Trace) {
         std::string name = HookDataSource::getHookName(data->hookId);
         nlohmann::json args;
@@ -78,10 +63,29 @@ extern "C" void UniversalCxxBridge(hookfw::ThunkData* data, RegisterContext* ctx
         try {
             hook->collector->onExit(hctx);
         } catch (...) {
-            crash_log::write("UniversalCxxBridge: onExit crashed\n");
+            LOG_ERROR("UniversalCxxBridge: onExit crashed");
         }
     }
+}
 
-    if (threw)
+}  // namespace hookfw
+
+extern "C" void UniversalCxxBridge(hookfw::ThunkData* data, RegisterContext* ctx) {
+    using namespace hookfw;
+
+    auto* hook = HookEngineCore::instance().getHookById(data->hookId);
+    uint64_t retval = 0;
+    bool threw = false;
+    std::string name = HookDataSource::getHookName(data->hookId);
+    // --- Pre-hook ---
+    Prehook(hook, data, ctx);
+    // --- Call original function with exception handling ---
+    try {
+        retval = CallOriginal(data, ctx, 0);
+    } catch (...) {
+        Posthook(hook, data, ctx, true, 0);
+        LOG_DEBUG("CallOriginal {} threw", name);
         throw;
+    }
+    Posthook(hook, data, ctx, false, retval);
 }

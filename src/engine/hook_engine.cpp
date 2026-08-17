@@ -151,8 +151,8 @@ uint32_t HookEngineCore::addHook(const HookDescriptor& desc,
         ? formatRvaName(desc.target.rva)
         : desc.target.symbolName;
 
-    LOG_INFO("Hook added: id={}, module={}, target={}, mode={}",
-             hookId, desc.target.moduleName, targetName,
+    LOG_INFO("Hook added: id={}, module={}, target={}, display={}, mode={}",
+             hookId, desc.target.moduleName, targetName, desc.displayName,
              desc.mode == HookMode::Trace ? "trace" : "capture");
 
     hooks_.push_back(std::move(hook));

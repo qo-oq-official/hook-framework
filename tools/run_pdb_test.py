@@ -43,12 +43,28 @@ print("=== PDB Integration Test ===")
 
 # Step 1: Generate hooks.json
 print("[1] Generating hooks.json from PDB...")
+pdb_hook_config = {
+        "pdb_config": [
+            {
+                "pdb_path": str(DLL_PDB),
+                "function_list": [
+                    ".+"
+                ],
+                "function_pattern": ""
+            }
+        ]
+    }
+
+
+pdb_hook_config_json = test_dir / "test_pdb_target_hook_config.json"
+with open(pdb_hook_config_json, "w") as f:
+    json.dump(pdb_hook_config, f)
+
 hooks_json = test_dir / "hooks.json"
 result = subprocess.run(
     [sys.executable, str(GEN_SCRIPT),
-     "--contain", "pdb_",
-     "--module", "test_pdb_target.dll",
-     str(DLL_PDB), str(hooks_json)],
+     "--config", pdb_hook_config_json,
+        str(hooks_json)],
     capture_output=True, text=True, timeout=60,
 )
 if not hooks_json.exists():

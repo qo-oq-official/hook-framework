@@ -151,28 +151,24 @@ bool HookEngine::initialize(const std::string& configPath) {
         if (configOpt) {
             int traceCount = 0, captureCount = 0;
             for (const auto& hookDesc : configOpt->hooks) {
-                std::string funcName;
-                if (!hookDesc.displayName.empty()) {
-                    funcName = hookDesc.displayName;
-                } else if (hookDesc.target.useRva) {
-                    funcName = std::format("RVA_0x{:08x}", hookDesc.target.rva);
-                } else {
-                    funcName = hookDesc.target.symbolName;
-                }
-
                 std::shared_ptr<CollectorBase> collector;
                 std::shared_ptr<ReplacerBase> replacer;
 
                 if (hookDesc.mode == HookMode::Capture) {
                     collector = CollectorFactory::create(hookDesc);
-                    if (collector) {
-                        collector->setModuleName(hookDesc.target.moduleName);
-                        collector->setFunctionName(funcName);
-                    }
                     if (!hookDesc.replacerModule.empty()) {
                         replacer = std::make_shared<DllReplacer>(
                             hookDesc.replacerModule, hookDesc.replacerSymbol);
                     }
+                }
+
+                std::string funcName;
+                if (!hookDesc.displayName.empty()) {
+                    funcName = hookDesc.displayName;
+                } else if (hookDesc.target.useRva) {
+                    funcName = "<unknown>";
+                } else {
+                    funcName = hookDesc.target.symbolName;
                 }
 
                 uint32_t hookId = HookEngineCore::instance().addHook(hookDesc, collector, replacer);
@@ -189,20 +185,16 @@ bool HookEngine::initialize(const std::string& configPath) {
                 } else if (hookDesc.target.useRva) {
                     rva = hookDesc.target.rva;
                 }
-
+                std::string demangled = undecorateName(funcName);
+                std::string nameWithRva = demangled + std::format(" @RVA_0x{:08x}", rva);
+                HookDataSource::registerHookName(hookId, nameWithRva);
+                if (collector) {
+                    collector->setFunctionName(nameWithRva);
+                    collector->setModuleName(hookDesc.target.moduleName);
+                }
                 if (hookDesc.mode == HookMode::Trace) {
-                        std::string displayName = undecorateName(funcName);
-                    if (rva > 0) {
-                        displayName += std::format(" @RVA_0x{:08x}", rva);
-                    }
-                    HookDataSource::registerHookName(hookId, displayName);
                     traceCount++;
                 } else {
-                    if (collector && rva > 0) {
-                        std::string demangled = undecorateName(funcName);
-                        std::string nameWithRva = demangled + std::format(" @RVA_0x{:08x}", rva);
-                        collector->setFunctionName(nameWithRva);
-                    }
                     captureCount++;
                 }
             }
