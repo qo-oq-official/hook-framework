@@ -30,7 +30,7 @@ typedef int      (*FnDeepL3)(int);
 typedef int      (*FnDeepCall)(int);
 typedef int      (*FnSum6)(int,int,int,int,int,int);
 typedef int      (*FnSum9)(int,int,int,int,int,int,double,double,double);
-typedef void     (*FnFuncParamWrap)();
+typedef size_t     (*FnFuncParamWrap)();
 
 static std::string g_dllDir;
 
@@ -139,8 +139,12 @@ int main(int argc, char* argv[]) {
     CHECK(fnSum9(1, 2, 3, 4, 5, 6, 7, 8, 9) == 45, "pdb_sum9(1,2,3,4,5,6,7,8,9) == 45");
 
     CHECK(fnDeepCall(5) == 1, "pdb_deep_call(5) == 1 (l3 threw, caught by l0)");
+
+    std::wstring wstr = L"abcabcabcd7";
+    std::hash<std::wstring> wstring_hasher;
+    size_t hash_value = wstring_hasher(wstr);
+    CHECK(fnfuncParamWrap() == hash_value, "pdb_func_param_wrap() == \"abcabcabcd7\"");
     
-    // fnfuncParamWrap();
     std::cout << "\n=== Results: " << g_ok << " passed, " << g_bad << " failed ===\n";
     FreeLibrary(h);
     return g_bad > 0 ? 1 : 0;

@@ -36,29 +36,27 @@ __declspec(noinline) int pdb_deep_l1(int x) {
 }
 
 
-__declspec(noinline) int pdb_func_param(
+__declspec(noinline) std::wstring pdb_func_param(
     int &a, 
-    // std::vector<std::wstring> &b, 
-    // std::map<std::wstring, std::set<std::wstring>> &c, 
-    // std::map<std::wstring, std::wstring> &d, 
-    std::function<void(int, int)> e) {
-    // std::wstring res;
-    // for (const auto bb : b) {
-    //     res += bb;
-    // }
-    // for (const auto cc : c) {
-    //     res += cc.first;
-    //     for (const auto ccc : cc.second) {
-    //         res += ccc;
-    //     }
-    // }
-    // for (const auto dd : d) {
-    //     res += dd.first;
-    //     res += dd.second;
-    // }
-    e(a + 1, a + 2);
-        
-    return a;
+    std::vector<std::wstring> &b, 
+    std::map<std::wstring, std::set<std::wstring>> &c, 
+    std::map<std::wstring, std::wstring> &d, 
+    std::function<int(int, int)> e) {
+    std::wstring res;
+    for (const auto bb : b) {
+        res += bb;
+    }
+    for (const auto cc : c) {
+        res += cc.first;
+        for (const auto ccc : cc.second) {
+            res += ccc;
+        }
+    }
+    for (const auto dd : d) {
+        res += dd.first;
+        res += dd.second;
+    }
+    return res + std::to_wstring(e(a + 1, a + 2));
 }
 
 
@@ -163,20 +161,26 @@ struct A {
     int a;
 };
 
-TEST_API __declspec(noinline) int pdb_func_param_wrap() {
+TEST_API __declspec(noinline) size_t pdb_func_param_wrap() {
     int a = 1;
     std::shared_ptr<A> context = std::make_shared<A>();
     context->a = 2;
     std::vector<std::wstring> b {L"a", L"b", L"c"}; 
     std::map<std::wstring, std::set<std::wstring>> c{{L"a", {L"b", L"c"},}};
     std::map<std::wstring, std::wstring> d {{L"a", L"b"}, {L"c", L"d"}};
-    return pdb_func_param(
+    std::hash<std::wstring> wstring_hasher;
+    std::wstring wstr = pdb_func_param(
         a, 
-        // b, c, d,
-        [&](int a, int aa) {
+        b, c, d,
+        [&](int a, int aa) -> int {
         context->a += a;
         context->a += aa;
+        return context->a;
     });
+    // Generate the hash
+    size_t hash_value = wstring_hasher(wstr);
+    printf("%ls", wstr.c_str());
+    return hash_value;
 }
 
 TEST_API __declspec(noinline) int pdb_deep_call(int x) {

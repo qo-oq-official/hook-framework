@@ -16,6 +16,8 @@ extern "C" {
 
 void UniversalCxxBridge(hookfw::ThunkData* data, RegisterContext* ctx);
 
+uint64_t hookfw_call_original(hookfw::ThunkData* data, RegisterContext* ctx);
+
 }
 
 namespace hookfw {

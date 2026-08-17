@@ -23,6 +23,7 @@ set(HOOK_FW_ASM_SOURCES
     thunk/thunk_x64.asm
     thunk/light_thunk_x64.asm
     thunk/universal_stub.asm
+    thunk/call_original_x64.asm
 )
 
 add_library(hook_framework SHARED ${HOOK_FW_SOURCES} ${HOOK_FW_ASM_SOURCES})

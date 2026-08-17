@@ -5,15 +5,29 @@
 #include "logging/crash_log.h"
 #include "logging/logger.h"
 #include <Windows.h>
+#include <cstring>
 #include <format>
 #include <nlohmann/json.hpp>
 
 namespace hookfw {
 
-uint64_t CallOriginal(ThunkData* data, RegisterContext* ctx, size_t /*stackArgBytes*/) {
-    auto* fn = reinterpret_cast<uint64_t(*)(uint64_t,uint64_t,uint64_t,uint64_t)>(
-        data->trampolineFunction);
-    return fn(ctx->rcx, ctx->rdx, ctx->r8, ctx->r9);
+static void captureStackArgs(RegisterContext* ctx, HookContext& hctx) {
+    if (!ctx->rsp) return;
+    MEMORY_BASIC_INFORMATION mbi{};
+    if (!VirtualQuery(reinterpret_cast<void*>(ctx->rsp), &mbi, sizeof(mbi))) return;
+    if (mbi.State != MEM_COMMIT) return;
+    if (mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) return;
+    size_t avail = reinterpret_cast<uint8_t*>(mbi.BaseAddress) + mbi.RegionSize
+                   - reinterpret_cast<uint8_t*>(ctx->rsp);
+    size_t copySize = (avail < sizeof(hctx.stackSnapshot)) ? avail : sizeof(hctx.stackSnapshot);
+    hctx.returnAddress = *reinterpret_cast<uint64_t*>(reinterpret_cast<uint8_t*>(ctx->rsp) - 8);
+    std::memcpy(hctx.stackSnapshot, reinterpret_cast<void*>(ctx->rsp), copySize);
+    hctx.stackSnapshotSize = static_cast<uint32_t>(copySize);
+}
+
+uint64_t CallOriginal(ThunkData* data, RegisterContext* ctx) {
+    hookfw_call_original(data, ctx);
+    return ctx->rax;
 }
 
 void Prehook(InstalledHook *hook, hookfw::ThunkData* data, RegisterContext* ctx)
@@ -34,6 +48,7 @@ void Prehook(InstalledHook *hook, hookfw::ThunkData* data, RegisterContext* ctx)
         hctx.r8 = ctx->r8;
         hctx.r9 = ctx->r9;
         hctx.rsp = ctx->rsp;
+        captureStackArgs(ctx, hctx);
         try {
             hook->collector->onEntry(hctx);
         } catch (...) {
@@ -60,6 +75,8 @@ void Posthook(InstalledHook *hook, hookfw::ThunkData* data, RegisterContext* ctx
         hctx.rdx = ctx->rdx;
         hctx.r8 = ctx->r8;
         hctx.r9 = ctx->r9;
+        hctx.rsp = ctx->rsp;
+        captureStackArgs(ctx, hctx);
         try {
             hook->collector->onExit(hctx);
         } catch (...) {
@@ -81,7 +98,7 @@ extern "C" void UniversalCxxBridge(hookfw::ThunkData* data, RegisterContext* ctx
     Prehook(hook, data, ctx);
     // --- Call original function with exception handling ---
     try {
-        retval = CallOriginal(data, ctx, 0);
+        retval = CallOriginal(data, ctx);
     } catch (...) {
         Posthook(hook, data, ctx, true, 0);
         LOG_DEBUG("CallOriginal {} threw", name);
