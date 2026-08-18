@@ -54,17 +54,18 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
             DisableThreadLibraryCalls(hModule);
 
             auto dllDir = getDllDirectory();
-            auto configDir = getDirectoryByEnv("HOOK_CONFIG_DIR");
-            auto outputDir = getDirectoryByEnv("HOOK_OUTPUT_DIR");
-            auto earlyLogPath = (outputDir / "hook_early.log").string();
-            auto logPath = (outputDir / "hook_framework.log").string();
+            auto earlyLogPath = (dllDir / "hook_early.log").string();
             hookfw::crash_log::init(earlyLogPath.c_str(), false);
             hookfw::crash_log::write("[1] DllMain ATTACH entered\n");
 
             try {
                 hookfw::crash_log::write("[2] getDllDirectory OK\n");
+                uint64_t pid = GetCurrentProcessId();
                 std::wstring processName = GetProcessNameViaCmd();
                 std::wstring processCmd {GetCommandLineW()};
+                auto configDir = getDirectoryByEnv("HOOK_CONFIG_DIR");
+                auto outputDir = getDirectoryByEnv("HOOK_OUTPUT_DIR");
+                auto logPath = (outputDir / (std::filesystem::path(processName).stem().generic_string() + "-" + std::to_string(pid) + "-hook_framework.log")).string();
                 auto configPath = (configDir / (std::filesystem::path(processName).stem().generic_string() + "_hooks_config.json")).string();
 
                 hookfw::crash_log::write(("dllDir: " + dllDir.string() + "\n").c_str());
@@ -80,7 +81,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
                 LOG_INFO("Git hash: {}", HOOKFW_GIT_HASH);
                 LOG_INFO("DLL directory: {}", dllDir.string());
                 LOG_INFO("Config path: {}", configPath);
-                LOG_INFO("Process ID: {}", GetCurrentProcessId());
+                LOG_INFO("Process ID: {}", pid);
                 LOG_INFO(L"Process CMD: {}", processCmd);
 
                 if (std::filesystem::exists(configPath)) {
