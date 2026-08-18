@@ -32,11 +32,11 @@ std::wstring toAbsolute(const std::wstring& p, const std::filesystem::path& base
 }  // namespace
 
 std::optional<EtwLoaderConfig> EtwLoaderConfigLoader::load(const std::string& filePath) {
-    spdlog::info("Loading ETW loader config from: {}", filePath);
+    SPDLOG_INFO("Loading ETW loader config from: {}", filePath);
 
     std::ifstream file(filePath);
     if (!file.is_open()) {
-        spdlog::error("Cannot open config file: {}", filePath);
+        SPDLOG_ERROR("Cannot open config file: {}", filePath);
         return std::nullopt;
     }
 
@@ -44,7 +44,7 @@ std::optional<EtwLoaderConfig> EtwLoaderConfigLoader::load(const std::string& fi
     try {
         file >> root;
     } catch (const nlohmann::json::parse_error& ex) {
-        spdlog::error("JSON parse error in {}: {}", filePath, ex.what());
+        SPDLOG_ERROR("JSON parse error in {}: {}", filePath, ex.what());
         return std::nullopt;
     }
 
@@ -57,37 +57,37 @@ std::optional<EtwLoaderConfig> EtwLoaderConfigLoader::load(const std::string& fi
         }
 
         if (!root.contains("rules") || !root["rules"].is_array()) {
-            spdlog::error("Config must contain a 'rules' array");
+            SPDLOG_ERROR("Config must contain a 'rules' array");
             return std::nullopt;
         }
 
         for (const auto& r : root["rules"]) {
             EtwLoaderRule rule;
 
-            if (r.contains("on_load") && r["on_load"].is_array()) {
+            if (r.contains("on_load") && r["on_load"].is_string()) {
                 for (const auto& b : r["on_load"]) {
-                    rule.onLoad.push_back(utf8ToWide(b.get<std::string>()));
+                    rule.onLoad = utf8ToWide(b.get<std::string>());
                 }
             }
-            if (r.contains("inject") && r["inject"].is_array()) {
+            if (r.contains("inject") && r["inject"].is_string()) {
                 for (const auto& c : r["inject"]) {
-                    rule.inject.push_back(toAbsolute(utf8ToWide(c.get<std::string>()), configDir));
+                    rule.inject = toAbsolute(utf8ToWide(c.get<std::string>()), configDir);
                 }
             }
 
             if (rule.onLoad.empty() || rule.inject.empty()) {
-                spdlog::error(L"Must have non-empty 'on_load' and 'inject'");
+                SPDLOG_ERROR(L"Must have non-empty 'on_load' and 'inject'");
                 return std::nullopt;
             }
 
             config.rules.push_back(std::move(rule));
         }
     } catch (const std::exception& ex) {
-        spdlog::error("Error parsing config: {}", ex.what());
+        SPDLOG_ERROR("Error parsing config: {}", ex.what());
         return std::nullopt;
     }
 
-    spdlog::info("ETW loader config loaded: {} rule(s)", config.rules.size());
+    SPDLOG_INFO("ETW loader config loaded: {} rule(s)", config.rules.size());
     return config;
 }
 

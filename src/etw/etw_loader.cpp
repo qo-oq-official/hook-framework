@@ -35,11 +35,9 @@ bool DllLoaderEngine::start(const EtwLoaderConfig& config) {
     compiled_.clear();
     for (const auto& r : config_.rules) {
         CompiledRule cr;
-        for (const auto& b : r.onLoad) {
-            cr.onLoad.push_back(toLowerW(b));
-        }
-        cr.inject = r.inject;
-        compiled_.push_back(std::move(cr));
+        cr.onLoad = toLowerW(r.onLoad);
+        cr.inject = toLowerW(r.inject);
+        compiled_.emplace_back(cr);
     }
 
     running_ = true;
@@ -53,11 +51,11 @@ bool DllLoaderEngine::start(const EtwLoaderConfig& config) {
     ULONG status = monitor_.start(imageCb);
     if (status != ERROR_SUCCESS) {
         if (status == ERROR_ALREADY_EXISTS) {
-            spdlog::error(L"Failed to start ETW monitoring: session '{}' still exists and could "
+            SPDLOG_ERROR(L"Failed to start ETW monitoring: session '{}' still exists and could "
                           L"not be cleaned; stop it manually with: logman stop {} -ets",
                           config_.sessionName, config_.sessionName);
         } else {
-            spdlog::error("Failed to start ETW monitoring, error={}; "
+            SPDLOG_ERROR("Failed to start ETW monitoring, error={}; "
                           "run as Administrator / Performance Log Users",
                           status);
         }
@@ -65,7 +63,7 @@ bool DllLoaderEngine::start(const EtwLoaderConfig& config) {
         return false;
     }
 
-    spdlog::info("ETW monitoring active ({} rule(s))", config_.rules.size());
+    SPDLOG_INFO("ETW monitoring active ({} rule(s))", config_.rules.size());
 
     injectThread_ = std::thread([this]() { injectionLoop(); });
     return true;
@@ -93,17 +91,17 @@ void DllLoaderEngine::onImageLoad(ULONG processId, ULONG_PTR /*imageBase*/,
     const std::wstring imageLower = toLowerW(basenameOf(filePath));
 
     for (const auto& rule : compiled_) {
-        bool hit = std::find(rule.onLoad.begin(), rule.onLoad.end(), imageLower) != rule.onLoad.end();
+        bool hit = rule.onLoad == imageLower;
         if (!hit) {
             continue;
         }
 
-        spdlog::info(L"[+] trigger {} in pid {}-> injecting {} dll(s)",
-                     filePath, processId, rule.inject.size());
+        SPDLOG_INFO(L"[+] trigger {} in pid {}-> injecting {} dll",
+                     filePath, processId, rule.inject);
 
         {
             std::lock_guard<std::mutex> lk(queueMutex_);
-            queue_.emplace_back(processId, rule.inject);
+            queue_.emplace_back(processId, std::move(rule.inject));
         }
         queueCv_.notify_one();
         break;
@@ -112,32 +110,36 @@ void DllLoaderEngine::onImageLoad(ULONG processId, ULONG_PTR /*imageBase*/,
 
 void DllLoaderEngine::injectionLoop() {
     while (running_) {
-        std::pair<ULONG, std::vector<std::wstring>> job;
+        std::map<ULONG, std::vector<std::wstring>> job;
         {
             std::unique_lock<std::mutex> lk(queueMutex_);
             queueCv_.wait(lk, [this]() { return !queue_.empty() || !running_; });
             if (!running_ && queue_.empty()) {
                 break;
             }
-            job = std::move(queue_.front());
+            auto dllJob = queue_.front();
+            auto [iter, isEmplace] = job.try_emplace(dllJob.first);
+            iter->second.push_back(std::move(dllJob.second));
             queue_.pop_front();
         }
 
-        for (const auto& dll : job.second) {
-            std::wstring key = std::to_wstring(job.first) + L"|" + toLowerW(dll);
-            {
-                std::lock_guard<std::mutex> lk(injectedMutex_);
-                if (injected_.count(key)) {
-                    spdlog::debug(L"[-] skip already-injected {} into pid {}", dll, job.first);
-                    continue;
+        for (const auto& [pid, dlls] : job) {
+            for (const auto& dll : dlls) {
+                std::wstring key = std::to_wstring(pid) + L"|" + toLowerW(dll);
+                {
+                    std::lock_guard<std::mutex> lk(injectedMutex_);
+                    if (injected_.count(key)) {
+                        SPDLOG_DEBUG(L"[-] skip already-injected {} into pid {}", dll, pid);
+                        continue;
+                    }
+                    injected_.insert(key);
                 }
-                injected_.insert(key);
-            }
 
-            if (injectDll(job.first, dll)) {
-                spdlog::info(L"[+] injected {} into pid {}", dll, job.first);
-            } else {
-                spdlog::warn(L"[-] failed to inject {} into pid {}", dll, job.first);
+                if (injectDll(pid, dll)) {
+                    SPDLOG_INFO(L"[+] injected {} into pid {}", dll, pid);
+                } else {
+                    SPDLOG_WARN(L"[-] failed to inject {} into pid {}", dll, pid);
+                }
             }
         }
     }
@@ -150,12 +152,12 @@ bool DllLoaderEngine::injectDll(ULONG pid, const std::wstring& dllPath) {
     if (!hProcess) {
         DWORD err = GetLastError();
         if (err == ERROR_INVALID_PARAMETER) {
-            spdlog::warn(L"target process pid={} already exited; cannot inject {}", pid, dllPath);
+            SPDLOG_WARN(L"target process pid={} already exited; cannot inject {}", pid, dllPath);
         } else if (err == ERROR_ACCESS_DENIED) {
-            spdlog::warn(L"access denied opening pid={} (run as Administrator); cannot inject {}",
+            SPDLOG_WARN(L"access denied opening pid={} (run as Administrator); cannot inject {}",
                          pid, dllPath);
         } else {
-            spdlog::warn("OpenProcess failed pid={} err={}", pid, err);
+            SPDLOG_WARN("OpenProcess failed pid={} err={}", pid, err);
         }
         return false;
     }

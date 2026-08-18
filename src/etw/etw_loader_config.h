@@ -9,8 +9,8 @@ namespace hookfw {
 // One rule: when any image whose basename is in `onLoad` (B.dll) is loaded,
 // inject every DLL in `inject` (C.dll) into the process that loaded it.
 struct EtwLoaderRule {
-    std::vector<std::wstring> onLoad;  // B.dll basenames (triggers)
-    std::vector<std::wstring> inject;  // C.dll absolute paths (actions)
+    std::wstring onLoad;  // B.dll basenames (triggers)
+    std::wstring inject;  // C.dll absolute paths (actions)
 };
 
 struct EtwLoaderConfig {

@@ -31,8 +31,8 @@ public:
 
 private:
     struct CompiledRule {
-        std::vector<std::wstring> onLoad;  // lowercased basenames
-        std::vector<std::wstring> inject;  // absolute paths
+        std::wstring onLoad;  // lowercased basenames
+        std::wstring inject;  // absolute paths
     };
 
     void onImageLoad(ULONG processId, ULONG_PTR imageBase, const std::wstring& filePath);
@@ -45,7 +45,7 @@ private:
 
     std::mutex queueMutex_;
     std::condition_variable queueCv_;
-    std::deque<std::pair<ULONG, std::vector<std::wstring>>> queue_;
+    std::deque<std::pair<ULONG, std::wstring>> queue_;
 
     std::mutex injectedMutex_;
     std::unordered_set<std::wstring> injected_;  // "<pid>|<lowercased dll>"
