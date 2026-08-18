@@ -2,6 +2,7 @@
 #include "logging/crash_log.h"
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/msvc_sink.h>
+#include <spdlog/cfg/env.h>
 #include <Windows.h>
 
 namespace hookfw {
@@ -40,7 +41,7 @@ void Logger::initialize(const std::string& logFile, spdlog::level::level_enum le
 
         std::vector<spdlog::sink_ptr> sinks{fileSink, msvcSink};
         logger_ = std::make_shared<spdlog::logger>("hookfw", sinks.begin(), sinks.end());
-        logger_->set_level(level);
+        spdlog::cfg::load_env_levels("HOOK_LOG_LEVEL"); 
         logger_->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] [tid:%t] %v");
         logger_->flush_on(spdlog::level::trace);
 

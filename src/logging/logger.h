@@ -1,5 +1,6 @@
 #pragma once
 #define SPDLOG_WCHAR_TO_UTF8_SUPPORT
+#define SPDLOG_ACTIVE_LEVEL 1
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/msvc_sink.h>
@@ -13,7 +14,7 @@ public:
     static Logger& instance();
 
     void initialize(const std::string& logFile = "hook_framework.log",
-                    spdlog::level::level_enum level = spdlog::level::trace);
+                    spdlog::level::level_enum level = spdlog::level::debug);
     void shutdown();
 
     std::shared_ptr<spdlog::logger> get();

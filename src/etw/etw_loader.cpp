@@ -126,15 +126,11 @@ void DllLoaderEngine::injectionLoop() {
         for (const auto& [pid, dlls] : job) {
             for (const auto& dll : dlls) {
                 std::wstring key = std::to_wstring(pid) + L"|" + toLowerW(dll);
-                {
-                    std::lock_guard<std::mutex> lk(injectedMutex_);
-                    if (injected_.count(key)) {
-                        SPDLOG_DEBUG(L"[-] skip already-injected {} into pid {}", dll, pid);
-                        continue;
-                    }
-                    injected_.insert(key);
+                if (injected_.count(key)) {
+                    SPDLOG_DEBUG(L"[-] skip already-injected {} into pid {}", dll, pid);
+                    continue;
                 }
-
+                injected_.insert(key);
                 if (injectDll(pid, dll)) {
                     SPDLOG_INFO(L"[+] injected {} into pid {}", dll, pid);
                 } else {

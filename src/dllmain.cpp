@@ -6,6 +6,8 @@
 #include <Windows.h>
 #include <shellapi.h>
 #include <filesystem>
+#include <format>
+#include <chrono>
 
 namespace {
 
@@ -65,7 +67,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
                 std::wstring processCmd {GetCommandLineW()};
                 auto configDir = getDirectoryByEnv("HOOK_CONFIG_DIR");
                 auto outputDir = getDirectoryByEnv("HOOK_OUTPUT_DIR");
-                auto logPath = (outputDir / (std::filesystem::path(processName).stem().generic_string() + "-" + std::to_string(pid) + "-hook_framework.log")).string();
+                auto now = std::chrono::system_clock::now();
+                std::string dt_str = std::format("{:%Y%m%d%H%M%S}", now);
+                auto logPath = (outputDir / ("hook_framework-" + std::filesystem::path(processName).stem().generic_string()  + "-" + dt_str + "-" + std::to_string(pid) + ".log")).string();
                 auto configPath = (configDir / (std::filesystem::path(processName).stem().generic_string() + "_hooks_config.json")).string();
 
                 hookfw::crash_log::write(("dllDir: " + dllDir.string() + "\n").c_str());
