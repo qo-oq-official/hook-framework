@@ -180,11 +180,12 @@ def main():
         print("  --output <file>   Output path (default: hooks_pdb.json)")
         sys.exit(1)
 
+    
     config = ParserConfig.from_json_file(config_file)
     hooks = []
     for pdb_config in config.pdb_config:
         module = Path(pdb_config.pdb_path).stem + ".dll"
-        cache_filename = get_pdb_caceh_filename(pdb_config.pdb_path)
+        cache_filename = Path(output_path).parent / get_pdb_caceh_filename(pdb_config.pdb_path)
         rva_list = []
         if not Path(cache_filename).exists():
             dia2dump = find_dia2dump(dia2dump_override)

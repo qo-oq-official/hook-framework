@@ -35,13 +35,13 @@ shutil.rmtree(str(PKG_ROOT), ignore_errors=True)
 
 # ── Directories ─────────────────────────────────────────────────────────
 
-for d in ["bin", "tools", "hooks"]:
+for d in ["bin", "tools", "configuration", "perfetto"]:
     (PKG_ROOT / d).mkdir(parents=True)
 
 # ── Binaries ────────────────────────────────────────────────────────────
 
 print("[1] Copying binaries...")
-for name in ["hook_framework.dll", "injector.exe"]:
+for name in ["hook_framework.dll", "injector.exe", "etw_loader.exe"]:
     src = BUILD_DIR / name
     if src.exists():
         shutil.copy2(str(src), str(PKG_ROOT / "bin" / name))
@@ -60,6 +60,19 @@ for name in ["DIA2Dump.exe", "msdia140.dll"]:
     else:
         print(f"  [WARN] Missing: {src}")
 
+# ── PDB tools ───────────────────────────────────────────────────────────
+
+print("[2] Copying Perfetto tools...")
+for name in ["perfetto.exe", "traced.exe", "ui.zip"]:
+    src = TOOLBOX / "perfetto" / "windows-amd64" / name
+    if src.exists():
+        shutil.copy2(str(src), str(PKG_ROOT / "perfetto" / name))
+        print(f"     perfetto/{name}")
+    else:
+        print(f"  [WARN] Missing: {src}")
+
+    
+
 # ── Python scripts ──────────────────────────────────────────────────────
 
 print("[3] Copying Python scripts...")
@@ -75,9 +88,9 @@ for name in scripts:
     else:
         print(f"  [WARN] Missing: {src}")
 
-# ── Example hooks.json ──────────────────────────────────────────────────
+# ── Example configuration ──────────────────────────────────────────────────
 
-print("[4] Generating example hooks.json...")
+print("[4] Generating example configuration...")
 example = """
 {
   "output_dir": "dump_data",
@@ -94,8 +107,39 @@ example = """
   ]
 }
 """
-(PKG_ROOT / "hooks" / "example_hooks.json").write_text(example.strip() + "\n")
-print("     hooks/example_hooks.json")
+(PKG_ROOT / "configuration" / "example_hooks.json").write_text(example.strip() + "\n")
+print("     configuration/example_hooks.json")
+
+example = """
+{
+  "session_name": "HookFramework-DllLoader",
+  "rules": [
+    {
+      "on_load": "test_pdb_target.dll",
+      "inject": "path/to/hook_framework.dll"
+    }
+  ]
+}
+"""
+(PKG_ROOT / "configuration" / "example_etw_load_config.json").write_text(example.strip() + "\n")
+print("     configuration/example_etw_load_config.json")
+
+example = """
+{
+    "pdb_config": [
+        {
+            "pdb_path": "",
+            "function_white_list": [
+            ],
+            "function_black_list": [
+
+            ]
+        }
+    ]
+}
+"""
+(PKG_ROOT / "configuration" / "example_pdb_config.json").write_text(example.strip() + "\n")
+print("     configuration/example_pdb_config.json")
 
 # ── README ──────────────────────────────────────────────────────────────
 
@@ -107,7 +151,7 @@ readme = """# Hook Framework Deployment Package
 ```
 bin/        hook_framework.dll, injector.exe
 tools/      DIA2Dump.exe, msdia140.dll, Python scripts
-hooks/      hooks.json configuration files
+configuration/      example_hooks.json example_etw_load_config.json configuration files
 ```
 
 ## Usage
@@ -147,6 +191,7 @@ print("[6] Archive")
 shutil.make_archive(PKG_ROOT, "zip", PKG_ROOT)
 
 print("[7] Dispatch")
+print(f"copy {PKG_ROOT.with_suffix(".zip")} '\\\\pubshares.zwcax.com\\FTPServer\\FileTransfer\\Gesic\\chensonghui\\downloads'")
 shutil.copy(PKG_ROOT.with_suffix(".zip"), '\\\\pubshares.zwcax.com\\FTPServer\\FileTransfer\\Gesic\\chensonghui\\downloads')
 # ── Summary ─────────────────────────────────────────────────────────────
 
