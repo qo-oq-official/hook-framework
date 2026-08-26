@@ -36,18 +36,20 @@ void Logger::initialize(const std::string& logFile, spdlog::level::level_enum le
     }
 
     try {
+        spdlog::cfg::load_env_levels("HOOK_LOG_LEVEL"); 
         auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFile, true);
         auto msvcSink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
 
         std::vector<spdlog::sink_ptr> sinks{fileSink, msvcSink};
         logger_ = std::make_shared<spdlog::logger>("hookfw", sinks.begin(), sinks.end());
-        spdlog::cfg::load_env_levels("HOOK_LOG_LEVEL"); 
         logger_->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] [tid:%t] %v");
         logger_->flush_on(spdlog::level::trace);
 
         spdlog::register_logger(logger_);
+        spdlog::apply_logger_env_levels(logger_);
         logger_->info("Hook framework logger initialized, file={}", logFile);
         logDiag("Logger: file sink created OK\n");
+        LOG_INFO("current log level {}", spdlog::level::to_string_view(logger_->level()));
     } catch (const std::exception& ex) {
         std::string msg = "Logger init EXCEPTION: " + std::string(ex.what()) + " err=" + std::to_string(GetLastError()) + "\n";
         logDiag(msg.c_str());

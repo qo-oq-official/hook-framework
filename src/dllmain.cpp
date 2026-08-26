@@ -68,7 +68,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
                 auto configDir = getDirectoryByEnv("HOOK_CONFIG_DIR");
                 auto outputDir = getDirectoryByEnv("HOOK_OUTPUT_DIR");
                 auto now = std::chrono::system_clock::now();
-                std::string dt_str = std::format("{:%Y%m%d%H%M%S}", now);
+                auto zoned_now = std::chrono::zoned_time{std::chrono::current_zone(), now};
+                std::string dt_str = std::format("{:%Y%m%d%H%M%S}", zoned_now);
                 auto logPath = (outputDir / ("hook_framework-" + std::filesystem::path(processName).stem().generic_string()  + "-" + dt_str + "-" + std::to_string(pid) + ".log")).string();
                 auto configPath = (configDir / (std::filesystem::path(processName).stem().generic_string() + "_hooks_config.json")).string();
 

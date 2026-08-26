@@ -66,6 +66,8 @@ target_compile_options(test_pdb_target PRIVATE /Oy- /Zi /EHa)
 target_link_options(test_pdb_target PRIVATE /DEBUG:FULL)
 
 add_executable(test_pdb_runner test_pdb_runner.cpp)
+target_compile_options(test_pdb_runner PRIVATE /Oy- /Zi /EHa)
+target_link_options(test_pdb_runner PRIVATE /DEBUG:FULL)
 
 # ── Perfetto DllMain test (DLL + runner) ───────────────────────────────
 

@@ -150,6 +150,28 @@ void ThunkManager::freeAll() {
         }
     }
     slots_.clear();
+    trampolineMap_.clear();
+}
+
+void ThunkManager::registerTrampoline(uintptr_t trampolineBase, uintptr_t originalFunction) {
+    std::lock_guard lock(mutex_);
+    trampolineMap_.emplace_back(trampolineBase, originalFunction);
+    LOG_INFO("Registered trampoline {:#x} -> original {:#x}", trampolineBase, originalFunction);
+}
+
+bool ThunkManager::resolveTrampoline(uintptr_t addr, uintptr_t* outOriginal) const {
+    if (!addr || !outOriginal) return false;
+    std::lock_guard lock(mutex_);
+    // The Detours trampoline code is at most rbCode[30] + jmp (~14 bytes); a
+    // 64-byte window from the code base safely contains any return address.
+    constexpr uintptr_t kTrampolineWindow = 64;
+    for (const auto& [base, original] : trampolineMap_) {
+        if (addr >= base && addr < base + kTrampolineWindow) {
+            *outOriginal = original + (addr - base);
+            return true;
+        }
+    }
+    return false;
 }
 
 }

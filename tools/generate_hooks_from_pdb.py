@@ -19,6 +19,7 @@ import hashlib
 @dataclass
 class PdbParserConfig:
     pdb_path: str
+    dll_file: str
     function_white_list: list[str]
     function_black_list: list[str]
 
@@ -67,7 +68,7 @@ def get_pdb_hash(pdb_path: str):
         return digest
 
 def get_pdb_caceh_filename(pdb_path: str):
-    return f"{get_pdb_hash(pdb_path).hexdigest()}-pdb-cache"
+    return f"{Path(pdb_path).stem}-{get_pdb_hash(pdb_path).hexdigest()}-pdb-cache"
 
 
 def get_cache_file_content(cache_filename: str):
@@ -80,7 +81,7 @@ def get_cache_file_content(cache_filename: str):
 
 
 def caceh_dia2dump_result(caceh_file: Path, function_line: list[(str, str)]):
-    with open(caceh_file, "w") as file:
+    with open(caceh_file, "w+") as file:
         for sig, rva in function_line:
             file.write(f"{sig}||{rva}\n")
 
@@ -141,7 +142,7 @@ def build_hook_config(rva_list, function_white_list: list[str], function_black_l
             "module": module,
             "rva": f"0x{rva:x}",
             "action": "capture",
-            "mode": "capture",
+            "mode": "trace",
             "collector": "typed",
             "display_name": sig,
         })
@@ -180,14 +181,16 @@ def main():
         print("  --output <file>   Output path (default: hooks_pdb.json)")
         sys.exit(1)
 
+    if not (Path(output_path).parent / "tmp_cache").exists():
+        (Path(output_path).parent / "tmp_cache").mkdir()
     
     config = ParserConfig.from_json_file(config_file)
     hooks = []
     for pdb_config in config.pdb_config:
-        module = Path(pdb_config.pdb_path).stem + ".dll"
-        cache_filename = Path(output_path).parent / get_pdb_caceh_filename(pdb_config.pdb_path)
+        module = pdb_config.dll_file
+        cache_filename = Path(output_path).parent / "tmp_cache" / get_pdb_caceh_filename(pdb_config.pdb_path)
         rva_list = []
-        if not Path(cache_filename).exists():
+        if not cache_filename.exists():
             dia2dump = find_dia2dump(dia2dump_override)
             print(f"Running DIA2Dump: {dia2dump} on {pdb_config.pdb_path}")
             out = run_dia2dump(dia2dump, pdb_config.pdb_path)

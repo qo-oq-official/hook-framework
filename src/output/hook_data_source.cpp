@@ -1,5 +1,7 @@
 #include "output/hook_data_source.h"
 #include "output/perfetto_tracer.h"
+#include "thunk/universal_bridge.h"
+#include "output/stack_walker.h"
 #include "perfetto.h"
 #include "logging/logger.h"
 
@@ -60,6 +62,26 @@ void HookDataSource::TraceSlice(const std::string& name,
         //             }
         //         }
         // });
+        LOG_TRACE("Exit function {}", name);
+        TRACE_EVENT_END("SW");
+    } else {
+        LOG_ERROR("unknown phase {}", phase);
+    }
+}
+
+void HookDataSource::TraceSlice(const std::string& name,
+                                const std::string& category,
+                                char phase,
+                                const RegisterContext* ctx) {
+    if (!PerfettoTracer::instance().isActive()) {
+        auto& tracer = PerfettoTracer::instance();
+        tracer.initialize();
+    }
+    if (phase == 'B') {
+        LOG_TRACE("Entry function {}", name);
+        auto stack = CaptureCallStackAddresses(ctx);
+        TRACE_EVENT_BEGIN("SW", perfetto::DynamicString{name}, "stack", stack);
+    } else if (phase == 'E') {
         LOG_TRACE("Exit function {}", name);
         TRACE_EVENT_END("SW");
     } else {

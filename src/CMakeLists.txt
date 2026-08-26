@@ -13,6 +13,7 @@ set(HOOK_FW_SOURCES
     output/hook_data_source.cpp
     output/perfetto_tracer.cpp
     output/track_event_observer.cpp
+    output/stack_walker.cpp
     config/config_loader.cpp
     config/config_validator.cpp
     logging/logger.cpp

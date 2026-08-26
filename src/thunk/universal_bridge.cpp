@@ -1,5 +1,6 @@
 #include "thunk/universal_bridge.h"
 #include "output/hook_data_source.h"
+#include "output/stack_walker.h"
 #include "engine/hook_engine.h"
 #include "thunk/hook_context.h"
 #include "logging/crash_log.h"
@@ -39,7 +40,7 @@ void Prehook(InstalledHook *hook, hookfw::ThunkData* data, RegisterContext* ctx)
         args["arg1"] = std::format("{:#x}", ctx->rdx);
         args["arg2"] = std::format("{:#x}", ctx->r8);
         args["arg3"] = std::format("{:#x}", ctx->r9);
-        HookDataSource::TraceSlice(name, "trace", 'B', args);
+        HookDataSource::TraceSlice(name, "trace", 'B', ctx);
     } else if (hook && hook->collector) {
         HookContext hctx{};
         hctx.hookId = data->hookId;
@@ -66,7 +67,7 @@ void Posthook(InstalledHook *hook, hookfw::ThunkData* data, RegisterContext* ctx
             args["return"] = std::format("{:#x}", retval);
         if (threw)
             args["exception"] = true;
-        HookDataSource::TraceSlice(name, "trace", 'E', args);
+        HookDataSource::TraceSlice(name, "trace", 'E', ctx);
     } else if (hook && hook->collector) {
         HookContext hctx{};
         hctx.hookId = data->hookId;

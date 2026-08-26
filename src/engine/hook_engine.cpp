@@ -266,6 +266,16 @@ bool HookEngineCore::installAll() {
         return false;
     }
 
+    // DetourAttach only writes the trampoline pointer during commit, so register
+    // the trampoline->original mapping here (after all commits) so the stack
+    // walker can translate trampoline return addresses back to original code.
+    for (auto& hook : hooks_) {
+        if (!hook->thunkSlot) continue;
+        ThunkManager::instance().registerTrampoline(
+            reinterpret_cast<uintptr_t>(hook->thunkSlot->data.trampolineFunction),
+            reinterpret_cast<uintptr_t>(hook->thunkSlot->data.originalFunction));
+    }
+
     installed_ = true;
     LOG_INFO("{} hooks installed, {} failed (total configured: {})", attached, failed, hooks_.size());
     if (failed > 0) {

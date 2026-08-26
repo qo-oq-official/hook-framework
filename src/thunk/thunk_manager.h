@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <mutex>
+#include <utility>
 
 namespace hookfw {
 
@@ -27,14 +28,18 @@ public:
     void freeThunk(ThunkSlot* slot);
     void freeAll();
 
+    void registerTrampoline(uintptr_t trampolineBase, uintptr_t originalFunction);
+    bool resolveTrampoline(uintptr_t addr, uintptr_t* outOriginal) const;
+
 private:
     ThunkManager() = default;
     ~ThunkManager();
 
     void* generateStub(ThunkData* data, void* entryFunc);
 
-    std::mutex mutex_;
+    mutable std::mutex mutex_;
     std::vector<std::unique_ptr<ThunkSlot>> slots_;
+    std::vector<std::pair<uintptr_t, uintptr_t>> trampolineMap_;
 };
 
 }

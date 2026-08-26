@@ -62,7 +62,7 @@ __declspec(noinline) std::wstring pdb_func_param(
 
 
 extern "C" {
-
+TEST_API int g_a;
 // ── scalar params ─────────────────────────────────────────────────────
 
 TEST_API __declspec(noinline) int pdb_add(int a, int b) {
@@ -189,6 +189,11 @@ TEST_API __declspec(noinline) int pdb_deep_call(int x) {
     } catch (...) {
         return -1;  // exception indicator
     }
+}
+
+TEST_API __declspec(noinline) int pdb_change_g_a(int x) {
+    g_a = x;
+    return g_a;
 }
 }
 
