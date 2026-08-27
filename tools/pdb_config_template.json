@@ -1,6 +1,7 @@
 {
     "pdb_config": [
         {
+            "module": "",
             "pdb_path": "",
             "function_white_list": [
             ],

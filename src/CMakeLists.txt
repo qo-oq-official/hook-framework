@@ -51,7 +51,7 @@ target_link_libraries(hook_framework
 )
 
 target_compile_definitions(hook_framework PRIVATE HOOKFW_EXPORTS)
-target_compile_options(hook_framework PRIVATE /EHa)
+target_compile_options(hook_framework PRIVATE $<$<COMPILE_LANGUAGE:CXX>:/EHa>)
 add_dependencies(hook_framework git_hash)
 
 add_library(etw_monitor STATIC etw/etw_monitor.cpp)

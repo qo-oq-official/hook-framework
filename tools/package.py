@@ -63,7 +63,7 @@ for name in ["DIA2Dump.exe", "msdia140.dll"]:
 # ── PDB tools ───────────────────────────────────────────────────────────
 
 print("[2] Copying Perfetto tools...")
-for name in ["perfetto.exe", "traced.exe", "ui.zip"]:
+for name in ["perfetto.exe", "traced.exe", "trace_processor_shell.exe", "traceconv.exe", "ui.zip"]:
     src = TOOLBOX / "perfetto" / "windows-amd64" / name
     if src.exists():
         shutil.copy2(str(src), str(PKG_ROOT / "perfetto" / name))
@@ -79,6 +79,7 @@ print("[3] Copying Python scripts...")
 scripts = [
     "generate_hooks_from_pdb.py",
     "validate_hooks.py",
+    "symbolize_trace.py",
 ]
 for name in scripts:
     src = SCRIPT_DIR / name
@@ -176,6 +177,14 @@ bin\\injector.exe --pid <PID> --dll bin\\hook_framework.dll
 
 powershell
 python tools\\validate_hooks.py
+
+
+### 4. Symbolize captured Perfetto trace (RVA -> function + file:line)
+
+powershell
+python tools\\symbolize_trace.py --trace record.perfetto-trace \\
+    --pdb-config configuration\\pdb_config.json \\
+    --output report.json --augmented record.symbolized.perfetto-trace
 
 
 ## Notes
