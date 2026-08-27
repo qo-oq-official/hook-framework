@@ -1,17 +1,38 @@
 """Generate hooks.json from PDB via DIA2Dump.exe.
 
-All functions → raw RVA hooks (no parameter parsing).
-Static functions included via RVA (not symbol).
+Reads each PDB listed in a JSON config, dumps function symbols with DIA2Dump
+(`-s`), and emits a hooks.json with RVA-based hooks (mode=trace,
+collector=typed). Static functions are included by RVA as well (they have no
+export symbol), so every function can be hooked.
 
 Usage:
-  python generate_hooks_from_pdb.py --module <dll> <pdb> [output.json]
-  python generate_hooks_from_pdb.py --module <dll> --contain <s> <pdb> [output.json]
-  python generate_hooks_from_pdb.py --module <dll> --dia2dump <path> <pdb> [output.json]
+  python generate_hooks_from_pdb.py --config <config.json> [--output=<file>]
+  python generate_hooks_from_pdb.py --config <config.json> [--dia2dump <path>]
+
+Options:
+  --config <file>     JSON config listing the PDBs to parse (required). Each
+                      entry of "pdb_config" must provide: pdb_path, module,
+                      function_white_list, function_black_list.
+  --dia2dump <path>   Path to DIA2Dump.exe (default: auto-detected).
+  --output=<file>     Output path (default: hooks_pdb.json). The output path can
+                      also be given as a positional argument.
+
+Example config (config.json):
+  {
+    "pdb_config": [
+      {
+        "module": "target.dll",
+        "pdb_path": "C:/pdbs/target.pdb",
+        "function_white_list": [".+"],
+        "function_black_list": []
+      }
+    ]
+  }
 """
+import argparse
 import re
 import json
 import subprocess
-import sys
 from pathlib import Path
 from dataclasses import dataclass
 import hashlib
@@ -19,7 +40,7 @@ import hashlib
 @dataclass
 class PdbParserConfig:
     pdb_path: str
-    dll_file: str
+    module: str
     function_white_list: list[str]
     function_black_list: list[str]
 
@@ -151,35 +172,22 @@ def build_hook_config(rva_list, function_white_list: list[str], function_black_l
 
 
 def main():
-    dia2dump_override = ""
-    config_file = ""
-    module = ""
-    output_path = "hooks_pdb.json"
-    args = sys.argv[1:]
+    ap = argparse.ArgumentParser(
+        description="Generate hooks.json from PDB via DIA2Dump.exe.",
+    )
+    ap.add_argument("--config", required=True,
+                    help="JSON config listing the PDBs to parse")
+    ap.add_argument("--dia2dump", default="",
+                    help="Path to DIA2Dump.exe (default: auto-detected)")
+    ap.add_argument("--output", default=None,
+                    help="Output path (default: hooks_pdb.json)")
+    ap.add_argument("output_pos", nargs="?", default=None,
+                    help="Output path (positional alternative to --output)")
+    args = ap.parse_args()
 
-    i = 0
-    while i < len(args):
-        if args[i] == "--dia2dump":
-            i += 1
-            dia2dump_override = args[i]
-        elif args[i] == "--config":
-            i += 1
-            config_file = args[i]
-        elif args[i].startswith("--output="):
-            output_path = args[i][9:]
-        elif args[i].startswith("-"):
-            print(f"Unknown flag: {args[i]}")
-            sys.exit(1)
-        elif output_path == "hooks_pdb.json":
-            output_path = args[i]
-        i += 1
-
-    if not config_file:
-        print("Usage: generate_hooks_from_pdb.py --config_file <config> [--dia2dump <path>] <pdb> [output.json]")
-        print("")
-        print("  --dia2dump <p>    Path to DIA2Dump.exe (default: DIA2Dump.exe)")
-        print("  --output <file>   Output path (default: hooks_pdb.json)")
-        sys.exit(1)
+    config_file = args.config
+    dia2dump_override = args.dia2dump
+    output_path = args.output or args.output_pos or "hooks_pdb.json"
 
     if not (Path(output_path).parent / "tmp_cache").exists():
         (Path(output_path).parent / "tmp_cache").mkdir()
@@ -187,7 +195,7 @@ def main():
     config = ParserConfig.from_json_file(config_file)
     hooks = []
     for pdb_config in config.pdb_config:
-        module = pdb_config.dll_file
+        module = Path(pdb_config.module).name
         cache_filename = Path(output_path).parent / "tmp_cache" / get_pdb_caceh_filename(pdb_config.pdb_path)
         rva_list = []
         if not cache_filename.exists():
@@ -196,7 +204,7 @@ def main():
             out = run_dia2dump(dia2dump, pdb_config.pdb_path)
             rva_list = parse_functions(out, cache_filename)
         else:
-            print(f"Read PDB caceh: {pdb_config.pdb_path} {cache_filename}")
+            print(f"Read PDB cache: {pdb_config.pdb_path} {cache_filename}")
             rva_list = get_cache_file_content(cache_filename)
         hooks += build_hook_config(rva_list, 
                                    pdb_config.function_white_list,

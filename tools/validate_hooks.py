@@ -8,6 +8,7 @@ Checks:
 Usage:
   python tools/validate_hooks.py [--output report.json]
 """
+import argparse
 import json
 import sys
 import os
@@ -137,10 +138,13 @@ def print_report(report):
 
 
 def main():
-    output_file = None
-    args = sys.argv[1:]
-    if len(args) >= 2 and args[0] == "--output":
-        output_file = args[1]
+    ap = argparse.ArgumentParser(
+        description="Validate hooks.json against actual DLL PE files.",
+    )
+    ap.add_argument("--output", help="Output report JSON path")
+    args = ap.parse_args()
+
+    output_file = args.output
 
     if not HOOKS_PATH.exists():
         print(f"ERROR: hooks.json not found: {HOOKS_PATH}")

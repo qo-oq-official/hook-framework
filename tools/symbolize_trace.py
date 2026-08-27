@@ -125,7 +125,7 @@ def load_pdb_config(config_path):
         pdb = item.get("pdb_path") or item.get("pdb")
         if not pdb:
             continue
-        mod = item.get("module") or item.get("dll_file")
+        mod = item.get("module")
         if mod:
             mapping[Path(mod).name.lower()] = pdb
     return mapping

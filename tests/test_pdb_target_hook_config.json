@@ -1,7 +1,7 @@
 {
     "pdb_config": [
         {
-            "dll_file": "test_pdb_target.dll",
+            "module": "test_pdb_target.dll",
             "pdb_path": "C:/Users/zwsoft/hook-framework-perfetto-api/build/bin/Release/test_pdb_target.pdb",
             "function_white_list": [
                 ".+"
@@ -14,7 +14,7 @@
             ]
         },
         {
-            "dll_file": "test_pdb_runner.exe",
+            "module": "test_pdb_runner.exe",
             "pdb_path": "C:/Users/zwsoft/hook-framework-perfetto-api/build/bin/Release/test_pdb_runner.pdb",
             "function_white_list": [
             ],

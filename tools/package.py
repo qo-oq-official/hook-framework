@@ -78,8 +78,8 @@ for name in ["perfetto.exe", "traced.exe", "trace_processor_shell.exe", "traceco
 print("[3] Copying Python scripts...")
 scripts = [
     "generate_hooks_from_pdb.py",
-    "validate_hooks.py",
     "symbolize_trace.py",
+    "dump_pdb_path.py"
 ]
 for name in scripts:
     src = SCRIPT_DIR / name
