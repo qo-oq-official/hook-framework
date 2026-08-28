@@ -2,7 +2,6 @@ set(HOOK_FW_SOURCES
     dllmain.cpp
     engine/hook_engine.cpp
     thunk/thunk_manager.cpp
-    thunk/dispatch.cpp
     thunk/universal_bridge.cpp
     collector/raw_collector.cpp
     collector/typed_collector.cpp
@@ -21,8 +20,6 @@ set(HOOK_FW_SOURCES
 )
 
 set(HOOK_FW_ASM_SOURCES
-    thunk/thunk_x64.asm
-    thunk/light_thunk_x64.asm
     thunk/universal_stub.asm
     thunk/call_original_x64.asm
 )

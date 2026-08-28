@@ -2,8 +2,6 @@
 #include "logging/logger.h"
 #include <Windows.h>
 
-extern "C" void hookfw_thunk_entry();
-extern "C" void hookfw_light_entry();
 extern "C" void hookfw_universal_entry();
 
 namespace hookfw {

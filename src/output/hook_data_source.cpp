@@ -23,45 +23,9 @@ void HookDataSource::TraceSlice(const std::string& name,
         tracer.initialize();
     }
     if (phase == 'B') {
-        // TRACE_EVENT_BEGIN("SW", perfetto::DynamicString{name}, 
-        //     [&](perfetto::EventContext ctx) {
-        //         for (const auto& [key, val] : args.items()) {
-        //             auto* da = ctx.event()->add_debug_annotations();
-        //             da->set_name(key);
-        //             if (val.is_string()) {
-        //                 da->set_string_value(val.get<std::string>());
-        //             } else if (val.is_number_integer()) {
-        //                 da->set_int_value(val.get<int64_t>());
-        //             } else if (val.is_number_float()) {
-        //                 da->set_double_value(val.get<double>());
-        //             } else if (val.is_boolean()) {
-        //                 da->set_bool_value(val.get<bool>());
-        //             } else {
-        //                 da->set_legacy_json_value(val.dump());
-        //             }
-        //         }
-        // });
         LOG_TRACE("Entry function {}", name);
         TRACE_EVENT_BEGIN("SW", perfetto::DynamicString{name});
     } else if (phase == 'E') {
-        // TRACE_EVENT_END("SW", 
-        //     [&](perfetto::EventContext ctx) {
-        //         for (const auto& [key, val] : args.items()) {
-        //             auto* da = ctx.event()->add_debug_annotations();
-        //             da->set_name(key);
-        //             if (val.is_string()) {
-        //                 da->set_string_value(val.get<std::string>());
-        //             } else if (val.is_number_integer()) {
-        //                 da->set_int_value(val.get<int64_t>());
-        //             } else if (val.is_number_float()) {
-        //                 da->set_double_value(val.get<double>());
-        //             } else if (val.is_boolean()) {
-        //                 da->set_bool_value(val.get<bool>());
-        //             } else {
-        //                 da->set_legacy_json_value(val.dump());
-        //             }
-        //         }
-        // });
         LOG_TRACE("Exit function {}", name);
         TRACE_EVENT_END("SW");
     } else {
