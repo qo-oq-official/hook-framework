@@ -12,6 +12,15 @@ add_library(spdlog INTERFACE)
 target_include_directories(spdlog INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/spdlog/include")
 target_compile_options(spdlog INTERFACE $<$<COMPILE_LANGUAGE:CXX>:/utf-8>)
 
+# raw_pdb (https://github.com/MolecularMatters/raw_pdb) — vendored for in-process
+# PDB symbol/line resolution. Used by tools/symbolize_trace.
+file(GLOB RAW_PDB_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/raw_pdb/*.cpp")
+list(FILTER RAW_PDB_SOURCES EXCLUDE REGEX "PDB_PCH\\.cpp$")
+
+add_library(raw_pdb STATIC ${RAW_PDB_SOURCES})
+target_include_directories(raw_pdb PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/raw_pdb")
+target_compile_options(raw_pdb PRIVATE $<$<COMPILE_LANGUAGE:CXX>:/bigobj>)
+
 add_library(perfetto_sdk STATIC perfetto-cpp-sdk/perfetto.cc)
 target_include_directories(perfetto_sdk PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/perfetto-cpp-sdk")
 target_compile_definitions(perfetto_sdk PUBLIC

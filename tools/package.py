@@ -41,7 +41,7 @@ for d in ["bin", "tools", "configuration", "perfetto"]:
 # ── Binaries ────────────────────────────────────────────────────────────
 
 print("[1] Copying binaries...")
-for name in ["hook_framework.dll", "injector.exe", "etw_loader.exe"]:
+for name in ["hook_framework.dll", "injector.exe", "etw_loader.exe", "symbolize_trace.exe"]:
     src = BUILD_DIR / name
     if src.exists():
         shutil.copy2(str(src), str(PKG_ROOT / "bin" / name))
@@ -78,7 +78,6 @@ for name in ["perfetto.exe", "traced.exe", "trace_processor_shell.exe", "traceco
 print("[3] Copying Python scripts...")
 scripts = [
     "generate_hooks_from_pdb.py",
-    "symbolize_trace.py",
     "dump_pdb_path.py"
 ]
 for name in scripts:
@@ -182,7 +181,7 @@ python tools\\validate_hooks.py
 ### 4. Symbolize captured Perfetto trace (RVA -> function + file:line)
 
 powershell
-python tools\\symbolize_trace.py --trace record.perfetto-trace \\
+bin\\symbolize_trace.exe --trace record.perfetto-trace \\
     --pdb-config configuration\\pdb_config.json \\
     --output report.json --augmented record.symbolized.perfetto-trace
 
