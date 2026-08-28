@@ -195,6 +195,11 @@ def main():
     config = ParserConfig.from_json_file(config_file)
     hooks = []
     for pdb_config in config.pdb_config:
+        if not Path(pdb_config.pdb_path).exists():
+            print(f"Not found PDB file {pdb_config.pdb_path}")
+            continue
+        if len(pdb_config.function_white_list) == 0:
+            continue
         module = Path(pdb_config.module).name
         cache_filename = Path(output_path).parent / "tmp_cache" / get_pdb_caceh_filename(pdb_config.pdb_path)
         rva_list = []
@@ -206,11 +211,13 @@ def main():
         else:
             print(f"Read PDB cache: {pdb_config.pdb_path} {cache_filename}")
             rva_list = get_cache_file_content(cache_filename)
-        hooks += build_hook_config(rva_list, 
+        
+        sub_hooks = build_hook_config(rva_list, 
                                    pdb_config.function_white_list,
                                    pdb_config.function_black_list,
                                    module)
-        print(f"Found {len(hooks)} functions")
+        hooks += sub_hooks 
+        print(f"Found {len(sub_hooks)} functions")
 
     config = {
         "output_dir": "dump_data",
