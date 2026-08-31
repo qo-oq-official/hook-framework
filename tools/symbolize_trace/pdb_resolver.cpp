@@ -1,21 +1,11 @@
 #include "pdb_resolver.h"
 
 #include "logger.h"
+#include "pdb_common.h"
 
-#include <windows.h>
-#include <DbgHelp.h>
-
-#include <PDB.h>
-#include <PDB_RawFile.h>
 #include <PDB_InfoStream.h>
-#include <PDB_DBIStream.h>
-#include <PDB_ModuleInfoStream.h>
-#include <PDB_ModuleSymbolStream.h>
 #include <PDB_ModuleLineStream.h>
 #include <PDB_NamesStream.h>
-#include <PDB_PublicSymbolStream.h>
-#include <PDB_ImageSectionStream.h>
-#include <PDB_CoalescedMSFStream.h>
 #include "Foundation/PDB_PointerUtil.h"
 
 #include <nlohmann/json.hpp>
@@ -24,185 +14,11 @@
 #include <cctype>
 #include <filesystem>
 #include <fstream>
-#include <unordered_set>
-
-#pragma comment(lib, "dbghelp.lib")
+#include <unordered_map>
 
 namespace hookfw {
 
 namespace {
-
-// 内存映射文件（RAII）：用于只读映射 PDB 文件
-class MappedFile {
-public:
-    explicit MappedFile(const std::string& path) {
-        file_ = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr,
-                            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-        if (file_ == INVALID_HANDLE_VALUE) {
-            return;
-        }
-        LARGE_INTEGER size;
-        if (!GetFileSizeEx(file_, &size)) {
-            CloseHandle(file_);
-            file_ = INVALID_HANDLE_VALUE;
-            return;
-        }
-        size_ = static_cast<size_t>(size.QuadPart);
-
-        mapping_ = CreateFileMappingW(file_, nullptr, PAGE_READONLY, 0, 0, nullptr);
-        if (!mapping_) {
-            CloseHandle(file_);
-            file_ = INVALID_HANDLE_VALUE;
-            return;
-        }
-        data_ = MapViewOfFile(mapping_, FILE_MAP_READ, 0, 0, 0);
-        if (!data_) {
-            CloseHandle(mapping_);
-            CloseHandle(file_);
-            mapping_ = nullptr;
-            file_ = INVALID_HANDLE_VALUE;
-        }
-    }
-
-    ~MappedFile() {
-        if (data_) {
-            UnmapViewOfFile(data_);
-        }
-        if (mapping_) {
-            CloseHandle(mapping_);
-        }
-        if (file_ != INVALID_HANDLE_VALUE) {
-            CloseHandle(file_);
-        }
-    }
-
-    MappedFile(const MappedFile&) = delete;
-    MappedFile& operator=(const MappedFile&) = delete;
-
-    bool ok() const { return data_ != nullptr; }
-    const void* data() const { return data_; }
-    size_t size() const { return size_; }
-
-private:
-    HANDLE file_ = INVALID_HANDLE_VALUE;
-    HANDLE mapping_ = nullptr;
-    void* data_ = nullptr;
-    size_t size_ = 0;
-};
-
-// 将 MSVC 修饰名（以 '?' 开头）还原为可读签名，其余原样返回
-std::string undecorate(const std::string& name) {
-    if (name.empty() || name[0] != '?') {
-        return name;
-    }
-    char buf[2048] = {};
-    DWORD flags = UNDNAME_NO_ACCESS_SPECIFIERS | UNDNAME_NO_MEMBER_TYPE |
-                  UNDNAME_NO_MS_KEYWORDS | UNDNAME_NO_RETURN_UDT_MODEL |
-                  UNDNAME_NO_THISTYPE | UNDNAME_NO_ALLOCATION_MODEL;
-    if (UnDecorateSymbolName(name.c_str(), buf, sizeof(buf), flags) > 0) {
-        return std::string(buf);
-    }
-    return name;
-}
-
-// 检查 raw_pdb 的 ErrorCode 是否表示成功
-bool ok(PDB::ErrorCode code) {
-    return code == PDB::ErrorCode::Success;
-}
-
-// 从模块符号流与公共符号流中收集所有函数符号（函数名 + 起始 RVA），结果按 RVA 升序。
-// 逻辑移植自 raw_pdb 的 ExampleFunctionSymbols.cpp。
-void BuildFunctions(const PDB::RawFile& rawFile, const PDB::DBIStream& dbiStream,
-                    std::vector<PdbResolver::FuncEntry>& functions) {
-    using namespace PDB::CodeView::DBI;
-
-    const PDB::ImageSectionStream imageSectionStream = dbiStream.CreateImageSectionStream(rawFile);
-    const PDB::ModuleInfoStream moduleInfoStream = dbiStream.CreateModuleInfoStream(rawFile);
-    const PDB::CoalescedMSFStream symbolRecordStream = dbiStream.CreateSymbolRecordStream(rawFile);
-
-    std::unordered_set<uint32_t> seenRvas;
-
-    // 1) 从各模块符号流收集函数（通常能拿到约 90% 的函数）
-    for (const PDB::ModuleInfoStream::Module& module : moduleInfoStream.GetModules()) {
-        if (!module.HasSymbolStream()) {
-            continue;
-        }
-        const PDB::ModuleSymbolStream moduleSymbolStream = module.CreateSymbolStream(rawFile);
-        moduleSymbolStream.ForEachSymbol([&](const PDB::CodeView::DBI::Record* record) {
-            const char* name = nullptr;
-            uint32_t rva = 0u;
-
-            switch (record->header.kind) {
-                case SymbolRecordKind::S_LPROC32:
-                    name = record->data.S_LPROC32.name;
-                    rva = imageSectionStream.ConvertSectionOffsetToRVA(record->data.S_LPROC32.section,
-                                                                       record->data.S_LPROC32.offset);
-                    break;
-                case SymbolRecordKind::S_GPROC32:
-                    name = record->data.S_GPROC32.name;
-                    rva = imageSectionStream.ConvertSectionOffsetToRVA(record->data.S_GPROC32.section,
-                                                                       record->data.S_GPROC32.offset);
-                    break;
-                case SymbolRecordKind::S_LPROC32_ID:
-                    name = record->data.S_LPROC32_ID.name;
-                    rva = imageSectionStream.ConvertSectionOffsetToRVA(record->data.S_LPROC32_ID.section,
-                                                                       record->data.S_LPROC32_ID.offset);
-                    break;
-                case SymbolRecordKind::S_GPROC32_ID:
-                    name = record->data.S_GPROC32_ID.name;
-                    rva = imageSectionStream.ConvertSectionOffsetToRVA(record->data.S_GPROC32_ID.section,
-                                                                       record->data.S_GPROC32_ID.offset);
-                    break;
-                case SymbolRecordKind::S_THUNK32:
-                    if (record->data.S_THUNK32.thunk == ThunkOrdinal::TrampolineIncremental) {
-                        name = "ILT";
-                        rva = imageSectionStream.ConvertSectionOffsetToRVA(record->data.S_THUNK32.section,
-                                                                           record->data.S_THUNK32.offset);
-                    }
-                    break;
-                case SymbolRecordKind::S_TRAMPOLINE:
-                    name = "ILT";
-                    rva = imageSectionStream.ConvertSectionOffsetToRVA(record->data.S_TRAMPOLINE.thunkSection,
-                                                                       record->data.S_TRAMPOLINE.thunkOffset);
-                    break;
-                default:
-                    return;
-            }
-
-            if (rva == 0u) {
-                return;
-            }
-            if (seenRvas.insert(rva).second) {
-                functions.push_back({rva, undecorate(name ? name : "")});
-            }
-        });
-    }
-
-    // 2) 从公共符号流补充模块流中缺失的函数符号
-    const PDB::PublicSymbolStream publicSymbolStream = dbiStream.CreatePublicSymbolStream(rawFile);
-    for (const PDB::HashRecord& hashRecord : publicSymbolStream.GetRecords()) {
-        const PDB::CodeView::DBI::Record* record = publicSymbolStream.GetRecord(symbolRecordStream, hashRecord);
-        if (record->header.kind != SymbolRecordKind::S_PUB32) {
-            continue;
-        }
-        const uint32_t flags = static_cast<uint32_t>(record->data.S_PUB32.flags);
-        const uint32_t functionFlag = static_cast<uint32_t>(PublicSymbolFlags::Function);
-        if ((flags & functionFlag) == 0u) {
-            continue;  // 只关心函数
-        }
-        const uint32_t rva = imageSectionStream.ConvertSectionOffsetToRVA(record->data.S_PUB32.section,
-                                                                          record->data.S_PUB32.offset);
-        if (rva == 0u || seenRvas.count(rva)) {
-            continue;
-        }
-        functions.push_back({rva, undecorate(record->data.S_PUB32.name)});
-    }
-
-    std::sort(functions.begin(), functions.end(), [](const PdbResolver::FuncEntry& a,
-                                                     const PdbResolver::FuncEntry& b) {
-        return a.rva < b.rva;
-    });
-}
 
 // 从模块行信息流 + names 流中收集 (RVA -> 文件 + 行号)，结果按 RVA 升序。
 // 逻辑移植自 raw_pdb 的 ExampleLines.cpp，并对文件名按 names 偏移去重以节省内存。
@@ -383,21 +199,21 @@ const PdbResolver::PdbData* PdbResolver::Load(const std::string& pdbPath) {
         return &loaded_.emplace(pdbPath, PdbData{}).first->second;
     }
 
-    if (!ok(PDB::ValidateFile(file.data(), file.size()))) {
+    if (!PdbOk(PDB::ValidateFile(file.data(), file.size()))) {
         LOG_ERROR("Invalid PDB file: {}", pdbPath);
         return &loaded_.emplace(pdbPath, PdbData{}).first->second;
     }
 
     const PDB::RawFile rawFile = PDB::CreateRawFile(file.data());
-    if (!ok(PDB::HasValidDBIStream(rawFile))) {
+    if (!PdbOk(PDB::HasValidDBIStream(rawFile))) {
         LOG_ERROR("PDB has no valid DBI stream: {}", pdbPath);
         return &loaded_.emplace(pdbPath, PdbData{}).first->second;
     }
 
     const PDB::DBIStream dbiStream = PDB::CreateDBIStream(rawFile);
-    if (!ok(dbiStream.HasValidImageSectionStream(rawFile)) ||
-        !ok(dbiStream.HasValidSymbolRecordStream(rawFile)) ||
-        !ok(dbiStream.HasValidPublicSymbolStream(rawFile))) {
+    if (!PdbOk(dbiStream.HasValidImageSectionStream(rawFile)) ||
+        !PdbOk(dbiStream.HasValidSymbolRecordStream(rawFile)) ||
+        !PdbOk(dbiStream.HasValidPublicSymbolStream(rawFile))) {
         LOG_ERROR("PDB is missing required sub-streams: {}", pdbPath);
         return &loaded_.emplace(pdbPath, PdbData{}).first->second;
     }
@@ -408,7 +224,12 @@ const PdbResolver::PdbData* PdbResolver::Load(const std::string& pdbPath) {
         return &loaded_.emplace(pdbPath, PdbData{}).first->second;
     }
 
-    BuildFunctions(rawFile, dbiStream, data.functions);
+    // 收集函数符号 + 行信息
+    std::vector<FuncSymbol> funcs = CollectFunctionSymbols(rawFile, dbiStream);
+    data.functions.reserve(funcs.size());
+    for (auto& f : funcs) {
+        data.functions.push_back({f.rva, std::move(f.name)});
+    }
     BuildLines(rawFile, dbiStream, infoStream, data.files, data.lines);
 
     LOG_INFO("PDB parsed: {} ({} functions, {} lines, {} files)", pdbPath,
@@ -424,15 +245,15 @@ const PdbResolver::PdbData* PdbResolver::Load(const std::string& pdbPath) {
             std::filesystem::path cachePath = std::filesystem::path(cacheDir_) / (p.stem().string() + "-" + key + ".json");
 
             nlohmann::json j;
-            nlohmann::json funcs = nlohmann::json::array();
+            nlohmann::json funcsJson = nlohmann::json::array();
             for (const auto& f : data.functions) {
-                funcs.push_back({f.rva, f.name});
+                funcsJson.push_back({f.rva, f.name});
             }
             nlohmann::json ls = nlohmann::json::array();
             for (const auto& l : data.lines) {
                 ls.push_back({l.rva, l.line, l.fileIndex});
             }
-            j["functions"] = funcs;
+            j["functions"] = funcsJson;
             j["files"] = data.files;
             j["lines"] = ls;
             std::ofstream out(cachePath);

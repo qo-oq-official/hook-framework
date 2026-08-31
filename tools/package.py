@@ -41,7 +41,7 @@ for d in ["bin", "tools", "configuration", "perfetto"]:
 # ── Binaries ────────────────────────────────────────────────────────────
 
 print("[1] Copying binaries...")
-for name in ["hook_framework.dll", "injector.exe", "etw_loader.exe", "symbolize_trace.exe"]:
+for name in ["hook_framework.dll", "injector.exe", "etw_loader.exe", "symbolize_trace.exe", "generate_hooks.exe"]:
     src = BUILD_DIR / name
     if src.exists():
         shutil.copy2(str(src), str(PKG_ROOT / "bin" / name))
@@ -77,7 +77,6 @@ for name in ["perfetto.exe", "traced.exe", "trace_processor_shell.exe", "traceco
 
 print("[3] Copying Python scripts...")
 scripts = [
-    "generate_hooks_from_pdb.py",
     "dump_pdb_path.py"
 ]
 for name in scripts:
@@ -128,6 +127,7 @@ example = """
 {
     "pdb_config": [
         {
+            "module": "",
             "pdb_path": "",
             "function_white_list": [
             ],
@@ -159,7 +159,7 @@ configuration/      example_hooks.json example_etw_load_config.json configuratio
 ### 1. Generate hooks.json from PDB
 
 powershell
-python tools\\generate_hooks_from_pdb.py --config pdb_config.json hooks\\hooks.json"
+bin\\generate_hooks.exe --config configuration\\pdb_config.json --output hooks\\hooks.json
 
 
 ### 2. Hook a running process
