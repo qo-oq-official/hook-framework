@@ -15,6 +15,7 @@
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/fmt/ranges.h>
 
 #include <pdb_common.h>
 
@@ -99,78 +100,87 @@ spdlog::level::level_enum ParseLevel(const std::string& s) {
     return spdlog::level::info;
 }
 
-bool MatchInOrder(const std::vector<std::string_view>& patterns, std::string_view text) {
-    size_t current_pos = 0;
+class PatternMatcher {
+private:
+    std::vector<std::string> keywords; // 儲存拆解後的固定關鍵字
+    bool hasLeadingDotStar = false;    // 開頭是否有 .*
+    bool hasTrailingDotStar = false;   // 結尾是否有 .*
 
-    for (const auto& pattern : patterns) {
-        // 從上一次匹配成功的位置之後，繼續尋找下一個子字串
-        size_t found_pos = text.find(pattern, current_pos);
-        
-        // 只要其中一個子字串找不到，或順序不對（找不到），直接失敗
-        if (found_pos == std::string_view::npos) {
-            return false;
+public:
+    // 構造函數：解析通用 Pattern (例如 ".*Abc.*dFg.*" 或 "Abc.*dFg")
+    PatternMatcher(const std::string& pattern) {
+        if (pattern.empty()) return;
+
+        std::string_view pv(pattern);
+
+        // 1. 檢查並標記開頭的 .*
+        if (pv.rfind(".*", 0) == 0) { // 等價於 starts_with(".*")
+            hasLeadingDotStar = true;
+            pv.remove_prefix(2);
         }
-        
-        // 更新下一次查找的起點（當前子字串結束的位置）
-        current_pos = found_pos + pattern.length();
-    }
-    
-    return true; // 所有子字串都按順序找到了
-}
 
-std::vector<std::string> ParseRegexToPatterns(std::string_view regex) {
-    std::vector<std::string> patterns;
-    std::string current_literal = "";
-    
-    size_t i = 0;
-    size_t len = regex.length();
-    
-    while (i < len) {
-        // 1. 處理 .* 通配符
-        if (i + 1 < len && regex[i] == '.' && (regex[i + 1] == '*' || regex[i + 1] == '+')) {
-            if (!current_literal.empty()) {
-                patterns.push_back(std::move(current_literal));
-                current_literal = ""; // 清空，準備收集下一個字面量
+        // 2. 檢查並標記結尾的 .*
+        if (pv.size() >= 2 && pv.substr(pv.size() - 2) == ".*") { // 等價於 ends_with(".*")
+            hasTrailingDotStar = true;
+            pv.remove_suffix(2);
+        }
+
+        // 3. 根據 ".*" 拆分出中間所有的固定關鍵字
+        size_t pos = 0;
+        while ((pos = pv.find(".*")) != std::string_view::npos) {
+            if (pos > 0) {
+                keywords.emplace_back(pv.substr(0, pos));
             }
-            i += 2; // 跳過 ".*"
-            continue;
+            pv.remove_prefix(pos + 2);
         }
-        
-        // 2. 處理轉義字元 (例如 \. \* \\ 等)
-        if (regex[i] == '\\' && i + 1 < len) {
-            current_literal += regex[i + 1]; // 只加入轉義後的實際字元
-            i += 2;
-            continue;
+        if (!pv.empty()) {
+            keywords.emplace_back(pv);
         }
-        
-        // 3. 普通字面量字元
-        current_literal += regex[i];
-        i++;
+        LOG_INFO("Pattern [{}] parse to {} dot-head [{}] dot-tail [{}]", pattern, keywords, hasLeadingDotStar, hasTrailingDotStar);
     }
-    
-    // 將最後剩餘的字面量寫入
-    if (!current_literal.empty()) {
-        patterns.push_back(std::move(current_literal));
-    }
-    
-    return patterns;
-}
 
-bool MatchStart(const std::string_view& regex_str, const std::string& s) {
-    std::vector<std::string> parsed_patterns = ParseRegexToPatterns(regex_str);
-    if (parsed_patterns.empty()) {
+    // 核心匹配與裁剪函數：返回 string_view 避免拷貝開銷
+    bool isMatch(std::string_view text) const {
+        if (keywords.empty()) {
+            return hasLeadingDotStar;
+        }
+
+        size_t firstKeyPos = std::string_view::npos;
+        size_t lastKeyEndPos = 0;
+        size_t currentSearchPos = 0;
+
+        // 按順序尋找所有關鍵字 (探測鏈)
+        for (size_t i = 0; i < keywords.size(); ++i) {
+            size_t pos = text.find(keywords[i], currentSearchPos);
+            if (pos == std::string_view::npos) {
+                return false; // 任何一個關鍵字沒按順序對上，即匹配失敗
+            }
+
+            // 記錄第一個關鍵字的起點
+            if (i == 0 && !hasLeadingDotStar && pos != 0) {
+                return false;
+            }
+            
+            // 更新當前關鍵字的終點，並作為下一個關鍵字的搜尋起點
+            lastKeyEndPos = pos + keywords[i].length();
+            currentSearchPos = lastKeyEndPos;
+        }
+        if (!hasTrailingDotStar) {
+            return text.length() == lastKeyEndPos;
+        }
+
+        // 返回裁剪後的視圖
         return true;
     }
-    // 2. 轉換為 matchInOrder 接收的 std::string_view 視圖（零拷貝適配）
-    std::vector<std::string_view> patterns_view;
-    patterns_view.reserve(parsed_patterns.size());
-    for (const auto& s : parsed_patterns) {
-        patterns_view.emplace_back(s);
+};
+
+std::vector<PatternMatcher> ParseMultiRegexToPatterns(std::vector<std::string> regexs) {
+    std::vector<PatternMatcher> res;
+    for (const std::string & reg : regexs) {
+        res.push_back(PatternMatcher(reg));
     }
-
-    return MatchInOrder(patterns_view, s);
+    return res;
 }
-
 
 // ── 缓存 ──────────────────────────────────────────────────────────────
 std::string CacheKey(const std::string& pdbPath) {
@@ -311,6 +321,10 @@ int main(int argc, char* argv[]) {
 
         std::vector<std::string> whiteList = item.value("function_white_list", std::vector<std::string>{});
         std::vector<std::string> blackList = item.value("function_black_list", std::vector<std::string>{});
+        LOG_INFO("Parser whitelist");
+        std::vector<PatternMatcher> whiteList_pattern = ParseMultiRegexToPatterns(whiteList);
+        LOG_INFO("Parser blacklist");
+        std::vector<PatternMatcher> blackList_pattern = ParseMultiRegexToPatterns(blackList);
         if (whiteList.empty()) {
             LOG_INFO("Skipping {} (empty function_white_list)", pdbPath);
             continue;
@@ -331,15 +345,15 @@ int main(int argc, char* argv[]) {
         size_t subCount = 0;
         for (const auto& f : funcs) {
             bool hit = false;
-            for (const auto& re : whiteList) {
-                if (MatchStart(re, f.name)) {
+            for (const auto& re : whiteList_pattern) {
+                if (re.isMatch(f.name)) {
                     hit = true;
                     break;
                 }
             }
             if (hit) {
-                for (const auto& re : blackList) {
-                    if (MatchStart(re, f.name)) {
+                for (const auto& re : blackList_pattern) {
+                    if (re.isMatch(f.name)) {
                         hit = false;
                         break;
                     }
