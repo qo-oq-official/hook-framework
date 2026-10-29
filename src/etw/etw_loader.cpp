@@ -2,6 +2,7 @@
 
 #include "logging.h"
 
+#include <map>
 #include <windows.h>
 
 #include <algorithm>
