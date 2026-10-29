@@ -1,0 +1,14 @@
+name: "C++ CodeQL Config"
+
+# 1. 建立資料庫（打包原始碼）時過濾
+source_archive_filters:
+  - exclude: "build/**"
+  - exclude: "**/_deps/**"
+  - exclude: "vcpkg_installed/**"
+
+# 2. 分析結果（產生報告）時過濾
+paths-ignore:
+  - "build/**"
+  - "vcpkg_installed/**"
+  - "**/_deps/**"
+  - "**/third_party/**"
