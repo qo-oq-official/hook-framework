@@ -1,6 +1,6 @@
 #include "etw/etw_loader_config.h"
 
-#include "logging.h"
+#include "logging/logger.h"
 #include <nlohmann/json.hpp>
 
 #include <fstream>
@@ -32,11 +32,11 @@ std::wstring toAbsolute(const std::wstring& p, const std::filesystem::path& base
 }  // namespace
 
 std::optional<EtwLoaderConfig> EtwLoaderConfigLoader::load(const std::string& filePath) {
-    SPDLOG_INFO("Loading ETW loader config from: {}", filePath);
+    LOG_INFO("Loading ETW loader config from: {}", filePath);
 
     std::ifstream file(filePath);
     if (!file.is_open()) {
-        SPDLOG_ERROR("Cannot open config file: {}", filePath);
+        LOG_ERROR("Cannot open config file: {}", filePath);
         return std::nullopt;
     }
 
@@ -44,7 +44,7 @@ std::optional<EtwLoaderConfig> EtwLoaderConfigLoader::load(const std::string& fi
     try {
         file >> root;
     } catch (const nlohmann::json::parse_error& ex) {
-        SPDLOG_ERROR("JSON parse error in {}: {}", filePath, ex.what());
+        LOG_ERROR("JSON parse error in {}: {}", filePath, ex.what());
         return std::nullopt;
     }
 
@@ -57,7 +57,7 @@ std::optional<EtwLoaderConfig> EtwLoaderConfigLoader::load(const std::string& fi
         }
 
         if (!root.contains("rules") || !root["rules"].is_array()) {
-            SPDLOG_ERROR("Config must contain a 'rules' array");
+            LOG_ERROR("Config must contain a 'rules' array");
             return std::nullopt;
         }
 
@@ -76,18 +76,18 @@ std::optional<EtwLoaderConfig> EtwLoaderConfigLoader::load(const std::string& fi
             }
 
             if (rule.onLoad.empty() || rule.inject.empty()) {
-                SPDLOG_ERROR(L"Must have non-empty 'on_load' and 'inject'");
+                LOG_ERROR(L"Must have non-empty 'on_load' and 'inject'");
                 return std::nullopt;
             }
 
             config.rules.push_back(std::move(rule));
         }
     } catch (const std::exception& ex) {
-        SPDLOG_ERROR("Error parsing config: {}", ex.what());
+        LOG_ERROR("Error parsing config: {}", ex.what());
         return std::nullopt;
     }
 
-    SPDLOG_INFO("ETW loader config loaded: {} rule(s)", config.rules.size());
+    LOG_INFO("ETW loader config loaded: {} rule(s)", config.rules.size());
     return config;
 }
 

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
-#include "git_hash.h"
+#include "generated/git_hash.h"
 
 DWORD findProcessByName(const std::string& name) {
     HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);

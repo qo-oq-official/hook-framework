@@ -1,7 +1,6 @@
-#define INITGUID
 #include "etw/etw_monitor.h"
 
-#include "logging.h"
+#include "logging/logger.h"
 
 #include <cstring>
 #include <vector>
@@ -98,7 +97,7 @@ ULONG EtwImageLoadMonitor::startInternal() {
     ULONG status = StartTraceW(&session_, sessionName_.c_str(), props);
     if (status == ERROR_ALREADY_EXISTS) {
         // A previous run (force-killed / crashed) left an orphaned session.
-        SPDLOG_WARN(L"ETW session '{}' already exists (orphaned by a previous run); "
+        LOG_WARN(L"ETW session '{}' already exists (orphaned by a previous run); "
                      L"stopping it and retrying",
                      sessionName_);
         ControlTraceW(0, sessionName_.c_str(), props, EVENT_TRACE_CONTROL_STOP);

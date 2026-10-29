@@ -16,3 +16,15 @@ hook-projects/hook-ipx/ipx_interfaces.json
 package/
 hooks_pdb.json
 *-pdb-cache
+
+/bazel-*
+
+# ==========================================
+# 本地環境配置與覆蓋
+# ==========================================
+# 用於使用者自定義的本地建置參數（例如指定特定的編譯器路徑）
+user.bazelrc
+*.user.bazelrc
+
+# Bzlmod 模式下鎖定依賴版本的檔案（若團隊要求統一依賴可選擇不忽略，但通常本地會自動更新）
+MODULE.bazel.lock

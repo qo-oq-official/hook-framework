@@ -1,0 +1,35 @@
+name: Bazel on a single platform
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Set up Bazel
+      uses: bazel-contrib/setup-bazel@0.19.1
+      with:
+        # Avoid downloading Bazel every time.
+        bazelisk-cache: true
+        # Store build cache per workflow.
+        disk-cache: ${{ github.workflow }}
+        # Share repository cache between workflows.
+        repository-cache: true
+    - name: Build
+      run: bazel build -c opt //...
+
+    - name: Upload
+      uses: actions/upload-artifact@v7
+      with:
+        name: build-artifact   # 产物的名称
+        path: |
+          bazel-bin/**/*.exe
+          bazel-bin/**/*.dll
+          bazel-bin/**/*.pdb

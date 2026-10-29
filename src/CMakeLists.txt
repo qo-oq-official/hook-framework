@@ -15,13 +15,23 @@ set(HOOK_FW_SOURCES
     output/stack_walker.cpp
     config/config_loader.cpp
     config/config_validator.cpp
-    logging/logger.cpp
     api/hook_api.cpp
 )
 
 set(HOOK_FW_ASM_SOURCES
     thunk/universal_stub.asm
     thunk/call_original_x64.asm
+)
+
+add_library(logger STATIC 
+    logging/logger.cpp
+)
+target_include_directories(logger
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+target_link_libraries(logger PUBLIC
+    spdlog
 )
 
 add_library(hook_framework SHARED ${HOOK_FW_SOURCES} ${HOOK_FW_ASM_SOURCES})
@@ -31,15 +41,15 @@ target_include_directories(hook_framework
         ${CMAKE_SOURCE_DIR}/include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_BINARY_DIR}/generated
+        ${CMAKE_BINARY_DIR}/
         ${CMAKE_SOURCE_DIR}/tests
 )
 
 target_link_libraries(hook_framework
     PRIVATE
+        logger
         detours
         nlohmann_json
-        spdlog
         perfetto_sdk
         oleaut32
         ole32
@@ -53,7 +63,7 @@ add_dependencies(hook_framework git_hash)
 
 add_library(etw_monitor STATIC etw/etw_monitor.cpp)
 target_include_directories(etw_monitor PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(etw_monitor PUBLIC advapi32 spdlog)
+target_link_libraries(etw_monitor PUBLIC advapi32 logger)
 
 add_executable(etw_monitor_demo etw/etw_monitor_main.cpp)
 target_link_libraries(etw_monitor_demo PRIVATE etw_monitor)
@@ -63,5 +73,5 @@ add_executable(etw_loader
     etw/etw_loader.cpp
     etw/etw_loader_config.cpp
 )
-target_link_libraries(etw_loader PRIVATE etw_monitor nlohmann_json spdlog)
+target_link_libraries(etw_loader PRIVATE etw_monitor nlohmann_json logger)
 target_compile_options(etw_loader PRIVATE /EHsc)

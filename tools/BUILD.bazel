@@ -1,0 +1,14 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//tools:git_hash.bzl", "version_header")
+exports_files(["version.h.tpl"])
+
+version_header(
+    name = "generate_version_header",
+)
+
+cc_library(
+    name = "git_hash_lib",
+    hdrs = [":generate_version_header"],
+    includes = ["."], 
+    visibility = ["//visibility:public"],
+)

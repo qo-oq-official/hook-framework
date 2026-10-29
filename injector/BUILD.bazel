@@ -1,0 +1,15 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "injector",
+    srcs = [
+        "injector.cpp",
+    ],
+    copts = select({
+        "@bazel_tools//src/conditions:windows": ["/std:c++17"],
+        "//conditions:default": ["-std=c++17"],
+    }),
+    deps = [
+        "//tools:git_hash_lib"
+    ],
+)

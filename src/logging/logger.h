@@ -12,8 +12,8 @@ class Logger {
 public:
     static Logger& instance();
 
-    void initialize(const std::string& logFile = "hook_framework.log",
-                    spdlog::level::level_enum level = spdlog::level::debug);
+    void initialize(const std::string& logFile);
+    void initialize();
     void shutdown();
 
     std::shared_ptr<spdlog::logger> get();
@@ -21,7 +21,7 @@ public:
 private:
     Logger() = default;
     ~Logger() = default;
-    std::shared_ptr<spdlog::logger> logger_ = nullptr;
+    const std::string LOGGER_NAME = "hookfw_logger";
 };
 
 }

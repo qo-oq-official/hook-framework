@@ -1,0 +1,6 @@
+# build --workspace_status_command=tools/workspace_status.sh
+
+build:windows --workspace_status_command="powershell -NoProfile -ExecutionPolicy Bypass -File tools/workspace_status.ps1"
+build --copt=/utf-8
+build --copt=/W4
+build --host_copt=/W4

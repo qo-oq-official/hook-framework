@@ -1,0 +1,40 @@
+module(
+    name = "hook_framework",
+    version = "1.0.0",
+)
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+bazel_dep(name = "rules_cc", version = "0.2.17")
+bazel_dep(name = "nlohmann_json", version = "3.12.0")
+bazel_dep(name = "spdlog", version = "1.17.0")
+bazel_dep(name = "googletest", version = "1.17.0")
+bazel_dep(name = "platforms", version = "1.0.0")
+
+
+http_archive(
+    name = "perfetto_cpp_sdk",
+    integrity = "sha256-eZUSRgeOoEButMfGu3HbvDGEnV3BPeLAaXmVx6z9CwQ=",
+    urls = ["https://github.com/google/perfetto/releases/download/v59.1/perfetto-cpp-sdk-src.zip"],
+    # sha256 = "79951246078ea0406eb4c7c6bb71dbbc31849d5dc13de2c0697995c7acfd0b04",
+    build_file = "//third_party:perfetto.BUILD",
+)
+
+# 引入擴充套件以支援處理其餘不帶 Bazel 的舊庫 (Detours, raw_pdb)
+
+
+# 4. Microsoft Detours
+http_archive(
+    name = "microsoft_detours",
+    build_file = "//third_party:detours.BUILD",
+    # sha256 = "d644ce94e8c7f7f5a31591577c78134ea3ac1fae",
+    strip_prefix = "Detours-main", 
+    urls = ["https://github.com/microsoft/Detours/archive/refs/heads/main.zip"],
+)
+
+# 5. raw_pdb
+http_archive(
+    name = "raw_pdb",
+    build_file = "//third_party:raw_pdb.BUILD",
+    # sha256 = "d644ce94e8c7f7f5a31591577c78134ea3ac1fae",
+    strip_prefix = "raw_pdb-main", 
+    urls = ["https://github.com/MolecularMatters/raw_pdb/archive/refs/heads/main.zip"],
+)

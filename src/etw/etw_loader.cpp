@@ -1,6 +1,6 @@
 #include "etw/etw_loader.h"
 
-#include "logging.h"
+#include "logging/logger.h"
 
 #include <map>
 #include <windows.h>
@@ -52,11 +52,11 @@ bool DllLoaderEngine::start(const EtwLoaderConfig& config) {
     ULONG status = monitor_.start(imageCb);
     if (status != ERROR_SUCCESS) {
         if (status == ERROR_ALREADY_EXISTS) {
-            SPDLOG_ERROR(L"Failed to start ETW monitoring: session '{}' still exists and could "
+            LOG_ERROR(L"Failed to start ETW monitoring: session '{}' still exists and could "
                           L"not be cleaned; stop it manually with: logman stop {} -ets",
                           config_.sessionName, config_.sessionName);
         } else {
-            SPDLOG_ERROR("Failed to start ETW monitoring, error={}; "
+            LOG_ERROR("Failed to start ETW monitoring, error={}; "
                           "run as Administrator / Performance Log Users",
                           status);
         }
@@ -64,7 +64,7 @@ bool DllLoaderEngine::start(const EtwLoaderConfig& config) {
         return false;
     }
 
-    SPDLOG_INFO("ETW monitoring active ({} rule(s))", config_.rules.size());
+    LOG_INFO("ETW monitoring active ({} rule(s))", config_.rules.size());
 
     injectThread_ = std::thread([this]() { injectionLoop(); });
     return true;
@@ -97,7 +97,7 @@ void DllLoaderEngine::onImageLoad(ULONG processId, ULONG_PTR /*imageBase*/,
             continue;
         }
 
-        SPDLOG_INFO(L"[+] trigger {} in pid {}-> injecting {} dll",
+        LOG_INFO(L"[+] trigger {} in pid {}-> injecting {} dll",
                      filePath, processId, rule.inject);
 
         {
@@ -128,14 +128,14 @@ void DllLoaderEngine::injectionLoop() {
             for (const auto& dll : dlls) {
                 std::wstring key = std::to_wstring(pid) + L"|" + toLowerW(dll);
                 if (injected_.count(key)) {
-                    SPDLOG_DEBUG(L"[-] skip already-injected {} into pid {}", dll, pid);
+                    LOG_DEBUG(L"[-] skip already-injected {} into pid {}", dll, pid);
                     continue;
                 }
                 injected_.insert(key);
                 if (injectDll(pid, dll)) {
-                    SPDLOG_INFO(L"[+] injected {} into pid {}", dll, pid);
+                    LOG_INFO(L"[+] injected {} into pid {}", dll, pid);
                 } else {
-                    SPDLOG_WARN(L"[-] failed to inject {} into pid {}", dll, pid);
+                    LOG_WARN(L"[-] failed to inject {} into pid {}", dll, pid);
                 }
             }
         }
@@ -149,12 +149,12 @@ bool DllLoaderEngine::injectDll(ULONG pid, const std::wstring& dllPath) {
     if (!hProcess) {
         DWORD err = GetLastError();
         if (err == ERROR_INVALID_PARAMETER) {
-            SPDLOG_WARN(L"target process pid={} already exited; cannot inject {}", pid, dllPath);
+            LOG_WARN(L"target process pid={} already exited; cannot inject {}", pid, dllPath);
         } else if (err == ERROR_ACCESS_DENIED) {
-            SPDLOG_WARN(L"access denied opening pid={} (run as Administrator); cannot inject {}",
+            LOG_WARN(L"access denied opening pid={} (run as Administrator); cannot inject {}",
                          pid, dllPath);
         } else {
-            SPDLOG_WARN("OpenProcess failed pid={} err={}", pid, err);
+            LOG_WARN("OpenProcess failed pid={} err={}", pid, err);
         }
         return false;
     }

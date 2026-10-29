@@ -1,7 +1,6 @@
 #include "api/hook_api.h"
 #include "logging/logger.h"
-#include "logging/crash_log.h"
-#include "git_hash.h"
+#include "generated/git_hash.h"
 #include <cstdlib>
 #include <Windows.h>
 #include <shellapi.h>
@@ -24,10 +23,8 @@ std::filesystem::path getDllDirectory() {
 std::filesystem::path getDirectoryByEnv(const std::string &envName ) {
     const char* path_val = std::getenv(envName.c_str());
     if (path_val != nullptr) {
-        hookfw::crash_log::write((envName + ": " + std::string{path_val} + "\n").c_str());
         return std::filesystem::path(path_val);
     }
-    hookfw::crash_log::write((envName + ": null\n").c_str());
     return getDllDirectory();
 }
 
@@ -57,11 +54,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
 
             auto dllDir = getDllDirectory();
             auto earlyLogPath = (dllDir / "hook_early.log").string();
-            hookfw::crash_log::init(earlyLogPath.c_str(), false);
-            hookfw::crash_log::write("[1] DllMain ATTACH entered\n");
-
             try {
-                hookfw::crash_log::write("[2] getDllDirectory OK\n");
                 uint64_t pid = GetCurrentProcessId();
                 std::wstring processName = GetProcessNameViaCmd();
                 std::wstring processCmd {GetCommandLineW()};
@@ -72,16 +65,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
                 std::string dt_str = std::format("{:%Y%m%d%H%M%S}", zoned_now);
                 auto logPath = (outputDir / ("hook_framework-" + std::filesystem::path(processName).stem().generic_string()  + "-" + dt_str + "-" + std::to_string(pid) + ".log")).string();
                 auto configPath = (configDir / (std::filesystem::path(processName).stem().generic_string() + "_hooks_config.json")).string();
-
-                hookfw::crash_log::write(("dllDir: " + dllDir.string() + "\n").c_str());
-                hookfw::crash_log::write(("Git hash: " + std::string(HOOKFW_GIT_HASH) + "\n").c_str());
-                hookfw::crash_log::write("Log paths:\n");
-                hookfw::crash_log::write(("  early: " + earlyLogPath + "\n").c_str());
-                hookfw::crash_log::write(("  main:  " + logPath + "\n").c_str());
-                hookfw::crash_log::write(("  crash: " + (dllDir / "hook_crash.log").string() + "\n").c_str());
-                hookfw::crash_log::write(("  attach: " + (dllDir / "hook_attach_err.log").string() + "\n").c_str());
                 hookfw::Logger::instance().initialize(logPath);
-                hookfw::crash_log::write("[3] Logger initialized\n");
                 LOG_INFO("=== Hook Framework DLL loaded ===");
                 LOG_INFO("Git hash: {}", HOOKFW_GIT_HASH);
                 LOG_INFO("DLL directory: {}", dllDir.string());
@@ -91,31 +75,28 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID reserved) {
 
                 if (std::filesystem::exists(configPath)) {
                     hookfw::HookEngine::instance().setDllDirectory(dllDir.string());
-                    hookfw::crash_log::write("[4] Loading config...\n");
+                    LOG_INFO("[4] Loading config...\n");
                     hookfw::initializeFramework(configPath);
-                    hookfw::crash_log::write("[5] Framework init complete\n");
                     LOG_INFO("=== Framework initialization complete ===");
                 } else {
-                    hookfw::crash_log::write("[4] Config not found, API mode\n");
+                    LOG_INFO("[4] Config not found, API mode\n");
                     hookfw::HookEngine::instance().initialize();
                 }
             } catch (const std::exception& ex) {
-                std::string msg = "[CRASH] Exception: " + std::string(ex.what()) + "\n";
-                hookfw::crash_log::write(msg.c_str());
-                try { LOG_CRITICAL("DllMain ATTACH exception: {}", ex.what()); } catch (...) {}
+                std::string msg = "[CRASH] Exception: " + std::string(ex.what());
+                LOG_INFO(msg.c_str());
             } catch (...) {
-                hookfw::crash_log::write("[CRASH] Unknown exception\n");
+                LOG_INFO("[CRASH] Unknown exception");
             }
             try { hookfw::Logger::instance().get()->flush(); } catch (...) {}
-            hookfw::crash_log::write("[6] DllMain ATTACH done\n");
+            LOG_INFO("[6] DllMain ATTACH done\n");
             break;
         }
         case DLL_PROCESS_DETACH: {
             try {
-                hookfw::crash_log::write("[DETACH] DLL unloading, starting shutdown...\n");
                 LOG_INFO("=== Hook Framework DLL unloading ===");
                 hookfw::shutdownFramework();
-                hookfw::crash_log::write("[DETACH] shutdownFramework returned\n");
+                LOG_INFO("[DETACH] shutdownFramework returned");
             } catch (const std::exception& ex) {
                 OutputDebugStringA(("DllMain DETACH exception: " + std::string(ex.what()) + "\n").c_str());
             } catch (...) {

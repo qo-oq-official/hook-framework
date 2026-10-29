@@ -1,6 +1,6 @@
 #include "etw/etw_loader.h"
 
-#include "logging.h"
+#include "logging/logger.h"
 
 #include <windows.h>
 
@@ -41,42 +41,32 @@ int main(int argc, char* argv[]) {
         std::printf("Usage: etw_loader --config <path.json>\n");
         return 1;
     }
-
-    auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("etw_loader.log", true);
-    std::vector<spdlog::sink_ptr> sinks{consoleSink, fileSink};
-    auto logger = std::make_shared<spdlog::logger>("etw_loader", sinks.begin(), sinks.end());
-    logger->set_pattern("[%H:%M:%S.%e] [%25s:%#] [%L] [T:%t] %v");
-    logger->set_level(spdlog::level::trace);
-    spdlog::set_default_logger(logger);
-    spdlog::flush_on(spdlog::level::info);
-
-    SPDLOG_INFO("=== ETW DLL Loader starting ===");
+    LOG_INFO("=== ETW DLL Loader starting ===");
 
     hookfw::EtwLoaderConfigLoader loader;
     auto config = loader.load(configPath);
     if (!config) {
-        SPDLOG_ERROR("Failed to load config: {}", configPath);
+        LOG_ERROR("Failed to load config: {}", configPath);
         spdlog::shutdown();
         return 1;
     }
 
     if (!g_engine.start(*config)) {
-        SPDLOG_ERROR("Failed to start engine");
+        LOG_ERROR("Failed to start engine");
         spdlog::shutdown();
         return 1;
     }
 
     SetConsoleCtrlHandler(ctrlHandler, TRUE);
-    SPDLOG_INFO("Monitoring... press Ctrl+C to stop");
+    LOG_INFO("Monitoring... press Ctrl+C to stop");
 
     while (!g_stop) {
         Sleep(100);
     }
 
-    SPDLOG_INFO("Stopping...");
+    LOG_INFO("Stopping...");
     g_engine.stop();
-    SPDLOG_INFO("Stopped.");
+    LOG_INFO("Stopped.");
     spdlog::shutdown();
     return 0;
 }

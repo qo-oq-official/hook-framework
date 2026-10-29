@@ -1,0 +1,176 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "logger",
+    srcs = [
+        "logging/logger.cpp",
+    ],
+    hdrs = [
+        "logging/logger.h",
+    ],
+    includes = [
+        ".",
+    ],
+    copts = select({
+        "@platforms//os:windows": [
+            "/std:c++20"
+        ],
+        "//conditions:default": [
+            "-std=c++20"
+        ],
+    }),
+    defines = [
+        "SPDLOG_WCHAR_TO_UTF8_SUPPORT=1",
+        "SPDLOG_ACTIVE_LEVEL=0",
+    ],
+    deps = [
+        "@spdlog//:spdlog",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# ==========================================
+# 1. hook_framework (SHARED LIBRARY / DLL)
+# ==========================================
+cc_binary(
+    name = "hook_framework",  # 在 Windows 上編譯成實體 DLL
+    srcs = [
+        "dllmain.cpp",
+        "engine/hook_engine.cpp",
+        "thunk/thunk_manager.cpp",
+        "thunk/universal_bridge.cpp",
+        "collector/raw_collector.cpp",
+        "collector/typed_collector.cpp",
+        "collector/collector_factory.cpp",
+        "collector/class_cache_collector.cpp",
+        "replacer/dll_replacer.cpp",
+        "replacer/callback_replacer.cpp",
+        "output/hook_data_source.cpp",
+        "output/perfetto_tracer.cpp",
+        "output/track_event_observer.cpp",
+        "output/stack_walker.cpp",
+        "config/config_loader.cpp",
+        "config/config_validator.cpp",
+        "api/hook_api.cpp",
+        
+        # 彙編源檔案處理：
+        # 預設情況下，Bazel 內建支援 Windows 上的 .asm (使用 MASM ml64.exe)
+        "thunk/universal_stub.asm",
+        "thunk/call_original_x64.asm",
+    ],
+    copts = select({
+        "@platforms//os:windows": [
+            "/std:c++20",
+            "/DHOOKFW_EXPORTS",
+        ],
+        "//conditions:default": [
+            "-std=c++20"
+        ],
+    }),
+    includes = [
+        ".",
+    ],
+    linkshared = True,
+    linkopts = [
+        "-DEFAULTLIB:Shell32.lib",
+    ],
+    deps = [
+        "@microsoft_detours//:detours",
+        "@nlohmann_json//:json",
+        "@perfetto_cpp_sdk//:perfetto_sdk",
+  
+        # 本地依賴項
+        "//src:logger",
+        "//tools:git_hash_lib",             # 替代 add_dependencies(hook_framework git_hash)
+        
+        # Windows 系統原生自帶庫連結
+        ":win32_sys_libs",
+    ],
+    defines = [
+        "WIN32_LEAN_AND_MEAN",
+        "NOMINMAX"
+    ], # 替代 target_compile_definitions PRIVATE
+)
+
+# ==========================================
+# 2. etw_monitor (STATIC LIBRARY)
+# ==========================================
+cc_library(
+    name = "etw_monitor",
+    srcs = ["etw/etw_monitor.cpp"],
+    hdrs = ["etw/etw_monitor.h"], # 建議明確列出其標頭檔
+    includes = ["."],              # 替代 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+    deps = [
+        "//src:logger",
+    ],
+    copts = select({
+            "@platforms//os:windows": [
+                "/std:c++20"
+            ],
+            "//conditions:default": [
+                "-std=c++20"
+            ],
+        }),
+    linkopts = ["-DEFAULTLIB:advapi32.lib"], # 導出給使用者的系統庫連結
+)
+
+# ==========================================
+# 3. etw_monitor_demo (EXECUTABLE)
+# ==========================================
+cc_binary(
+    name = "etw_monitor_demo",
+    srcs = ["etw/etw_monitor_main.cpp"],
+    copts = select({
+            "@platforms//os:windows": [
+                "/std:c++20"
+            ],
+            "//conditions:default": [
+                "-std=c++20"
+            ],
+        }),
+    deps = [
+        "//src:etw_monitor",
+        "//src:logger",
+    ],
+)
+
+# ==========================================
+# 4. etw_loader (EXECUTABLE)
+# ==========================================
+cc_binary(
+    name = "etw_loader",
+    srcs = [
+        "etw/etw_loader_main.cpp",
+        "etw/etw_loader.cpp",
+        "etw/etw_loader_config.cpp",
+    ],
+    copts = select({
+            "@platforms//os:windows": [
+                "/std:c++20",
+                "/EHsc"
+            ],
+            "//conditions:default": [
+                "-std=c++20"
+            ],
+        }),
+    deps = [
+        ":etw_monitor",
+        "@nlohmann_json//:json",
+        "//src:logger",
+    ],
+)
+
+# ==========================================
+# 輔助：Windows 系統底層庫封裝
+# ==========================================
+cc_library(
+    name = "win32_sys_libs",
+    linkopts = [
+        "-DEFAULTLIB:oleaut32.lib",
+        "-DEFAULTLIB:ole32.lib",
+        "-DEFAULTLIB:dbghelp.lib",
+        "-DEFAULTLIB:ws2_32.lib",
+    ],
+)

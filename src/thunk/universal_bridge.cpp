@@ -1,9 +1,7 @@
 #include "thunk/universal_bridge.h"
 #include "output/hook_data_source.h"
-#include "output/stack_walker.h"
 #include "engine/hook_engine.h"
 #include "thunk/hook_context.h"
-#include "logging/crash_log.h"
 #include "logging/logger.h"
 #include <Windows.h>
 #include <cstring>

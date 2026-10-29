@@ -1,6 +1,7 @@
 #include "thunk/thunk_manager.h"
 #include "logging/logger.h"
 #include <Windows.h>
+#include <format>
 
 extern "C" void hookfw_universal_entry();
 
